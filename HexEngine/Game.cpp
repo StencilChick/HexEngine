@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 
 #include "Camera.h"
+#include "Input.h"
 
 #include "Mesh.h"
 #include "ShaderHelpers.h"
@@ -38,8 +39,18 @@ void Game::Destroy() {
 
 // draw and update
 void Game::Update() {
-	//Camera::GetInstance()->Rotate(0.0005f, vec3(0, 1, 0));
-	g.Rotate(0.0005f, vec3(1, 1, 1));
+	Input *input = Input::GetInstance();
+
+	float speed = 1.0f * input->DeltaTime();
+	if (input->GetKey(GLFW_KEY_RIGHT)) {
+		g.Rotate(-speed, vec3(0, 1, 0));
+	} if (input->GetKey(GLFW_KEY_LEFT)) {
+		g.Rotate(speed, vec3(0, 1, 0));
+	} if (input->GetKey(GLFW_KEY_UP)) {
+		g.Rotate(speed, vec3(1, 0, 0));
+	} if (input->GetKey(GLFW_KEY_DOWN)) {
+		g.Rotate(-speed, vec3(1, 0, 0));
+	}
 }
 
 void Game::Draw() {

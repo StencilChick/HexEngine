@@ -33,7 +33,6 @@ Mesh::~Mesh() {
 
 // sets up GL stuff based on input
 void Mesh::BindGL(GLfloat* vertices, int vertexNum, GLushort* elems, int elemNum) {
-	cout << &vao << endl;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 

@@ -6,6 +6,8 @@
 class Camera;
 class Game;
 
+#include "Input.h"
+
 #include "MeshManager.h"
 #include "ShaderManager.h"
 #include "ImageManager.h"
@@ -21,9 +23,14 @@ public:
 	void Run();
 
 	// getting stuff
+	static GLFWwindow* GetWindow();
+
 	static MeshManager* GetMeshManager();
 	static ShaderManager* GetShaderManager();
 	static ImageManager* GetImageManager();
+
+	const int SCREEN_WIDTH = 900;
+	const int SCREEN_HEIGHT = 540;
 
 private:
 	// singleton stuff
@@ -35,13 +42,14 @@ private:
 	void operator=(World const&);
 
 	// gl stuff
-	GLFWwindow *window;
+	static GLFWwindow *window;
 
 	// content stuff
 	static MeshManager meshManager;
 	static ShaderManager shaderManager;
 	static ImageManager imageManager;
 
+	Input *input;
 	Camera *camera;
 
 	Game *game;

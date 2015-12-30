@@ -1,0 +1,155 @@
+#include "Input.h"
+
+#include "World.h"
+
+#include <iostream>
+using namespace glm;
+
+std::map<int, bool> Input::theseKeys;
+std::map<int, bool> Input::lastKeys;
+
+bool Input::keyPressedThisFrame = false;
+
+Input::Input() {
+	thisTime = 0;
+	lastTime = 0;
+
+	theseMouseButtons[0] = false;
+	theseMouseButtons[1] = false;
+	theseMouseButtons[2] = false;
+
+	lastMousePos = vec2(0, 0);
+	thisMousePos = vec2(0, 0);
+
+	glfwSetKeyCallback(World::GetWindow(), KeyCallback);
+}
+
+Input::~Input() {
+
+}
+
+// singleton stuff
+Input* Input::instance = nullptr;
+Input* Input::GetInstance() {
+	if (instance == nullptr) {
+		instance = new Input();
+	}
+	return instance;
+}
+
+void Input::Destory() {
+	if (instance != nullptr) {
+		delete instance;
+		instance = nullptr;
+	}
+}
+
+
+// update the things
+void Input::Update() {
+	GLFWwindow *window = World::GetWindow();
+	
+	// time
+	lastTime = thisTime;
+	thisTime = glfwGetTime();
+
+	// mouse
+	lastMouseButtons[0] = theseMouseButtons[0];
+	lastMouseButtons[1] = theseMouseButtons[1];
+	lastMouseButtons[2] = theseMouseButtons[2];
+	theseMouseButtons[0] = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+	theseMouseButtons[1] = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_MIDDLE) == GLFW_PRESS;
+	theseMouseButtons[2] = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS;
+
+	lastMousePos = thisMousePos;
+	
+	double x, y;
+	glfwGetCursorPos(window, &x, &y);
+	thisMousePos = vec2(x, y);
+
+	// keys
+	if (!keyPressedThisFrame) {
+		lastKeys = theseKeys;
+	}
+	keyPressedThisFrame = false;
+}
+
+
+// get delta time
+double Input::DeltaTime() {
+	return thisTime - lastTime;
+}
+
+
+// get mouse pos
+vec2 Input::MousePos() {
+	return thisMousePos;
+}
+
+vec2 Input::MouseDelta() {
+	return thisMousePos - lastMousePos;
+}
+
+
+// mouse buttons
+bool Input::MouseButton(int b) {
+	return theseMouseButtons[b];
+}
+
+bool Input::MouseButtonDown(int b) {
+	return theseMouseButtons[b] && !lastMouseButtons[b];
+}
+
+bool Input::MouseButtonUp(int b) {
+	return !theseMouseButtons[b] && lastMouseButtons[b];
+}
+
+// keys
+void Input::KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+	lastKeys = theseKeys;
+	theseKeys[key] = action != GLFW_RELEASE;
+
+	keyPressedThisFrame = true;
+}
+
+
+bool Input::GetKey(int k) {
+	if (theseKeys.find(k) == theseKeys.end()) {
+		return false;
+	}
+
+	return theseKeys[k];
+}
+
+// update these later
+bool Input::GetKeyDown(int k) {
+	if (theseKeys.find(k) == theseKeys.end()) {
+		return false;
+	}
+	
+	if (theseKeys[k]) {
+		if (lastKeys.find(k) == lastKeys.end()) {
+			return theseKeys[k];
+		}
+
+		return theseKeys[k] && !lastKeys[k];
+	}
+
+	return false;
+}
+
+bool Input::GetKeyUp(int k) {
+	if (theseKeys.find(k) == theseKeys.end()) {
+		return false;
+	}
+
+	if (!theseKeys[k]) {
+		/*if (lastKeys.find(k) == lastKeys.end()) {
+			return false;
+		}*/
+
+		return !theseKeys[k] && lastKeys[k];
+	}
+
+	return false;
+}

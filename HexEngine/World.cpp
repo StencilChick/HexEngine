@@ -5,6 +5,8 @@
 #include "Camera.h"
 #include "Game.h"
 
+GLFWwindow* World::window = nullptr;
+
 MeshManager World::meshManager;
 ShaderManager World::shaderManager;
 ImageManager World::imageManager;
@@ -15,6 +17,10 @@ World::World() {
 World::~World() {
 	Game::Destroy();
 
+	Input::Destory();
+	Camera::Destroy();
+
+	imageManager.Unload();
 	shaderManager.UnLoad();
 	meshManager.UnLoad();
 }
@@ -46,7 +52,7 @@ void World::SetUp() {
 	}
 
 	glfwWindowHint(GLFW_RESIZABLE, 0);
-	window = glfwCreateWindow(900, 540, "Hex Engine", NULL, NULL);
+	window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hex Engine", NULL, NULL);
 	glfwMakeContextCurrent(window);
 
 	glewExperimental = GL_TRUE;
@@ -72,7 +78,8 @@ void World::SetUp() {
 	imageManager.Load();
 
 	camera = Camera::GetInstance();
-	Camera::SetProjectionMatrix(45, 900.0f/540, 0.1f, 100);
+	Camera::SetProjectionMatrix(45, SCREEN_WIDTH*1.0f/SCREEN_HEIGHT, 0.1f, 100);
+	input = Input::GetInstance();
 
 	game = Game::GetInstance();
 }
@@ -83,6 +90,7 @@ void World::Run() {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.392f, 0.584f, 0.929f, 1);
 
+		input->Update();
 		camera->Update();
 
 		game->Update();
@@ -98,6 +106,11 @@ void World::Run() {
 
 
 // for getting stuff
+GLFWwindow* World::GetWindow() {
+	return window;
+}
+
+
 MeshManager* World::GetMeshManager() {
 	return &meshManager;
 }

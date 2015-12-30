@@ -75,6 +75,9 @@
     <ClCompile Include="ImageManager.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Source Files\I/O</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="World.h">
@@ -109,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="ImageManager.h">
       <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Header Files\I/O</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
