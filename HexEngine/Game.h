@@ -1,8 +1,8 @@
 #pragma once
 
 #include <glm/glm.hpp>
-
-#include "Generic.h"
+#include <queue>
+#include "Scene.h"
 
 class Game {
 public:
@@ -23,7 +23,6 @@ private:
 	Game(Game const&);
 	void operator=(Game const&);
 
-	// for testing
-	//Mesh *m;
-	Generic g;
+	// scenes
+	std::queue<Scene*> scenes;
 };

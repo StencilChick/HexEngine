@@ -1,23 +1,16 @@
 #include "Game.h"
 
-#include <GL/glew.h>
-
-#include "Camera.h"
-#include "Input.h"
-
-#include "Mesh.h"
-#include "ShaderHelpers.h"
-#include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
+#include "Test.h"
 
 Game::Game() {
-	g = Generic();
-	g.Tranlsate(0, 0, -2);
-	g.SetScale(vec3(0.25f, 0.25f, 0.25f));
+	scenes.push(new Test());
 }
 
 Game::~Game() {
-
+	while (scenes.size() > 0) {
+		delete scenes.back();
+		scenes.pop();
+	}
 }
 
 // singleton stuff
@@ -39,20 +32,9 @@ void Game::Destroy() {
 
 // draw and update
 void Game::Update() {
-	Input *input = Input::GetInstance();
-
-	float speed = 1.0f * input->DeltaTime();
-	if (input->GetKey(GLFW_KEY_RIGHT)) {
-		g.Rotate(-speed, vec3(0, 1, 0));
-	} if (input->GetKey(GLFW_KEY_LEFT)) {
-		g.Rotate(speed, vec3(0, 1, 0));
-	} if (input->GetKey(GLFW_KEY_UP)) {
-		g.Rotate(speed, vec3(1, 0, 0));
-	} if (input->GetKey(GLFW_KEY_DOWN)) {
-		g.Rotate(-speed, vec3(1, 0, 0));
-	}
+	scenes.back()->Update();
 }
 
 void Game::Draw() {
-	g.Draw();
+	scenes.back()->Draw();
 }
