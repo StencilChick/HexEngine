@@ -32,6 +32,7 @@ GameObject::GameObject(const char *modelName, const char *shaderName, const char
 void GameObject::Draw() {
 	glBindTexture(GL_TEXTURE_2D, texture);
 
+	glUseProgram(shader);
 	SetShaderM4(shader, "modelMatrix", translate(position) * glm::scale(scale) * mat4_cast(rotation));
 	SetShaderV4(shader, "colour", vec4(1, 1, 1, 1));
 	SetShaderBool(shader, "textured", true);

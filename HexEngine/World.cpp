@@ -10,6 +10,7 @@ GLFWwindow* World::window = nullptr;
 MeshManager World::meshManager;
 ShaderManager World::shaderManager;
 ImageManager World::imageManager;
+FontManager World::fontManager;
 
 World::World() {
 
@@ -20,6 +21,7 @@ World::~World() {
 	Input::Destory();
 	Camera::Destroy();
 
+	fontManager.Unload();
 	imageManager.Unload();
 	shaderManager.UnLoad();
 	meshManager.UnLoad();
@@ -76,10 +78,13 @@ void World::SetUp() {
 	shaderManager.Load();
 	imageManager = ImageManager();
 	imageManager.Load();
+	fontManager = FontManager();
+	fontManager.Load();
 
 	camera = Camera::GetInstance();
 	Camera::SetProjectionMatrix(45, SCREEN_WIDTH*1.0f/SCREEN_HEIGHT, 0.1f, 100);
 	input = Input::GetInstance();
+	gui = GUI::GetInstance();
 
 	game = Game::GetInstance();
 }
@@ -90,6 +95,7 @@ void World::Run() {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		glClearColor(0.392f, 0.584f, 0.929f, 1);
 
+		gui->ResetDepth();
 		input->Update();
 		camera->Update();
 
@@ -121,4 +127,8 @@ ShaderManager* World::GetShaderManager() {
 
 ImageManager* World::GetImageManager() {
 	return &imageManager;
+}
+
+FontManager* World::GetFontManager() {
+	return &fontManager;
 }

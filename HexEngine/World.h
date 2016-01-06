@@ -7,10 +7,12 @@ class Camera;
 class Game;
 
 #include "Input.h"
+#include "GUI.h"
 
 #include "MeshManager.h"
 #include "ShaderManager.h"
 #include "ImageManager.h"
+#include "FontManager.h"
 
 class World {
 public:
@@ -28,9 +30,10 @@ public:
 	static MeshManager* GetMeshManager();
 	static ShaderManager* GetShaderManager();
 	static ImageManager* GetImageManager();
+	static FontManager* GetFontManager();
 
-	const int SCREEN_WIDTH = 900;
-	const int SCREEN_HEIGHT = 540;
+	static const int SCREEN_WIDTH = 900;
+	static const int SCREEN_HEIGHT = 540;
 
 private:
 	// singleton stuff
@@ -48,9 +51,11 @@ private:
 	static MeshManager meshManager;
 	static ShaderManager shaderManager;
 	static ImageManager imageManager;
+	static FontManager fontManager;
 
 	Input *input;
 	Camera *camera;
+	GUI *gui;
 
 	Game *game;
 };

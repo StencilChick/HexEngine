@@ -2,6 +2,8 @@
 
 #include "Test.h"
 
+#include <iostream>
+
 Game::Game() {
 	scenes.push(new Test());
 }

@@ -1,7 +1,10 @@
 #include "Test.h"
 
+#include "World.h"
 #include "Input.h"
 #include "Camera.h"
+
+#include <iostream>
 
 Test::Test() {
 	g = Generic();
@@ -27,4 +30,7 @@ void Test::Update() {
 
 void Test::Draw() {
 	g.Draw();
+
+	FontManager *fontMgr = World::GetFontManager();
+	fontMgr->WriteLine(fontMgr->GetAtlas("times.ttf"), "Arma virumque cano, Troiae qui primus ab oris Italiam fato profugus Laviniaque venit litora.", 5, 5);
 }
