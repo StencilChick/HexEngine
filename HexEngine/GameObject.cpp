@@ -16,14 +16,14 @@ GameObject::GameObject() {
 	scale = vec3(1, 1, 1);
 }
 
-GameObject::GameObject(const char *modelName, const char *texName) {
+GameObject::GameObject(const char *modelName, const char *texName) : GameObject() {
 	this->mesh = World::GetMeshManager()->GetMesh(modelName);
 	this->texture = World::GetImageManager()->GetImage(texName);
 
 	this->shader = World::GetShaderManager()->GetShader("default");
 }
 
-GameObject::GameObject(const char *modelName, const char *shaderName, const char *texName) {
+GameObject::GameObject(const char *modelName, const char *shaderName, const char *texName) : GameObject() {
 	this->mesh = World::GetMeshManager()->GetMesh(modelName);
 	this->shader = World::GetShaderManager()->GetShader(shaderName);
 	this->texture = World::GetImageManager()->GetImage(texName);
@@ -44,7 +44,7 @@ void GameObject::Draw() {
 void GameObject::Translate(vec3 v) {
 	position += v;
 }
-void GameObject::Tranlsate(float x, float y, float z) { Translate(vec3(x, y, z)); }
+void GameObject::Translate(float x, float y, float z) { Translate(vec3(x, y, z)); }
 
 void GameObject::TranslateLocal(vec3 v) {
 	v = vec3(rotation * vec4(v, 1));
@@ -68,6 +68,30 @@ void GameObject::Scale(vec3 v) {
 }
 
 
+void GameObject::SetPosition(vec3 v) {
+	position = v;
+}
+void GameObject::SetPosition(float x, float y, float z) { SetPosition(vec3(x, y, z)); }
+
+void GameObject::SetRotation(quat q) {
+	rotation = q;
+}
+void GameObject::SetRotation(float a, vec3 v) { SetRotation(inverse(quat(cos(a/2), v.x * sin(a/2), v.y * sin(a/2), v.z * sin(a/2)))); }
+
 void GameObject::SetScale(vec3 v) {
 	scale = v;
+}
+void GameObject::SetScale(float x, float y, float z) { SetScale(vec3(x, y, z)); }
+
+
+vec3 GameObject::GetPosition() {
+	return position;
+}
+
+quat GameObject::GetRotation() {
+	return rotation;
+}
+
+vec3 GameObject::GetScale() {
+	return scale;
 }

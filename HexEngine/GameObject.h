@@ -20,7 +20,7 @@ public:
 
 	// transform
 	void Translate(vec3);
-	void Tranlsate(float, float, float);
+	void Translate(float, float, float);
 
 	void TranslateLocal(vec3);
 	void TranslateLocal(float, float, float);
@@ -31,8 +31,17 @@ public:
 	void Scale(vec3);
 
 	void SetPosition(vec3);
+	void SetPosition(float, float, float);
+
 	void SetRotation(quat);
+	void SetRotation(float, vec3);
+
 	void SetScale(vec3);
+	void SetScale(float, float, float);
+
+	vec3 GetPosition();
+	quat GetRotation();
+	vec3 GetScale();
 
 protected:
 	// meshes and things

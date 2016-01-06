@@ -1,6 +1,8 @@
 #include "Scene.h"
 
 #include "Generic.h"
+#include "Grid.h"
+#include "Hex.h"
 
 class Test : public Scene {
 public:
@@ -10,5 +12,5 @@ public:
 	void Draw();
 
 private:
-	Generic g;
+	Grid grid;
 };

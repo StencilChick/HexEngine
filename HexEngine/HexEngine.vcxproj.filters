@@ -43,6 +43,12 @@
     <Filter Include="Source Files\Game\Scenes">
       <UniqueIdentifier>{babf5dd0-dc35-4902-8f95-034bb9a5c4a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Game\Objects">
+      <UniqueIdentifier>{e30e6bd9-a19e-484e-b883-9f5d1e63b9f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game\Objects">
+      <UniqueIdentifier>{f019e6de-8092-491d-95bb-b979d9e82cd1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -65,9 +71,6 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Generic.cpp">
-      <Filter>Source Files\Game</Filter>
     </ClCompile>
     <ClCompile Include="FileLoaders.cpp">
       <Filter>Source Files\I/O</Filter>
@@ -96,6 +99,15 @@
     <ClCompile Include="GUI.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Generic.cpp">
+      <Filter>Source Files\Game\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Hex.cpp">
+      <Filter>Source Files\Game\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="World.h">
@@ -115,9 +127,6 @@
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="Generic.h">
-      <Filter>Header Files\Game</Filter>
     </ClInclude>
     <ClInclude Include="FileLoaders.h">
       <Filter>Header Files\I/O</Filter>
@@ -148,6 +157,15 @@
     </ClInclude>
     <ClInclude Include="GUI.h">
       <Filter>Header Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Generic.h">
+      <Filter>Header Files\Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Hex.h">
+      <Filter>Header Files\Game\Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
