@@ -3,6 +3,10 @@
 #include "ShaderHelpers.h"
 #include "FileLoaders.h"
 
+#include "World.h"
+#include "MeshManager.h"
+
+#include <string>
 #include <iostream>
 
 ShaderManager::ShaderManager() {
@@ -12,6 +16,8 @@ ShaderManager::ShaderManager() {
 // load 'em
 void ShaderManager::Load() {
 	shaders.clear();
+
+	MeshManager *meshMgr = World::GetMeshManager();
 
 	vector<string> files = ListFilesAtDirectory(".\\Data\\Shaders\\*.vert");
 	int subPos = files[0].find("Shaders\\") + 8;
@@ -26,6 +32,23 @@ void ShaderManager::Load() {
 		GLuint p = LoadShaderProgramme((fore+".vert").c_str(), (fore+".frag").c_str());
 		
 		shaders[name.substr(0, name.size()-5)] = p;
+
+		// reference it
+		vector<string> meshNames = meshMgr->GetMeshNames();
+		for (int i = 0; i < meshNames.size(); i++) {
+			meshMgr->GetMesh(meshNames[i])->AddShader(p);
+		}
+
+		// get shader locations... it
+		vector<InstanceLoc> v;
+		v.resize(INSTANCE_LENGTH);
+		for (int i = 0; i < INSTANCE_LENGTH; i++) {
+			v[i] = InstanceLoc(
+				GetUniformLoc(p, ("modelMatrix[" + to_string(i) + "]").c_str()),
+				GetUniformLoc(p, ("colour[" + to_string(i) + "]").c_str())
+				);
+		}
+		shaderLocs[p] = v;
 	}
 }
 
@@ -42,6 +65,10 @@ GLuint ShaderManager::GetShader(string name) {
 	return shaders[name];
 }
 GLuint ShaderManager::GetShader(const char* name) { return shaders[string(name)]; }
+
+InstanceLoc ShaderManager::GetInstanceLoc(GLuint shader, int index) {
+	return shaderLocs[shader][index];
+}
 
 
 // update 'em

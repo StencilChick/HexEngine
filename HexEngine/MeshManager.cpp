@@ -24,6 +24,7 @@ void MeshManager::Load() {
 		name = name.substr(0, name.size()-1);
 
 		meshes[name] = new Mesh(("./Data/Meshes/" + name).c_str());
+		meshNames.push_back(name);
 	}
 }
 
@@ -33,8 +34,20 @@ void MeshManager::UnLoad() {
 	}
 }
 
+// draw all the meshes with their instances and such
+void MeshManager::DrawMeshes() {
+	for (int i = 0; i < meshNames.size(); i++) {
+		meshes[meshNames[i]]->BindBuffersAndDraw();
+	}
+}
+
 // get them meshes
 Mesh* MeshManager::GetMesh(string name) {
 	return meshes[name];
 }
 Mesh* MeshManager::GetMesh(const char* name) { return GetMesh(string(name)); }
+
+// get them mesh names
+vector<string> MeshManager::GetMeshNames() {
+	return meshNames;
+}

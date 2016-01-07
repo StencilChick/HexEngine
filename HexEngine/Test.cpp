@@ -11,7 +11,7 @@
 
 Test::Test() {
 	grid = Grid();
-	grid.SetUp(10, 10);
+	grid.SetUp(40, 25);
 
 	Camera *cam = Camera::GetInstance();
 	cam->SetPosition(0, 5, 0);
@@ -38,6 +38,12 @@ void Test::Update() {
 	}
 	if (input->GetKey(GLFW_KEY_DOWN)) {
 		cam->Translate(0, 0, speed);
+	}
+	if (input->GetKey(GLFW_KEY_Q)) {
+		cam->Translate(0, speed, 0);
+	}
+	if (input->GetKey(GLFW_KEY_E)) {
+		cam->Translate(0, -speed, 0);
 	}
 }
 

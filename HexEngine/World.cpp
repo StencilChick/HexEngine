@@ -102,6 +102,8 @@ void World::Run() {
 		game->Update();
 		game->Draw();
 
+		meshManager.DrawMeshes();
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

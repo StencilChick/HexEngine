@@ -2,8 +2,12 @@
 
 #include <vector>
 #include <iostream>
+#include <string>
 
 #include "FileLoaders.h"
+#include "ShaderHelpers.h"
+
+#include "World.h"
 
 // constructors
 Mesh::Mesh() {
@@ -58,12 +62,50 @@ void Mesh::BindGL(GLfloat* vertices, int vertexNum, GLushort* elems, int elemNum
 }
 
 // draw
-void Mesh::Draw() {
+void Mesh::Draw(GLuint shader, const glm::mat4 &modelMatrix, const glm::vec4 &colour) {
+	instanceData[shader].push_back(InstanceData(modelMatrix, colour));
+}
+
+void Mesh::BindBuffersAndDraw() {
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements);
 
-	int size;  glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
+	int size; glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
 
-	glDrawElements(GL_TRIANGLES, size/sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
+	ShaderManager *shaderMgr = World::GetShaderManager();
+
+	map<GLuint, vector<InstanceData>>::iterator it;
+	for (it = instanceData.begin(); it != instanceData.end(); it++) {
+		if (it->second.size() == 0) continue;
+
+		glUseProgram(it->first);
+
+		for (int i = 0; i < it->second.size(); i++) {
+			int index = i;
+			while (index >= shaderMgr->INSTANCE_LENGTH) index -= shaderMgr->INSTANCE_LENGTH;
+
+			InstanceData data = it->second[i];
+			InstanceLoc loc = shaderMgr->GetInstanceLoc(it->first, index);
+
+			SetShaderM4(it->first, loc.modelLoc, data.modelMatrix);
+			SetShaderV4(it->first, loc.colourLoc, data.colour);
+
+			if ((i+1) % shaderMgr->INSTANCE_LENGTH == 0) {
+				glDrawElementsInstanced(GL_TRIANGLES, size/sizeof(GLushort), GL_UNSIGNED_SHORT, 0, shaderMgr->INSTANCE_LENGTH);
+			}
+		}
+
+		int length = it->second.size();
+		while (length >= shaderMgr->INSTANCE_LENGTH) length -= shaderMgr->INSTANCE_LENGTH;
+		glDrawElementsInstanced(GL_TRIANGLES, size/sizeof(GLushort), GL_UNSIGNED_SHORT, 0, length);
+
+		it->second.clear();
+	}
+}
+
+
+void Mesh::AddShader(GLuint shader) {
+	vector<InstanceData> v;
+	instanceData[shader] = v;
 }

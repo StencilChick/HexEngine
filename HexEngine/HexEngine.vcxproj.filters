@@ -167,5 +167,8 @@
     <ClInclude Include="Hex.h">
       <Filter>Header Files\Game\Objects</Filter>
     </ClInclude>
+    <ClInclude Include="InstanceHelpers.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

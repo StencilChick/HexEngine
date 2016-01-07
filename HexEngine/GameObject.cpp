@@ -32,14 +32,14 @@ GameObject::GameObject(const char *modelName, const char *shaderName, const char
 }
 
 void GameObject::Draw() {
-	glBindTexture(GL_TEXTURE_2D, texture);
+	//glBindTexture(GL_TEXTURE_2D, texture);
 
-	glUseProgram(shader);
-	SetShaderM4(shader, "modelMatrix", translate(position) * glm::scale(scale) * mat4_cast(rotation));
-	SetShaderV4(shader, "colour", colour);
-	SetShaderBool(shader, "textured", true);
+	//glUseProgram(shader);
+	//SetShaderM4(shader, "modelMatrix", translate(position) * glm::scale(scale) * mat4_cast(rotation));
+	//SetShaderV4(shader, "colour", colour);
+	//SetShaderBool(shader, "textured", true);
 
-	mesh->Draw();
+	mesh->Draw(shader, translate(position) * glm::scale(scale) * mat4_cast(rotation), colour);
 }
 
 // all the transform junk (uuuuugh... so looooong...)
