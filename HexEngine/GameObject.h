@@ -43,11 +43,18 @@ public:
 	quat GetRotation();
 	vec3 GetScale();
 
+	// colour
+	vec4 GetColour();
+	void SetColour(const vec4&);
+	void SetColour(float, float, float, float);
+
 protected:
 	// meshes and things
 	Mesh *mesh;
 	GLuint shader;
 	GLuint texture;
+
+	vec4 colour;
 
 	// transform values
 	vec3 position;

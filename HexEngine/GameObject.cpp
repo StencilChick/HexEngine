@@ -14,6 +14,8 @@ GameObject::GameObject() {
 	position = vec3(0, 0, 0);
 	rotation = quat();
 	scale = vec3(1, 1, 1);
+
+	colour = vec4(1, 1, 1, 1);
 }
 
 GameObject::GameObject(const char *modelName, const char *texName) : GameObject() {
@@ -34,7 +36,7 @@ void GameObject::Draw() {
 
 	glUseProgram(shader);
 	SetShaderM4(shader, "modelMatrix", translate(position) * glm::scale(scale) * mat4_cast(rotation));
-	SetShaderV4(shader, "colour", vec4(1, 1, 1, 1));
+	SetShaderV4(shader, "colour", colour);
 	SetShaderBool(shader, "textured", true);
 
 	mesh->Draw();
@@ -95,3 +97,14 @@ quat GameObject::GetRotation() {
 vec3 GameObject::GetScale() {
 	return scale;
 }
+
+
+// colour
+vec4 GameObject::GetColour() {
+	return colour;
+}
+
+void GameObject::SetColour(const vec4 &v) {
+	colour = v;
+}
+void GameObject::SetColour(float r, float g, float b, float a) { SetColour(vec4(r, g, b, a)); }

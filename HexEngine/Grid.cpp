@@ -19,6 +19,8 @@ void Grid::SetUp(int width, int height) {
 			vec2 hexPos = CoordToHexPos(x, y);
 			h.SetPosition(vec3(hexPos.x, 0, hexPos.y));
 
+			h.SetColour(x % 2, y % 2, (x+y) % 2, 1);
+
 			hexes.push_back(h);
 		}
 	}
