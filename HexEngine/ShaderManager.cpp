@@ -30,8 +30,9 @@ void ShaderManager::Load() {
 		string fore = "./Data/Shaders/" + name.substr(0, name.size()-5);
 		
 		GLuint p = LoadShaderProgramme((fore+".vert").c_str(), (fore+".frag").c_str());
-		
 		shaders[name.substr(0, name.size()-5)] = p;
+
+		SetShaderBool(p, "textured", true);
 
 		// reference it
 		vector<string> meshNames = meshMgr->GetMeshNames();

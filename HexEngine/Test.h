@@ -13,4 +13,6 @@ public:
 
 private:
 	Grid grid;
+
+	int seed;
 };

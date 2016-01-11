@@ -42,6 +42,7 @@
     <OutDir>$(SolutionDir)Z_DELETE\</OutDir>
     <IntDir>$(SolutionDir)Z_DELETE\$(ProjectName)\$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir)include;$(SolutionDir)include/freetype;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)Z_DELETE\</OutDir>
@@ -100,11 +101,13 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MapGenHelpers.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShaderHelpers.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="simplex\simplexnoise.cpp" />
     <ClCompile Include="Test.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
@@ -122,11 +125,13 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="InstanceHelpers.h" />
+    <ClInclude Include="MapGenHelpers.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderHelpers.h" />
     <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="simplex\simplexnoise.h" />
     <ClInclude Include="Test.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>

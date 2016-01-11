@@ -3,6 +3,9 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#include <time.h>
+#include <string>
+
 #include "World.h"
 #include "Input.h"
 #include "Camera.h"
@@ -10,8 +13,11 @@
 #include <iostream>
 
 Test::Test() {
+	srand(time(NULL));
+	seed = rand() % 100000;
+
 	grid = Grid();
-	grid.SetUp(40, 25);
+	grid.SetUp(seed, 256, 160);
 
 	Camera *cam = Camera::GetInstance();
 	cam->SetPosition(0, 5, 0);
@@ -27,16 +33,16 @@ void Test::Update() {
 	Camera *cam = Camera::GetInstance();
 
 	float speed = 3.0f * input->DeltaTime();
-	if (input->GetKey(GLFW_KEY_RIGHT)) {
+	if (input->GetKey(GLFW_KEY_RIGHT) || input->GetKey(GLFW_KEY_D)) {
 		cam->Translate(speed, 0, 0);
 	}
-	if (input->GetKey(GLFW_KEY_LEFT)) {
+	if (input->GetKey(GLFW_KEY_LEFT) || input->GetKey(GLFW_KEY_A)) {
 		cam->Translate(-speed, 0, 0);
 	}
-	if (input->GetKey(GLFW_KEY_UP)) {
+	if (input->GetKey(GLFW_KEY_UP) || input->GetKey(GLFW_KEY_W)) {
 		cam->Translate(0, 0, -speed);
 	}
-	if (input->GetKey(GLFW_KEY_DOWN)) {
+	if (input->GetKey(GLFW_KEY_DOWN) || input->GetKey(GLFW_KEY_S)) {
 		cam->Translate(0, 0, speed);
 	}
 	if (input->GetKey(GLFW_KEY_Q)) {
@@ -50,6 +56,6 @@ void Test::Update() {
 void Test::Draw() {
 	grid.Draw();
 
-	//FontManager *fontMgr = World::GetFontManager();
-	//fontMgr->WriteLine(fontMgr->GetAtlas("times.ttf"), "Arma virumque cano, Troiae qui primus ab oris Italiam fato profugus Laviniaque venit litora.", 5, 5);
+	FontManager *fontMgr = World::GetFontManager();
+	fontMgr->WriteLine(fontMgr->GetAtlas("times.ttf"), ("Seed: " + std::to_string(seed)).c_str(), 5, 5);
 }
