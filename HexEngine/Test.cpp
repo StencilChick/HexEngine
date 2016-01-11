@@ -20,7 +20,7 @@ Test::Test() {
 	grid.SetUp(seed, 256, 160);
 
 	Camera *cam = Camera::GetInstance();
-	cam->SetPosition(0, 5, 0);
+	cam->SetPosition(0, 2, 0);
 	cam->SetRotation(M_PI/2, vec3(1, 0, 0));
 }
 

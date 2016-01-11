@@ -42,6 +42,7 @@ private:
 
 	std::vector<float> GenLandMap();
 	std::vector<float> GenTemperatureMap();
+	std::vector<float> GenFoliageMap();
 
 	// for testing
 	Mesh *plane;

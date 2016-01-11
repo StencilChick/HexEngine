@@ -34,8 +34,10 @@ void Grid::SetUp(int seed, int width, int height) {
 	// for testing
 	plane = new Mesh("./Data/Meshes/plane.obj");
 
+	noiseIndex = 0;
 	std::vector<float> land = GenLandMap();
 	std::vector<float> temp = GenTemperatureMap();
+	std::vector<float> fol = GenFoliageMap();
 
 	// convert pixel vector to float vector
 	std::vector<float> pixels;
@@ -45,11 +47,23 @@ void Grid::SetUp(int seed, int width, int height) {
 		vec3 colour;
 		if (land[i] == 1) {
 			if (temp[i] >= 0.66f) {
-				colour = vec3(0.9f, 0.8f, 0.8f);
+				if (fol[i] == 0) {
+					colour = vec3(0.9f, 0.8f, 0.8f);
+				} else {
+					colour = vec3(0.1f, 0.5f, 0.1f);
+				}
 			} else if (temp[i] >= 0.33f) {
-				colour = vec3(0.1f, 0.9f, 0.1f);
+				if (fol[i] == 0) {
+					colour = vec3(0.7f, 0.8f, 0.1f);
+				} else {
+					colour = vec3(0.1f, 0.9f, 0.1f);
+				}
 			} else {
-				colour = vec3(0.7f, 0.7f, 0.9f);
+				if (fol[i] == 0) {
+					colour = vec3(0.7f, 0.7f, 0.9f);
+				} else {
+					colour = vec3(0.1f, 0.5f, 0.4f);
+				}
 			}
 		} else {
 			colour = vec3(0, 0.3f, 0.9f);
@@ -91,24 +105,14 @@ void Grid::Draw() {
 // map generation stuff
 float Grid::GetRawNoise() {
 	noiseIndex++;
-	return (raw_noise_2d(noiseIndex, seed) + 1) / 2;
+	return min((raw_noise_2d(noiseIndex, seed) + 1) / 2, 0.999f);
 }
 
 std::vector<float> Grid::GenLandMap() {
 	std::vector<float> values;
 	values.resize(width * height);
 
-	noiseIndex = 0;
-
-	// fill out vector
-	for (int x = 0; x < width; x++) {
-		for (int y = 0; y < height; y++) {
-			int i = x * height + y;
-			values[i] = 0;
-		}
-	}
-
-	// put some circles in there
+	// throw some shapes all up in this
 	std::vector<Circle> circles;
 
 	int maxRad = (width + height) / 16;
@@ -130,8 +134,11 @@ std::vector<float> Grid::GenLandMap() {
 		}
 	}
 
+	vec2 pos = circles[circles.size() * GetRawNoise()].GetPointOnEdge(2*M_PI * GetRawNoise());
+	DrawMapCircle(pos.x, pos.y, maxRad, values, width, height);
+
 	// dither and buffer
-	DitherMap(8, values, width, height);
+	DitherMap(6, values, width, height);
 	BorderMap(1, values, width, height);
 
 	// return the end result
@@ -150,11 +157,12 @@ std::vector<float> Grid::GenTemperatureMap() {
 	std::vector<Circle> circles;
 	circles.resize(3);
 	for (int i = 0; i < 3; i++) {
-		circles[i] = Circle(
+		Circle c = Circle(
 			width/3 * i - width/6 + 2*width/6*GetRawNoise(), 
 			height/2 - height/8 + 2*height/8*GetRawNoise(), 
 			height/2.5f);
-		DrawMapCircle(circles[i], 0.5f, values, width, height);
+		circles[i] = c;
+		DrawMapCircle(c, 0.5f, values, width, height);
 	}
 	for (int i = 0; i < 3; i++) {
 		circles[i].r = height/6;
@@ -168,6 +176,31 @@ std::vector<float> Grid::GenTemperatureMap() {
 	DitherMap(5, values, width, height);
 
 	// return the end result
+	return values;
+}
+
+std::vector<float> Grid::GenFoliageMap() {
+	std::vector<float> values;
+	values.resize(width * height);
+
+	// make some circles up in this
+	std::vector<Circle> circles;
+	circles.resize(8);
+	for (int i = 0; i < 8; i++) {
+		Circle c = Circle(GetRawNoise() * width, GetRawNoise() * height, height/8);
+		circles[i] = c;
+		DrawMapCircle(c, values, width, height);
+	}
+	for (int i = 0; i < 16; i++) {
+		vec2 pos = circles[GetRawNoise()*8].GetPointOnEdge(M_PI*2 * GetRawNoise());
+		DrawMapCircle(pos.x, pos.y, height/16, values, width, height);
+	}
+
+	// dither it up
+	BorderMap(8, values, width, height);
+	DitherMap(4, values, width, height);
+
+	// return the thing
 	return values;
 }
 

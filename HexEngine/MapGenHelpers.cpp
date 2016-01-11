@@ -5,6 +5,8 @@
 
 #include "Grid.h"
 
+#include <iostream>
+
 // pixel
 Pixel::Pixel() { }
 Pixel::Pixel(float r, float g, float b) {
@@ -127,19 +129,26 @@ void BlurMapVertically(int times, std::vector<float> &map, int w, int h) {
 
 // draw things on the map
 void DrawMapCircle(int x, int y, int r, float val, std::vector<float> &pixels, int w, int h) {
+	while(x < 0) x += w;
+	while(x >= w) x -= w;
+
+	while(y < 0) y += h;
+	while(y >= h) y -= h;
+
 	for (int i = 0; i < r; i++) {
-		int up = y + i; if (up >= h) up -= h;
-		int down = y - i; if (down < 0) down += h;
+		int up = y + i; while (up >= h) up -= h;
+		int down = y - i; while (down < 0) down += h;
 
 		for (int j = 0; j < ceil(cos(M_PI/2 * i/r) * r); j++) {
-			int right = x + j; if (right >= w) right -= w;
-			int left = x - j; if (left < 0) left += w;
+			int right = x + j; while (right >= w) right -= w;
+			int left = x - j; while (left < 0) left += w;
+
+			//std::cout << i << " " << j << " : " << up << " " << down << " " << left << " " << right << " : " << (up*w+right) << " " << (up*w+left) << " " << (down*w+right) << " " << (down*w+left) << std::endl;
 
 			pixels[up * w + right] = val;
 			pixels[up * w + left] = val;
 			pixels[down * w + right] = val;
 			pixels[down * w + left] = val;
-			
 		}
 	}
 }
