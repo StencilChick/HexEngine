@@ -1,4 +1,4 @@
-#include "Test.h"
+#include "GridTest.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -12,7 +12,7 @@
 
 #include <iostream>
 
-Test::Test() {
+GridTest::GridTest() {
 	srand(time(NULL));
 	seed = rand() % 100000;
 
@@ -25,7 +25,7 @@ Test::Test() {
 }
 
 
-void Test::Update() {
+void GridTest::Update() {
 	grid.Update();
 
 	Input *input = Input::GetInstance();
@@ -51,11 +51,30 @@ void Test::Update() {
 	if (input->GetKey(GLFW_KEY_E)) {
 		cam->Translate(0, -speed, 0);
 	}
+
+	/*if (input->GetKeyDown(GLFW_KEY_RIGHT) || input->GetKeyDown(GLFW_KEY_D)) {
+		pos.x++;
+		if (pos.x >= grid.GetWidth()) pos.x = 0;
+	}
+	if (input->GetKeyDown(GLFW_KEY_LEFT) || input->GetKeyDown(GLFW_KEY_A)) {
+		pos.x--;
+		if (pos.x < 0) pos.x = grid.GetWidth()-1;
+	}
+	if (input->GetKeyDown(GLFW_KEY_UP) || input->GetKeyDown(GLFW_KEY_W)) {
+		pos.y--;
+		if (pos.y < 0) pos.y = grid.GetHeight()-1;
+	}
+	if (input->GetKeyDown(GLFW_KEY_DOWN) || input->GetKeyDown(GLFW_KEY_S)) {
+		pos.y++;
+		if (pos.y >= grid.GetHeight()) pos.y = 0;
+	}
+	grid.SetBlockPos(pos);*/
 }
 
-void Test::Draw() {
+void GridTest::Draw() {
 	grid.Draw();
 
 	FontManager *fontMgr = World::GetFontManager();
 	fontMgr->WriteLine(fontMgr->GetAtlas("times.ttf"), ("Seed: " + std::to_string(seed)).c_str(), 5, 5);
+	//fontMgr->WriteLine(fontMgr->GetAtlas("times.ttf"), ("Block: <" + std::to_string((int)pos.x) + ", " + std::to_string((int)pos.y) + ">").c_str(), 5, 25);
 }

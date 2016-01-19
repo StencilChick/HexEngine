@@ -43,11 +43,17 @@
     <Filter Include="Source Files\Game\Scenes">
       <UniqueIdentifier>{babf5dd0-dc35-4902-8f95-034bb9a5c4a5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Game\Objects">
+    <Filter Include="Header Files\Game\GameObjects">
       <UniqueIdentifier>{e30e6bd9-a19e-484e-b883-9f5d1e63b9f9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Game\Objects">
+    <Filter Include="Source Files\Game\GameObjects">
       <UniqueIdentifier>{f019e6de-8092-491d-95bb-b979d9e82cd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game\Objects">
+      <UniqueIdentifier>{608a87ab-f762-426d-8182-7dc8ab0a658e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game\Objects">
+      <UniqueIdentifier>{f48919e1-8359-420f-868e-edde969ad85c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,9 +96,6 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files\Game\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Test.cpp">
-      <Filter>Source Files\Game\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="FontManager.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
@@ -103,15 +106,27 @@
       <Filter>Source Files\Game</Filter>
     </ClCompile>
     <ClCompile Include="Generic.cpp">
-      <Filter>Source Files\Game\Objects</Filter>
+      <Filter>Source Files\Game\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Hex.cpp">
-      <Filter>Source Files\Game\Objects</Filter>
+      <Filter>Source Files\Game\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="simplex\simplexnoise.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
     <ClCompile Include="MapGenHelpers.cpp">
+      <Filter>Source Files\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="GridTest.cpp">
+      <Filter>Source Files\Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="PlanetTest.cpp">
+      <Filter>Source Files\Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Planet.cpp">
+      <Filter>Source Files\Game\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="PlanetHelpers.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
   </ItemGroup>
@@ -152,9 +167,6 @@
     <ClInclude Include="Scene.h">
       <Filter>Header Files\Game\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Test.h">
-      <Filter>Header Files\Game\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="FontHelpers.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
@@ -168,10 +180,10 @@
       <Filter>Header Files\Game</Filter>
     </ClInclude>
     <ClInclude Include="Generic.h">
-      <Filter>Header Files\Game\Objects</Filter>
+      <Filter>Header Files\Game\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Hex.h">
-      <Filter>Header Files\Game\Objects</Filter>
+      <Filter>Header Files\Game\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="InstanceHelpers.h">
       <Filter>Header Files\Utility</Filter>
@@ -180,6 +192,18 @@
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
     <ClInclude Include="MapGenHelpers.h">
+      <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="GridTest.h">
+      <Filter>Header Files\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="PlanetTest.h">
+      <Filter>Header Files\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Planet.h">
+      <Filter>Header Files\Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="PlanetHelpers.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>

@@ -49,7 +49,8 @@ void GameObject::Translate(vec3 v) {
 void GameObject::Translate(float x, float y, float z) { Translate(vec3(x, y, z)); }
 
 void GameObject::TranslateLocal(vec3 v) {
-	v = vec3(rotation * vec4(v, 1));
+	v = vec3(rotation * vec4(v, 0));
+	position += v;
 }
 void GameObject::TranslateLocal(float x, float y, float z) { TranslateLocal(vec3(x, y, z)); }
 

@@ -1,11 +1,12 @@
 #include "Game.h"
 
-#include "Test.h"
+#include "GridTest.h"
+#include "PlanetTest.h"
 
 #include <iostream>
 
 Game::Game() {
-	scenes.push(new Test());
+	scenes.push(new PlanetTest());
 }
 
 Game::~Game() {

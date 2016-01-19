@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Hex.h"
+#include "MapGenHelpers.h"
 
 // for testing
 #include "Mesh.h"
@@ -18,6 +19,9 @@ public:
 	void Update();
 	void Draw();
 
+	int GetWidth();
+	int GetHeight();
+
 	vec2 GetLeftHex(int, int);
 	vec2 GetRightHex(int, int);
 	vec2 GetUpLeftHex(int, int);
@@ -27,7 +31,12 @@ public:
 
 	static float GetRawNoise();
 
+	// for testing
+	void SetBlockPos(glm::vec2);
+
 private:
+	std::vector<MapBlock> worldMap;
+
 	std::vector<Hex> hexes;
 
 	static int seed;
@@ -47,4 +56,6 @@ private:
 	// for testing
 	Mesh *plane;
 	GLuint texture;
+
+	glm::vec2 blockPos;
 };

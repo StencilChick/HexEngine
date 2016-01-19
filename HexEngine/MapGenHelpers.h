@@ -41,3 +41,26 @@ struct Circle {
 
 	glm::vec2 GetPointOnEdge(float theta);
 };
+
+
+enum Biome {
+	polar,
+	taiga,
+	plains,
+	temperate,
+	desert,
+	amazon,
+	ocean
+};
+
+struct MapBlock {
+	bool land;
+	bool vegetation;
+	float temperature;
+
+	Biome biome;
+	glm::vec3 GetColour();
+
+	MapBlock();
+	MapBlock(bool, bool, float);
+};

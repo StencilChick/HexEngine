@@ -31,44 +31,27 @@ void Grid::SetUp(int seed, int width, int height) {
 	this->width = width;
 	this->height = height;
 
-	// for testing
-	plane = new Mesh("./Data/Meshes/plane.obj");
-
 	noiseIndex = 0;
+	worldMap.resize(width * height);
+
 	std::vector<float> land = GenLandMap();
 	std::vector<float> temp = GenTemperatureMap();
 	std::vector<float> fol = GenFoliageMap();
+
+	// for testing
+	plane = new Mesh("./Data/Meshes/plane.obj");
+
+	blockPos = vec2(-1, -1);
 
 	// convert pixel vector to float vector
 	std::vector<float> pixels;
 	pixels.resize(land.size() * 3);
 
 	for (int i = 0; i < land.size(); i++) {
-		vec3 colour;
-		if (land[i] == 1) {
-			if (temp[i] >= 0.66f) {
-				if (fol[i] == 0) {
-					colour = vec3(0.9f, 0.8f, 0.8f);
-				} else {
-					colour = vec3(0.1f, 0.5f, 0.1f);
-				}
-			} else if (temp[i] >= 0.33f) {
-				if (fol[i] == 0) {
-					colour = vec3(0.7f, 0.8f, 0.1f);
-				} else {
-					colour = vec3(0.1f, 0.9f, 0.1f);
-				}
-			} else {
-				if (fol[i] == 0) {
-					colour = vec3(0.7f, 0.7f, 0.9f);
-				} else {
-					colour = vec3(0.1f, 0.5f, 0.4f);
-				}
-			}
-		} else {
-			colour = vec3(0, 0.3f, 0.9f);
-		}
-
+		MapBlock block = MapBlock(land[i], fol[i], temp[i]);
+		worldMap[i] = block;
+		
+		vec3 colour = block.GetColour();
 		pixels[i*3] = colour.x;
 		pixels[i*3+1] = colour.y;
 		pixels[i*3+2] = colour.z;
@@ -98,6 +81,7 @@ void Grid::Draw() {
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 	plane->Draw(World::GetShaderManager()->GetShader("default"), translate(vec3(0, 0, 0)) * scale(vec3(1.28f, 1, 0.80f)), vec4(1, 1, 1, 1));
+	//plane->Draw(World::GetShaderManager()->GetShader("default"), mat4(), vec4(1, 1, 1, 1));
 	plane->BindBuffersAndDraw();
 }
 
@@ -205,6 +189,15 @@ std::vector<float> Grid::GenFoliageMap() {
 }
 
 
+// width and height
+int Grid::GetWidth() {
+	return width;
+}
+
+int Grid::GetHeight() {
+	return height;
+}
+
 // cartesian coordinates to a hex position
 vec2 Grid::CoordToHexPos(int x, int y) {
 	float xf = x;
@@ -273,4 +266,25 @@ vec2 Grid::GetDownRightHex(int x, int y) {
 	}
 
 	return vec2(x, y);
+}
+
+
+// testing function
+void Grid::SetBlockPos(vec2 pos) {
+	if (pos != blockPos) {
+		blockPos = pos;
+
+		vec3 colour = worldMap[pos.y*width + pos.x].GetColour();
+		float pixels[] = {
+			colour.x, colour.y, colour.z
+		};
+
+		// image
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_FLOAT, pixels);
+	}
 }

@@ -203,3 +203,52 @@ glm::vec2 Circle::GetPointOnEdge(float theta) {
 		sin(theta) * r + y
 		);
 }
+
+
+// map junk
+MapBlock::MapBlock() { }
+MapBlock::MapBlock(bool land, bool vegetation, float temperature) {
+	this->land = land;
+	this->vegetation = vegetation;
+	this->temperature = temperature;
+
+	if (land) {
+		if (temperature >= 0.66f) {
+			vegetation ? biome = Biome::amazon : biome = Biome::desert;
+		} else if (temperature >= 0.33f) {
+			vegetation ? biome = Biome::temperate : biome = Biome::plains;
+		} else {
+			vegetation ? biome = Biome::taiga : biome = Biome::polar;
+		}
+	} else {
+		biome = Biome::ocean;
+	}
+}
+
+vec3 MapBlock::GetColour() {
+	switch(biome) {
+	case Biome::polar:
+		return vec3(0.7f, 0.7f, 0.7f);
+
+	case Biome::taiga:
+		return vec3(0.1f, 0.5f, 0.4f);
+
+	case Biome::plains:
+		return vec3(0.7f, 0.8f, 0.1f);
+
+	case Biome::temperate:
+		return vec3(0.1f, 0.9f, 0.1f);
+
+	case Biome::desert:
+		return vec3(0.9f, 0.8f, 0.8f);
+
+	case Biome::amazon:
+		return vec3(0.1f, 0.5f, 0.1f);
+
+	case Biome::ocean:
+		return vec3(0, 0, 0.4f);
+
+	default:
+		return vec3(0, 0, 0);
+	}
+}

@@ -104,11 +104,14 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClCompile Include="MapGenHelpers.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshManager.cpp" />
+    <ClCompile Include="Planet.cpp" />
+    <ClCompile Include="PlanetHelpers.cpp" />
+    <ClCompile Include="PlanetTest.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShaderHelpers.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="simplex\simplexnoise.cpp" />
-    <ClCompile Include="Test.cpp" />
+    <ClCompile Include="GridTest.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -128,11 +131,14 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClInclude Include="MapGenHelpers.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshManager.h" />
+    <ClInclude Include="Planet.h" />
+    <ClInclude Include="PlanetHelpers.h" />
+    <ClInclude Include="PlanetTest.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderHelpers.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="simplex\simplexnoise.h" />
-    <ClInclude Include="Test.h" />
+    <ClInclude Include="GridTest.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
