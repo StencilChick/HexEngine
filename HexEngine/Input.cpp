@@ -5,6 +5,10 @@
 #include <iostream>
 using namespace glm;
 
+float Input::mouseScrollDelta = 0;
+
+bool Input::mouseScrollThisFrame = false;
+
 std::map<int, bool> Input::theseKeys;
 std::map<int, bool> Input::lastKeys;
 
@@ -22,6 +26,7 @@ Input::Input() {
 	thisMousePos = vec2(0, 0);
 
 	glfwSetKeyCallback(World::GetWindow(), KeyCallback);
+	glfwSetScrollCallback(World::GetWindow(), MouseWheelCallback);
 }
 
 Input::~Input() {
@@ -67,6 +72,11 @@ void Input::Update() {
 	glfwGetCursorPos(window, &x, &y);
 	thisMousePos = vec2(x, y);
 
+	if (!mouseScrollThisFrame) {
+		mouseScrollDelta = 0;
+	}
+	mouseScrollThisFrame = false;
+
 	// keys
 	if (!keyPressedThisFrame) {
 		lastKeys = theseKeys;
@@ -90,7 +100,6 @@ vec2 Input::MouseDelta() {
 	return thisMousePos - lastMousePos;
 }
 
-
 // mouse buttons
 bool Input::MouseButton(int b) {
 	return theseMouseButtons[b];
@@ -103,6 +112,18 @@ bool Input::MouseButtonDown(int b) {
 bool Input::MouseButtonUp(int b) {
 	return !theseMouseButtons[b] && lastMouseButtons[b];
 }
+
+// mouse wheel
+float Input::MouseScroll() {
+	return mouseScrollDelta;
+}
+
+void Input::MouseWheelCallback(GLFWwindow *window, double xOff, double yOff) {
+	mouseScrollThisFrame = true;
+
+	mouseScrollDelta = (float)yOff;
+}
+
 
 // keys
 void Input::KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {

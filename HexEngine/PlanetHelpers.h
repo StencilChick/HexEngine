@@ -23,6 +23,7 @@ struct PlanetTri {
 struct PlanetHex {
 	// values
 	glm::vec3 pos;
+	float height;
 
 	std::vector<std::vector<PlanetTri>::iterator> tris;
 

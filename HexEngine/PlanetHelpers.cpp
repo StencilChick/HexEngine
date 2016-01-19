@@ -78,7 +78,7 @@ void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushor
 	// vertices
 	float uvX = (rand() % 100) * 1.0f/100, uvY = (rand() % 100) * 1.0f/100;
 
-	glm::vec3 realCentre = glm::normalize(centre) * 0.935617f;
+	glm::vec3 realCentre = glm::normalize(centre) * (0.935617f + height);
 	vertices.push_back(realCentre.x);
 	vertices.push_back(realCentre.y);
 	vertices.push_back(realCentre.z);
@@ -95,7 +95,7 @@ void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushor
 		glm::vec3 newPoint = centre + len * glm::quat(cos(angle), axis.x * sin(angle), axis.y * sin(angle), axis.z * sin(angle));
 		for (std::vector<glm::vec3>::iterator it = points.begin(); it != points.end(); it++) {
 			if (abs(glm::length(*it - newPoint)) < 0.1f) {
-				newPoint = glm::normalize(*it) * 1.0f;
+				newPoint = glm::normalize(*it) * (1.0f + height);
 				break;
 			}
 		}
@@ -105,15 +105,34 @@ void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushor
 		vertices.push_back(newPoint.z);
 		vertices.push_back(uvX);
 		vertices.push_back(uvY);
+
+		newPoint = glm::normalize(newPoint) * 0.5f;
+
+		vertices.push_back(newPoint.x);
+		vertices.push_back(newPoint.y);
+		vertices.push_back(newPoint.z);
+		vertices.push_back(uvX);
+		vertices.push_back(uvY);
 	}
 
 	// elements
-	int index = vertices.size()/5 - (1+points.size());
+	int index = vertices.size()/5 - (1+points.size()*2);
 	for (int i = 0; i < points.size(); i++) {
-		int iPlus = i + 1; if (iPlus >= points.size()) iPlus = 0;
+		int point = 1 + i*2 + index;
+		int back = 2 + i*2 + index;
+		int nextPoint = 3 + i*2 + index; if (nextPoint > index-1+points.size()*2) nextPoint = index + 1;
+		int nextBack = 4 + i*2 + index; if (nextBack > index+points.size()*2) nextBack = index + 2;
 
 		elements.push_back(index);
-		elements.push_back(index+1+iPlus);
-		elements.push_back(index+1+i);
+		elements.push_back(nextPoint);
+		elements.push_back(point);
+
+		elements.push_back(point);
+		elements.push_back(nextPoint);
+		elements.push_back(back);
+
+		elements.push_back(nextPoint);
+		elements.push_back(nextBack);
+		elements.push_back(back);
 	}
 }

@@ -15,6 +15,10 @@ PlanetTest::PlanetTest() {
 
 	Camera *cam = Camera::GetInstance();
 	cam->SetPosition(0, 0, 10);
+	
+	camRotX = 0;
+	camRotY = 0;
+	camZoom = 10;
 }
 
 PlanetTest::~PlanetTest() {
@@ -25,39 +29,31 @@ PlanetTest::~PlanetTest() {
 void PlanetTest::Update() {
 	Camera *cam = Camera::GetInstance();
 
+	// controls
 	Input *input = Input::GetInstance();
-	float speed = 5 * input->DeltaTime();
-	if (input->GetKey(GLFW_KEY_W)) {
-		cam->TranslateLocal(0, 0, -speed);
-	}
-	if (input->GetKey(GLFW_KEY_A)) {
-		cam->TranslateLocal(-speed, 0, 0);
-	}
-	if (input->GetKey(GLFW_KEY_S)) {
-		cam->TranslateLocal(0, 0, speed);
-	}
-	if (input->GetKey(GLFW_KEY_D)) {
-		cam->TranslateLocal(speed, 0, 0);
+	float dragSpeed = 3 * camZoom/8 * input->DeltaTime();
+
+	if (input->MouseButton(0)) {
+		vec2 drag = input->MouseDelta();
+
+		camRotX -= drag.x * dragSpeed;
+		if (camRotX > 2*M_PI) camRotX -= 2*M_PI;
+		if (camRotX < 0) camRotX += 2*M_PI;
+
+		camRotY -= drag.y * dragSpeed;
+		if (camRotY > 2*M_PI/5) camRotY = 2*M_PI/5;
+		if (camRotY < -2*M_PI/5) camRotY = -2*M_PI/5;
 	}
 
-	if (input->GetKey(GLFW_KEY_UP)) {
-		cam->RotateLocal(-M_PI/4 * input->DeltaTime(), vec3(1, 0, 0));
-	}
-	if (input->GetKey(GLFW_KEY_DOWN)) {
-		cam->RotateLocal(M_PI/4 * input->DeltaTime(), vec3(1, 0, 0));
-	}
-	if (input->GetKey(GLFW_KEY_LEFT)) {
-		cam->RotateLocal(-M_PI/4 * input->DeltaTime(), vec3(0, 1, 0));
-	}
-	if (input->GetKey(GLFW_KEY_RIGHT)) {
-		cam->RotateLocal(M_PI/4 * input->DeltaTime(), vec3(0, 1, 0));
-	}
-	if (input->GetKey(GLFW_KEY_Q)) {
-		cam->RotateLocal(M_PI/4 * input->DeltaTime(), vec3(0, 0, -1));
-	}
-	if (input->GetKey(GLFW_KEY_E)) {
-		cam->RotateLocal(-M_PI/4 * input->DeltaTime(), vec3(0, 0, -1));
-	}
+	camZoom -= input->MouseScroll();
+	if (camZoom < 8) camZoom = 8;
+	else if (camZoom > 20) camZoom = 20;
+
+	// control results
+	quat camRot = quat(vec3(camRotY, camRotX, 0));
+	vec3 camPos = camRot * vec3(0, 0, camZoom);
+	cam->SetPosition(camPos);
+	cam->SetRotation(camRot);
 }
 
 void PlanetTest::Draw() {

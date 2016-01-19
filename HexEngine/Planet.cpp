@@ -94,6 +94,7 @@ void Planet::SetUp(int subs) {
 			if (std::find(addedVerts.begin(), addedVerts.end(), it->points[i]) == addedVerts.end()) {
 				// not already a hex
 				PlanetHex hex = PlanetHex(it->points[i]);
+				hex.height = (rand() % 5) / 50.0f;
 				hex.tris.push_back(it);
 
 				hexes.push_back(hex);

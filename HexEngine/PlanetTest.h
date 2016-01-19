@@ -16,4 +16,10 @@ public:
 
 private:
 	Planet planet;
+
+	// camera controls
+	float camRotX;
+	float camRotY;
+
+	float camZoom;
 };

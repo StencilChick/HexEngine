@@ -28,6 +28,8 @@ public:
 	bool MouseButtonDown(int);
 	bool MouseButtonUp(int);
 
+	float MouseScroll();
+
 	// keys
 	bool GetKey(int);
 	bool GetKeyDown(int);
@@ -53,10 +55,15 @@ private:
 	bool lastMouseButtons[3];
 	bool theseMouseButtons[3];
 
+	static float mouseScrollDelta;
+
+	static bool mouseScrollThisFrame;
+	static void MouseWheelCallback(GLFWwindow *window, double xOff, double yOff);
+
+
 	static std::map<int, bool> theseKeys;
 	static std::map<int, bool> lastKeys;
 
 	static bool keyPressedThisFrame;
-
 	static void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 };
