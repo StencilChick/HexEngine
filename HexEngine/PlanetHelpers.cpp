@@ -62,6 +62,9 @@ void PlanetTri::AddTriToMesh(std::vector<GLfloat> &verts, std::vector<GLushort> 
 // planet hex
 PlanetHex::PlanetHex(glm::vec3 pos) {
 	this->pos = pos;
+
+	tris.resize(0);
+	adjacentHexes.resize(0);
 }
 
 void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushort> &elements) {

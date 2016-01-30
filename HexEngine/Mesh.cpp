@@ -62,11 +62,54 @@ void Mesh::BindGL(GLfloat* vertices, int vertexNum, GLushort* elems, int elemNum
 }
 
 // draw
-void Mesh::Draw(GLuint shader, const glm::mat4 &modelMatrix, const glm::vec4 &colour) {
-	instanceData[shader].push_back(InstanceData(modelMatrix, colour));
+void Mesh::Draw(GLuint shader, const glm::mat4 &modelMatrix, const glm::vec4 &colour, Image* img) {
+	// find the id of the value of this image in the array of images this mesh will use
+	int imgID;
+	vector<Image*>::iterator imgIt = find(images.begin(), images.end(), img);
+	if (imgIt == images.end()) {
+		images.push_back(img);
+		if (img->GetWidth() > imgWidth) imgWidth = img->GetWidth();
+		if (img->GetHeight() > imgHeight) imgHeight = img->GetHeight();
+
+		imgID = images.size();
+	} else {
+		imgID = imgIt - images.begin();
+	}
+
+	instanceData[shader].push_back(InstanceData(modelMatrix, colour, imgID));
 }
 
 void Mesh::BindBuffersAndDraw() {
+	if (images.size() == 0) return;
+
+	// make texture array
+	GLuint texture;
+
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
+
+	glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, imgWidth, imgHeight, images.size(), 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+	for (int i = 0; i < images.size(); i++) {
+		Image *img = images[i];
+
+		glTexSubImage3D(
+			GL_TEXTURE_2D_ARRAY, 
+			0, 
+			0, 0, i, 
+			img->GetWidth(), img->GetHeight(), 1, 
+			GL_RGBA, 
+			GL_UNSIGNED_BYTE, 
+			img->GetImageData()
+			);
+	}
+
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	// bind the buffers and junk
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements);
@@ -75,6 +118,7 @@ void Mesh::BindBuffersAndDraw() {
 
 	ShaderManager *shaderMgr = World::GetShaderManager();
 
+	// Zhu Li, do the thing!
 	map<GLuint, vector<InstanceData>>::iterator it;
 	for (it = instanceData.begin(); it != instanceData.end(); it++) {
 		if (it->second.size() == 0) continue;
@@ -90,6 +134,7 @@ void Mesh::BindBuffersAndDraw() {
 
 			SetShaderM4(it->first, loc.modelLoc, data.modelMatrix);
 			SetShaderV4(it->first, loc.colourLoc, data.colour);
+			SetShaderInt(it->first, loc.texIdLoc, data.imageID);
 
 			if ((i+1) % shaderMgr->INSTANCE_LENGTH == 0) {
 				glDrawElementsInstanced(GL_TRIANGLES, size/sizeof(GLushort), GL_UNSIGNED_SHORT, 0, shaderMgr->INSTANCE_LENGTH);
@@ -102,6 +147,13 @@ void Mesh::BindBuffersAndDraw() {
 
 		it->second.clear();
 	}
+
+	// clean up
+	glDeleteTextures(1, &texture);
+
+	images.clear();
+	imgWidth = 0;
+	imgHeight = 0;
 }
 
 

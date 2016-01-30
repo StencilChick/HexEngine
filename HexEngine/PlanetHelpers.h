@@ -26,6 +26,7 @@ struct PlanetHex {
 	float height;
 
 	std::vector<std::vector<PlanetTri>::iterator> tris;
+	std::vector<std::vector<PlanetHex>::iterator> adjacentHexes;
 
 	// constructor
 	PlanetHex(glm::vec3);

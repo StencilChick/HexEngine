@@ -25,6 +25,8 @@ Input::Input() {
 	lastMousePos = vec2(0, 0);
 	thisMousePos = vec2(0, 0);
 
+	//glfwSetInputMode(World::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+
 	glfwSetKeyCallback(World::GetWindow(), KeyCallback);
 	glfwSetScrollCallback(World::GetWindow(), MouseWheelCallback);
 }
@@ -122,6 +124,15 @@ void Input::MouseWheelCallback(GLFWwindow *window, double xOff, double yOff) {
 	mouseScrollThisFrame = true;
 
 	mouseScrollDelta = (float)yOff;
+}
+
+// mouse moving around and junk
+void Input::BindCursor() {
+	glfwSetInputMode(World::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+void Input::UnbindCursor() {
+	glfwSetInputMode(World::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 }
 
 

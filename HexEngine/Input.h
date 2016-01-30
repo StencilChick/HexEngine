@@ -30,6 +30,9 @@ public:
 
 	float MouseScroll();
 
+	void BindCursor();
+	void UnbindCursor();
+
 	// keys
 	bool GetKey(int);
 	bool GetKeyDown(int);

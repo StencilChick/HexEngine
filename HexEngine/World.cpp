@@ -74,10 +74,10 @@ void World::SetUp() {
 	// stuff
 	meshManager = MeshManager();
 	meshManager.Load();
-	shaderManager = ShaderManager();
-	shaderManager.Load();
 	imageManager = ImageManager();
 	imageManager.Load();
+	shaderManager = ShaderManager();
+	shaderManager.Load();
 	fontManager = FontManager();
 	fontManager.Load();
 

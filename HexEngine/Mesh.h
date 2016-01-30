@@ -7,6 +7,8 @@
 
 #include "InstanceHelpers.h"
 
+#include "Image.h"
+
 class Mesh {
 public:
 	Mesh();
@@ -15,7 +17,7 @@ public:
 
 	~Mesh();
 
-	void Draw(GLuint, const glm::mat4&, const glm::vec4&);
+	void Draw(GLuint, const glm::mat4&, const glm::vec4&, Image*);
 	void BindBuffersAndDraw();
 
 	void AddShader(GLuint);
@@ -28,4 +30,8 @@ private:
 	void BindGL(GLfloat*, int, GLushort*, int);
 
 	std::map<GLuint, std::vector<InstanceData>> instanceData;
+
+	std::vector<Image*> images;
+	int imgWidth;
+	int imgHeight;
 };

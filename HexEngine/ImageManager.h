@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 
-#include <GL/glew.h>
+#include "Image.h"
 
 class ImageManager {
 public:
@@ -12,9 +12,9 @@ public:
 	void Load();
 	void Unload();
 
-	GLuint GetImage(std::string);
-	GLuint GetImage(const char*);
+	Image* GetImage(std::string);
+	Image* GetImage(const char*);
 
 private:
-	std::map<std::string, GLuint> images;
+	std::map<std::string, Image> images;
 };

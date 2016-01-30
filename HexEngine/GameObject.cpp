@@ -20,7 +20,7 @@ GameObject::GameObject() {
 
 GameObject::GameObject(const char *modelName, const char *texName) : GameObject() {
 	this->mesh = World::GetMeshManager()->GetMesh(modelName);
-	this->texture = World::GetImageManager()->GetImage(texName);
+	this->texture = World::GetImageManager()->GetImage(texName)->GetIndex();
 
 	this->shader = World::GetShaderManager()->GetShader("default");
 }
@@ -28,7 +28,7 @@ GameObject::GameObject(const char *modelName, const char *texName) : GameObject(
 GameObject::GameObject(const char *modelName, const char *shaderName, const char *texName) : GameObject() {
 	this->mesh = World::GetMeshManager()->GetMesh(modelName);
 	this->shader = World::GetShaderManager()->GetShader(shaderName);
-	this->texture = World::GetImageManager()->GetImage(texName);
+	this->texture = World::GetImageManager()->GetImage(texName)->GetIndex();
 }
 
 void GameObject::Draw() {
@@ -39,7 +39,7 @@ void GameObject::Draw() {
 	//SetShaderV4(shader, "colour", colour);
 	//SetShaderBool(shader, "textured", true);
 
-	mesh->Draw(shader, translate(position) * glm::scale(scale) * mat4_cast(rotation), colour);
+	mesh->Draw(shader, translate(position) * glm::scale(scale) * mat4_cast(rotation), colour, World::GetImageManager()->GetImage("white.png"));
 }
 
 // all the transform junk (uuuuugh... so looooong...)

@@ -46,7 +46,9 @@ void ShaderManager::Load() {
 		for (int i = 0; i < INSTANCE_LENGTH; i++) {
 			v[i] = InstanceLoc(
 				GetUniformLoc(p, ("modelMatrix[" + to_string(i) + "]").c_str()),
-				GetUniformLoc(p, ("colour[" + to_string(i) + "]").c_str())
+				GetUniformLoc(p, ("colour[" + to_string(i) + "]").c_str()),
+				GetUniformLoc(p, ("textureID[" + to_string(i) + "]").c_str()),
+				GetUniformLoc(p, "image")
 				);
 		}
 		shaderLocs[p] = v;

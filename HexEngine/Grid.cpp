@@ -80,7 +80,7 @@ void Grid::Draw() {
 
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	plane->Draw(World::GetShaderManager()->GetShader("default"), translate(vec3(0, 0, 0)) * scale(vec3(1.28f, 1, 0.80f)), vec4(1, 1, 1, 1));
+	plane->Draw(World::GetShaderManager()->GetShader("default"), translate(vec3(0, 0, 0)) * scale(vec3(1.28f, 1, 0.80f)), vec4(1, 1, 1, 1), World::GetImageManager()->GetImage("white.png"));
 	//plane->Draw(World::GetShaderManager()->GetShader("default"), mat4(), vec4(1, 1, 1, 1));
 	plane->BindBuffersAndDraw();
 }

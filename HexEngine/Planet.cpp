@@ -89,12 +89,14 @@ void Planet::SetUp(int subs) {
 
 	// make hexes from the triangles
 	std::vector<glm::vec3> addedVerts;
+
 	for (std::vector<PlanetTri>::iterator it = tris.begin(); it != tris.end(); it++) {
+		// assign tris to hexes
 		for (int i = 0; i < 3; i++) {
 			if (std::find(addedVerts.begin(), addedVerts.end(), it->points[i]) == addedVerts.end()) {
 				// not already a hex
 				PlanetHex hex = PlanetHex(it->points[i]);
-				hex.height = (rand() % 5) / 50.0f;
+				hex.height = (rand() % 3) / 25.0f;
 				hex.tris.push_back(it);
 
 				hexes.push_back(hex);
@@ -132,9 +134,14 @@ void Planet::Update() {
 }
 
 void Planet::Draw() {
-	glBindTexture(GL_TEXTURE_2D, World::GetImageManager()->GetImage("testGradient.png"));
+	//World::GetImageManager()->GetImage("testGradient.png")->BindGL();
 
-	mesh->Draw(World::GetShaderManager()->GetShader("default"), glm::translate(pos) * glm::scale(glm::vec3(size, size, size)), glm::vec4(1, 1, 1, 1));
+	mesh->Draw(
+		World::GetShaderManager()->GetShader("default"), 
+		glm::translate(pos) * glm::scale(glm::vec3(size, size, size)), 
+		glm::vec4(1, 1, 1, 1), 
+		World::GetImageManager()->GetImage("testGradient.png")
+		);
 	mesh->BindBuffersAndDraw();
 }
 

@@ -9,8 +9,11 @@ uniform mat4 projectionMatrix;
 
 uniform vec4 colour[128];
 
+uniform int textureID[128];
+
 out vec2 vertUV;
 out vec4 inColour;
+flat out int imgID;
 
 void main()
 {
@@ -18,4 +21,6 @@ void main()
 	gl_Position = projectionMatrix * viewMatrix * modelMatrix[gl_InstanceID] * vec4(position, 1);
 	
 	inColour = colour[gl_InstanceID];
+	
+	imgID = textureID[gl_InstanceID];
 }
