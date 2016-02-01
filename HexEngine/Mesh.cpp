@@ -71,7 +71,7 @@ void Mesh::Draw(GLuint shader, const glm::mat4 &modelMatrix, const glm::vec4 &co
 		if (img->GetWidth() > imgWidth) imgWidth = img->GetWidth();
 		if (img->GetHeight() > imgHeight) imgHeight = img->GetHeight();
 
-		imgID = images.size();
+		imgID = images.size() - 1;
 	} else {
 		imgID = imgIt - images.begin();
 	}
@@ -97,7 +97,7 @@ void Mesh::BindBuffersAndDraw() {
 			GL_TEXTURE_2D_ARRAY, 
 			0, 
 			0, 0, i, 
-			img->GetWidth(), img->GetHeight(), 1, 
+			img->GetWidth(), img->GetHeight(), 1,
 			GL_RGBA, 
 			GL_UNSIGNED_BYTE, 
 			img->GetImageData()
@@ -125,6 +125,9 @@ void Mesh::BindBuffersAndDraw() {
 
 		glUseProgram(it->first);
 
+		SetShaderInt(it->first, "maxW", imgWidth);
+		SetShaderInt(it->first, "maxH", imgHeight);
+
 		for (int i = 0; i < it->second.size(); i++) {
 			int index = i;
 			while (index >= shaderMgr->INSTANCE_LENGTH) index -= shaderMgr->INSTANCE_LENGTH;
@@ -135,6 +138,9 @@ void Mesh::BindBuffersAndDraw() {
 			SetShaderM4(it->first, loc.modelLoc, data.modelMatrix);
 			SetShaderV4(it->first, loc.colourLoc, data.colour);
 			SetShaderInt(it->first, loc.texIdLoc, data.imageID);
+
+			SetShaderInt(it->first, ("w[" + to_string(index) + "]").c_str(), images[data.imageID]->GetWidth());
+			SetShaderInt(it->first, ("h[" + to_string(index) + "]").c_str(), images[data.imageID]->GetHeight());
 
 			if ((i+1) % shaderMgr->INSTANCE_LENGTH == 0) {
 				glDrawElementsInstanced(GL_TRIANGLES, size/sizeof(GLushort), GL_UNSIGNED_SHORT, 0, shaderMgr->INSTANCE_LENGTH);

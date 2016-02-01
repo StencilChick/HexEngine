@@ -10,10 +10,15 @@ uniform mat4 projectionMatrix;
 uniform vec4 colour[128];
 
 uniform int textureID[128];
+uniform int w[128];
+uniform int h[128];
 
 out vec2 vertUV;
 out vec4 inColour;
 flat out int imgID;
+
+flat out int imgWidth;
+flat out int imgHeight;
 
 void main()
 {
@@ -23,4 +28,6 @@ void main()
 	inColour = colour[gl_InstanceID];
 	
 	imgID = textureID[gl_InstanceID];
+	imgWidth = w[gl_InstanceID];
+	imgHeight = h[gl_InstanceID];
 }

@@ -142,6 +142,7 @@ void Planet::Draw() {
 		glm::vec4(1, 1, 1, 1), 
 		World::GetImageManager()->GetImage("testGradient.png")
 		);
+
 	mesh->BindBuffersAndDraw();
 }
 
