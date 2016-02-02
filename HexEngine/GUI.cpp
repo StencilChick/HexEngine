@@ -1,8 +1,9 @@
 #include "GUI.h"
 
-#include "World.h"
-
+#include <glm/gtx/transform.hpp>
 using namespace glm;
+
+#include "World.h"
 
 // values and junk
 GUI* GUI::instance = nullptr;
@@ -59,3 +60,19 @@ vec2 GUI::ScreenSizeToGL(int w, int h) {
 		w * 1.0f / World::SCREEN_WIDTH, 
 		h * 1.0f / World::SCREEN_HEIGHT ) * 2.0f;
 }
+
+
+// images
+void GUI::DrawImage(Image *image, int x, int y, int width, int height, bool usingDepth) {
+	float depth;
+	usingDepth ? depth = GetDepth() : 0.1f;
+
+	Mesh *m = World::GetMeshManager()->GetMesh("plane.obj");
+	m->Draw(
+		World::GetShaderManager()->GetShader("hud"),
+		translate(vec3(ScreenPosToGL(x+width/2, y+height/2), depth)) * scale(vec3(ScreenSizeToGL(width, height)/2.0f, 1)),
+		vec4(1, 1, 1, 1),
+		image
+		);
+}
+void GUI::DrawImage(Image *image, int x, int y, int width, int height) { DrawImage(image, x, y, width, height, true); }

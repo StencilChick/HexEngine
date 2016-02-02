@@ -7,6 +7,7 @@
 using namespace glm;
 
 #include "Mesh.h"
+#include "Image.h"
 
 class GameObject {
 public:
@@ -52,7 +53,7 @@ protected:
 	// meshes and things
 	Mesh *mesh;
 	GLuint shader;
-	GLuint texture;
+	Image *texture;
 
 	vec4 colour;
 

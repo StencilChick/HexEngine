@@ -1,10 +1,12 @@
 #include "Planet.h"
 
 #include <glm/gtx/transform.hpp>
-
 #include <iostream>
 
+#include <algorithm>
+
 #include "World.h"
+#include "simplex/simplexnoise.h"
 
 Planet::Planet() {
 	mesh = nullptr;
@@ -90,13 +92,21 @@ void Planet::SetUp(int subs) {
 	// make hexes from the triangles
 	std::vector<glm::vec3> addedVerts;
 
+	int imgWid = World::GetImageManager()->GetImage("planetColours.png")->GetWidth();
+	int imgHei = World::GetImageManager()->GetImage("planetColours.png")->GetHeight();
+
+	int seed =  2154;
+
 	for (std::vector<PlanetTri>::iterator it = tris.begin(); it != tris.end(); it++) {
 		// assign tris to hexes
 		for (int i = 0; i < 3; i++) {
 			if (std::find(addedVerts.begin(), addedVerts.end(), it->points[i]) == addedVerts.end()) {
 				// not already a hex
-				PlanetHex hex = PlanetHex(it->points[i]);
-				hex.height = (rand() % 3) / 25.0f;
+				glm::vec3 pos = it->points[i];
+				int height = std::max(round(octave_noise_4d(4, 0.15f, 1.0f, pos.x, pos.y, pos.z, seed) * imgWid), 0.0f);
+				int temp = std::max(round((1 - abs(pos.y)) * imgHei + octave_noise_4d(4, 0.15f, 1.0f, pos.x, pos.y, pos.z, seed+1)/2), 0.0f);
+
+				PlanetHex hex = PlanetHex(pos, height, temp);
 				hex.tris.push_back(it);
 
 				hexes.push_back(hex);
@@ -134,13 +144,11 @@ void Planet::Update() {
 }
 
 void Planet::Draw() {
-	//World::GetImageManager()->GetImage("testGradient.png")->BindGL();
-
 	mesh->Draw(
 		World::GetShaderManager()->GetShader("default"), 
 		glm::translate(pos) * glm::scale(glm::vec3(size, size, size)), 
 		glm::vec4(1, 1, 1, 1), 
-		World::GetImageManager()->GetImage("testGradient.png")
+		World::GetImageManager()->GetImage("planetColours.png")
 		);
 
 	mesh->BindBuffersAndDraw();

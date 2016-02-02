@@ -25,7 +25,7 @@ Input::Input() {
 	lastMousePos = vec2(0, 0);
 	thisMousePos = vec2(0, 0);
 
-	//glfwSetInputMode(World::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	glfwSetInputMode(World::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 	glfwSetKeyCallback(World::GetWindow(), KeyCallback);
 	glfwSetScrollCallback(World::GetWindow(), MouseWheelCallback);
@@ -133,6 +133,10 @@ void Input::BindCursor() {
 
 void Input::UnbindCursor() {
 	glfwSetInputMode(World::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+}
+
+bool Input::IsCursorBound() {
+	return glfwGetInputMode(World::GetWindow(), GLFW_CURSOR) == GLFW_CURSOR_DISABLED;
 }
 
 

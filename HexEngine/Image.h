@@ -10,15 +10,12 @@ public:
 
 	void BindGL();
 
-	GLuint GetIndex();
 	int GetWidth();
 	int GetHeight();
 
 	unsigned char* GetImageData();
 
 private:
-	GLuint tex;
-	int width, height;
-
 	unsigned char *imageData;
+	int width, height;
 };

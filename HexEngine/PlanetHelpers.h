@@ -23,14 +23,17 @@ struct PlanetTri {
 struct PlanetHex {
 	// values
 	glm::vec3 pos;
-	float height;
+	int height;
+	int temp;
 
 	std::vector<std::vector<PlanetTri>::iterator> tris;
 	std::vector<std::vector<PlanetHex>::iterator> adjacentHexes;
 
 	// constructor
-	PlanetHex(glm::vec3);
+	PlanetHex(glm::vec3, int, int);
 
 	// functions
 	void AddHexToMesh(std::vector<GLfloat>&, std::vector<GLushort>&);
+
+	static void CalcUV(int height, int temp, float &uvX, float &uvY);
 };

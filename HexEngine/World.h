@@ -8,6 +8,7 @@ class Game;
 
 #include "Input.h"
 #include "GUI.h"
+#include "Cursor.h"
 
 #include "MeshManager.h"
 #include "ShaderManager.h"
@@ -56,6 +57,7 @@ private:
 	Input *input;
 	Camera *camera;
 	GUI *gui;
+	Cursor *cursor;
 
 	Game *game;
 };

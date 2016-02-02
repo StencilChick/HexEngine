@@ -2,11 +2,14 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <algorithm>
 #include <time.h>
 
 #include <glm/gtc/quaternion.hpp>
 
 #include <iostream>
+
+#include "World.h"
 
 // planet triangle
 PlanetTri::PlanetTri() { }
@@ -60,8 +63,12 @@ void PlanetTri::AddTriToMesh(std::vector<GLfloat> &verts, std::vector<GLushort> 
 
 
 // planet hex
-PlanetHex::PlanetHex(glm::vec3 pos) {
+PlanetHex::PlanetHex(glm::vec3 pos, int height, int temp) {
 	this->pos = pos;
+	this->height = height;
+	this->temp = temp;
+
+	if (temp == 0) this->height = std::max(height, 1);
 
 	tris.resize(0);
 	adjacentHexes.resize(0);
@@ -79,9 +86,11 @@ void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushor
 	centre /= points.size();
 
 	// vertices
-	float uvX = (rand() % 100) * 1.0f/100, uvY = (rand() % 100) * 1.0f/100;
+	float uvX, uvY;
+	CalcUV(height, temp, uvX, uvY);
+	float offset = height * 0.05f;
 
-	glm::vec3 realCentre = glm::normalize(centre) * (0.935617f + height);
+	glm::vec3 realCentre = glm::normalize(centre) * (0.935617f + offset);
 	vertices.push_back(realCentre.x);
 	vertices.push_back(realCentre.y);
 	vertices.push_back(realCentre.z);
@@ -98,7 +107,7 @@ void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushor
 		glm::vec3 newPoint = centre + len * glm::quat(cos(angle), axis.x * sin(angle), axis.y * sin(angle), axis.z * sin(angle));
 		for (std::vector<glm::vec3>::iterator it = points.begin(); it != points.end(); it++) {
 			if (abs(glm::length(*it - newPoint)) < 0.1f) {
-				newPoint = glm::normalize(*it) * (1.0f + height);
+				newPoint = glm::normalize(*it) * (1.0f + offset);
 				break;
 			}
 		}
@@ -138,4 +147,13 @@ void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushor
 		elements.push_back(nextBack);
 		elements.push_back(back);
 	}
+}
+
+
+// stuff
+void PlanetHex::CalcUV(int height, int temp, float &uvX, float &uvY) {
+	Image *img = World::GetImageManager()->GetImage("planetColours.png");
+
+	uvX = (0.5f + height) / img->GetWidth();
+	uvY = (0.5f + temp) / img->GetHeight();
 }

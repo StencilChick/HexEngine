@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 
 #include "FontHelpers.h"
+#include "Image.h"
 
 class GUI {
 public:
@@ -20,6 +21,10 @@ public:
 	// image/text depth
 	static float GetDepth();
 	void ResetDepth();
+
+	// image stuff
+	static void DrawImage(Image*, int, int, int, int);
+	static void DrawImage(Image*, int, int, int, int, bool);
 
 private:
 	// singleton stuff

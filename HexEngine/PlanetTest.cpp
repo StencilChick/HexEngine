@@ -9,6 +9,8 @@
 #include "Input.h"
 #include "World.h"
 
+#include "GUI.h"
+
 PlanetTest::PlanetTest() {
 	planet = Planet();
 	planet.SetUp(2);
@@ -33,7 +35,11 @@ void PlanetTest::Update() {
 	Input *input = Input::GetInstance();
 	float dragSpeed = 3 * camZoom/8 * input->DeltaTime();
 
-	if (input->MouseButton(0)) {
+	if (input->MouseButton(2)) {
+		if (input->MouseButtonDown(2)) {
+			input->BindCursor();
+		}
+
 		vec2 drag = input->MouseDelta();
 
 		camRotX -= drag.x * dragSpeed;
@@ -43,6 +49,8 @@ void PlanetTest::Update() {
 		camRotY -= drag.y * dragSpeed;
 		if (camRotY > 2*M_PI/5) camRotY = 2*M_PI/5;
 		if (camRotY < -2*M_PI/5) camRotY = -2*M_PI/5;
+	} else if (input->MouseButtonUp(2)) {
+		input->UnbindCursor();
 	}
 
 	camZoom -= input->MouseScroll();
@@ -58,4 +66,10 @@ void PlanetTest::Update() {
 
 void PlanetTest::Draw() {
 	planet.Draw();
+
+	/*GUI::DrawImage(
+		World::GetImageManager()->GetImage("testGradient.png"),
+		0, 0,
+		128, 128
+		);*/
 }

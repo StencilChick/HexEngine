@@ -32,6 +32,7 @@ public:
 
 	void BindCursor();
 	void UnbindCursor();
+	bool IsCursorBound();
 
 	// keys
 	bool GetKey(int);
