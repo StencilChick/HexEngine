@@ -2,6 +2,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <string>
 
 #include <glm/gtx/transform.hpp>
 
@@ -21,6 +22,8 @@ PlanetTest::PlanetTest() {
 	camRotX = 0;
 	camRotY = 0;
 	camZoom = 10;
+
+	selector = HexSelector();
 }
 
 PlanetTest::~PlanetTest() {
@@ -33,14 +36,14 @@ void PlanetTest::Update() {
 
 	// controls
 	Input *input = Input::GetInstance();
-	float dragSpeed = 3 * camZoom/8 * input->DeltaTime();
+	float dragSpeed = 5 * camZoom/8 * input->DeltaTime();
 
 	if (input->MouseButton(2)) {
 		if (input->MouseButtonDown(2)) {
 			input->BindCursor();
 		}
 
-		vec2 drag = input->MouseDelta();
+		vec2 drag = input->MouseDelta() * dragSpeed;
 
 		camRotX -= drag.x * dragSpeed;
 		if (camRotX > 2*M_PI) camRotX -= 2*M_PI;
@@ -53,7 +56,7 @@ void PlanetTest::Update() {
 		input->UnbindCursor();
 	}
 
-	camZoom -= input->MouseScroll();
+	camZoom -= 20 * input->MouseScroll() * input->DeltaTime();
 	if (camZoom < 8) camZoom = 8;
 	else if (camZoom > 20) camZoom = 20;
 
@@ -62,14 +65,36 @@ void PlanetTest::Update() {
 	vec3 camPos = camRot * vec3(0, 0, camZoom);
 	cam->SetPosition(camPos);
 	cam->SetRotation(camRot);
+
+	// set hex selector
+	if (!Input::IsCursorBound()) {
+		glm::vec3 hitPos;
+
+		if (planet.GetRayHit(Cursor::GetRay(), hitPos)) {
+			PlanetHex *hex = planet.GetClosestHexToPos(hitPos);
+			selector.SetTarget(hex);
+		} else {
+			selector.ReleaseTarget();
+		}
+	}
 }
 
 void PlanetTest::Draw() {
 	planet.Draw();
 
-	/*GUI::DrawImage(
-		World::GetImageManager()->GetImage("testGradient.png"),
-		0, 0,
-		128, 128
-		);*/
+	// draw selector
+	if (!Input::IsCursorBound()) {
+		selector.Draw();
+
+		FontManager *fontMgr = World::GetFontManager();
+		if (selector.GetTarget() != nullptr) {
+			fontMgr->WriteLine(
+				fontMgr->GetAtlas("times.ttf"), 
+				"Hit", 
+				5, 5
+				);
+		} else {
+			fontMgr->WriteLine(fontMgr->GetAtlas("times.ttf"), "No Hit", 5, 5);
+		}
+	}
 }

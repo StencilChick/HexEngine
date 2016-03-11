@@ -23,8 +23,8 @@ Planet::~Planet() {
 
 
 void Planet::SetUp(int subs) {
-	//size = 0.5f * pow(2, subs-1);
-	size = 2 * pow(2, subs-1);
+	size = subs;
+	radius = 2 * pow(2, subs-1);
 
 	// vertices
 	float t = (1.0f + sqrt(5.0f)) / 2.0f;
@@ -95,7 +95,9 @@ void Planet::SetUp(int subs) {
 	int imgWid = World::GetImageManager()->GetImage("planetColours.png")->GetWidth();
 	int imgHei = World::GetImageManager()->GetImage("planetColours.png")->GetHeight();
 
-	int seed =  2154;
+	int seed = rand() % 10000; //23764; //2154;
+	float seaLevel = octave_noise_4d(4, 0.15f, 1.0f, 0, 0, 0, seed) / 2.5f;
+	std::cout << seaLevel << std::endl;
 
 	for (std::vector<PlanetTri>::iterator it = tris.begin(); it != tris.end(); it++) {
 		// assign tris to hexes
@@ -103,10 +105,10 @@ void Planet::SetUp(int subs) {
 			if (std::find(addedVerts.begin(), addedVerts.end(), it->points[i]) == addedVerts.end()) {
 				// not already a hex
 				glm::vec3 pos = it->points[i];
-				int height = std::max(round(octave_noise_4d(4, 0.15f, 1.0f, pos.x, pos.y, pos.z, seed) * imgWid), 0.0f);
+				int height = std::max(round((octave_noise_4d(4, 0.15f, 1.0f, pos.x, pos.y, pos.z, seed)  - seaLevel) * imgWid), 0.0f);
 				int temp = std::max(round((1 - abs(pos.y)) * imgHei + octave_noise_4d(4, 0.15f, 1.0f, pos.x, pos.y, pos.z, seed+1)/2), 0.0f);
 
-				PlanetHex hex = PlanetHex(pos, height, temp);
+				PlanetHex hex = PlanetHex(this, pos, height, temp);
 				hex.tris.push_back(it);
 
 				hexes.push_back(hex);
@@ -130,6 +132,10 @@ void Planet::SetUp(int subs) {
 
 	for (std::vector<PlanetHex>::iterator it = hexes.begin(); it != hexes.end(); it++) {
 		it->AddHexToMesh(vertices, elements);
+
+		/*if (it == hexes.begin()) {
+			std::cout << vertices.size() / 5 << ", " << elements.size() / 3 << std::endl;
+		}*/
 	}
 
 	if (mesh == nullptr) {
@@ -146,7 +152,7 @@ void Planet::Update() {
 void Planet::Draw() {
 	mesh->Draw(
 		World::GetShaderManager()->GetShader("default"), 
-		glm::translate(pos) * glm::scale(glm::vec3(size, size, size)), 
+		glm::translate(pos) * glm::scale(glm::vec3(radius, radius, radius)), 
 		glm::vec4(1, 1, 1, 1), 
 		World::GetImageManager()->GetImage("planetColours.png")
 		);
@@ -157,4 +163,43 @@ void Planet::Draw() {
 
 void Planet::SetPos(glm::vec3 pos) {
 	this->pos = pos;
+}
+
+glm::vec3 Planet::GetPos() {
+	return pos;
+}
+
+float Planet::GetRadius() {
+	return radius;
+}
+
+
+// stuff
+bool Planet::GetRayHit(glm::vec3 point, glm::vec3 dir, glm::vec3 &result) {
+	float a = glm::dot(dir, dir);
+	float b = glm::dot(2.0f*dir, point);
+	float c = glm::dot(point, point) - radius*radius;
+
+	float d = b*b - 4*a*c;
+	if (d < 0) return false;
+
+	result = point + ((-b - sqrt(d)) / 2 * a) * dir;
+	return true;
+}
+bool Planet::GetRayHit(Ray ray, glm::vec3 &result) { return GetRayHit(ray.point, ray.direction, result); }
+
+
+PlanetHex* Planet::GetClosestHexToPos(glm::vec3 pos) {
+	PlanetHex *hex = nullptr;
+
+	float maxDist = 10000;
+	for (std::vector<PlanetHex>::iterator it = hexes.begin(); it != hexes.end(); it++) {
+		float delta = glm::length(it->pos - pos);
+		if (delta < maxDist) {
+			maxDist = delta;
+			hex = &*it;
+		}
+	}
+
+	return hex;
 }

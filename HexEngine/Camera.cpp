@@ -11,6 +11,9 @@
 mat4 Camera::viewMatrix = mat4();
 mat4 Camera::projectionMatrix = mat4();
 
+mat4 Camera::inverseViewMatrix = mat4();
+mat4 Camera::inverseProjectionMatrix = mat4();
+
 // constructor
 Camera::Camera() {
 
@@ -39,7 +42,9 @@ void Camera::Destroy() {
 
 // updates the view matrix
 void Camera::Update() {
-	viewMatrix = inverse(glm::translate(position) * mat4_cast(rotation));
+	inverseViewMatrix = glm::translate(position) * mat4_cast(rotation);
+	viewMatrix = inverse(inverseViewMatrix);
+
 	World::GetShaderManager()->UpdateViewMatrix(viewMatrix);
 }
 
@@ -56,7 +61,9 @@ void Camera::SetProjectionMatrix(float fov, float aspect, float near, float far)
 		0, 0, -(far+near)/(far-near), -(2*far*near)/(far-near),
 		0, 0, -1, 0
 		);
-	projectionMatrix = transpose(projectionMatrix); // because glm can't just have its matrix axes make sense.  no, that would be too easy!
+	projectionMatrix = transpose(projectionMatrix); // because glm can't just have its matrix axis order be convenient.  no, that would be too easy!
+
+	inverseProjectionMatrix = inverse(projectionMatrix);
 
 	World::GetShaderManager()->UpdateProjectionMatrix(projectionMatrix);
 }
@@ -69,4 +76,13 @@ mat4 Camera::GetViewMatrix() {
 
 mat4 Camera::GetProjectionMatrix() {
 	return projectionMatrix;
+}
+
+
+mat4 Camera::GetInverseViewMatrix() {
+	return inverseViewMatrix;
+}
+
+mat4 Camera::GetInverseProjectionMatrix() {
+	return inverseProjectionMatrix;
 }

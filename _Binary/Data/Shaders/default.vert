@@ -1,4 +1,4 @@
-#version 330
+#version 330 core
 
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec2 uv;
@@ -17,9 +17,6 @@ out vec2 vertUV;
 out vec4 inColour;
 flat out int imgID;
 
-flat out int imgWidth;
-flat out int imgHeight;
-
 void main()
 {
 	vertUV = uv;
@@ -28,6 +25,4 @@ void main()
 	inColour = colour[gl_InstanceID];
 	
 	imgID = textureID[gl_InstanceID];
-	imgWidth = w[gl_InstanceID];
-	imgHeight = h[gl_InstanceID];
 }

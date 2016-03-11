@@ -5,6 +5,10 @@
 #include <iostream>
 using namespace glm;
 
+// values
+glm::vec2 Input::lastMousePos;
+glm::vec2 Input::thisMousePos;
+
 float Input::mouseScrollDelta = 0;
 
 bool Input::mouseScrollThisFrame = false;
@@ -14,6 +18,7 @@ std::map<int, bool> Input::lastKeys;
 
 bool Input::keyPressedThisFrame = false;
 
+// constructor
 Input::Input() {
 	thisTime = 0;
 	lastTime = 0;
@@ -96,6 +101,10 @@ double Input::DeltaTime() {
 // get mouse pos
 vec2 Input::MousePos() {
 	return thisMousePos;
+}
+
+vec2 Input::MouseGLPos() {
+	return GUI::ScreenPosToGL(thisMousePos);
 }
 
 vec2 Input::MouseDelta() {

@@ -5,6 +5,8 @@
 #include <GL/glew.h>
 #include <glm\glm.hpp>
 
+class Planet;
+
 struct PlanetTri {
 	// points
 	glm::vec3 points[3];
@@ -26,14 +28,20 @@ struct PlanetHex {
 	int height;
 	int temp;
 
+	float offset;
+
 	std::vector<std::vector<PlanetTri>::iterator> tris;
 	std::vector<std::vector<PlanetHex>::iterator> adjacentHexes;
 
+	Planet *planet;
+
 	// constructor
-	PlanetHex(glm::vec3, int, int);
+	PlanetHex(Planet*, glm::vec3, int, int);
 
 	// functions
 	void AddHexToMesh(std::vector<GLfloat>&, std::vector<GLushort>&);
+	void AddHexSurfaceToMesh(std::vector<GLfloat>&, std::vector<GLushort>&);
 
+	glm::vec3 GetVecToPoint();
 	static void CalcUV(int height, int temp, float &uvX, float &uvY);
 };

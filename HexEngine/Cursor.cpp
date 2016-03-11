@@ -2,6 +2,7 @@
 
 #include "World.h"
 #include "GUI.h"
+#include "Camera.h"
 
 #include <iostream>
 
@@ -47,4 +48,12 @@ void Cursor::Draw() {
 		pos.x, pos.y,
 		image->GetWidth(), image->GetHeight()
 		);
+}
+
+
+Ray Cursor::GetRay() {
+	glm::vec4 near = Camera::GetInverseViewMatrix() * Camera::GetInverseProjectionMatrix() * glm::vec4(Input::MouseGLPos(), 0, 1);
+	near = glm::vec4(near.x/near.w, near.y/near.w, near.z/near.w, 1);
+
+	return Ray((glm::vec3)near, glm::normalize((glm::vec3)near - Camera::GetInstance()->GetPosition()));
 }

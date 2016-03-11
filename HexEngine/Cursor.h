@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Image.h"
+#include "Ray.h"
 
 #include <glm/glm.hpp>
 
@@ -12,6 +13,8 @@ public:
 
 	// functions
 	void Draw();
+
+	static Ray GetRay();
 
 private:
 	// singleton stuff

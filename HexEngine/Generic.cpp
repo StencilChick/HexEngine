@@ -4,7 +4,7 @@
 
 #include "World.h"
 
-Generic::Generic() : GameObject("icosphere.obj", "test.png") {
+Generic::Generic() : GameObject("cube.obj", "test.png") {
 
 }
 

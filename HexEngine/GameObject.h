@@ -44,6 +44,9 @@ public:
 	quat GetRotation();
 	vec3 GetScale();
 
+	void LookAt(vec3, vec3);
+	void LookAt(GameObject const&, vec3);
+
 	// colour
 	vec4 GetColour();
 	void SetColour(const vec4&);

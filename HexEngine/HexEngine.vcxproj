@@ -99,6 +99,7 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Hex.cpp" />
+    <ClCompile Include="HexSelector.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -109,6 +110,7 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClCompile Include="Planet.cpp" />
     <ClCompile Include="PlanetHelpers.cpp" />
     <ClCompile Include="PlanetTest.cpp" />
+    <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ShaderHelpers.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
@@ -128,6 +130,7 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClInclude Include="Grid.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Hex.h" />
+    <ClInclude Include="HexSelector.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="Input.h" />
@@ -138,6 +141,7 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClInclude Include="Planet.h" />
     <ClInclude Include="PlanetHelpers.h" />
     <ClInclude Include="PlanetTest.h" />
+    <ClInclude Include="Ray.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="ShaderHelpers.h" />
     <ClInclude Include="ShaderManager.h" />

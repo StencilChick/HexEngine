@@ -18,6 +18,9 @@ public:
 	static glm::vec2 ScreenSizeToGL(glm::vec2);
 	static glm::vec2 ScreenSizeToGL(int, int);
 
+	static glm::vec2 GLToScreenPos(glm::vec2);
+	static glm::vec2 GLToScreenPos(float, float);
+
 	// image/text depth
 	static float GetDepth();
 	void ResetDepth();

@@ -20,9 +20,9 @@ public:
 	double DeltaTime();
 
 	// mouse
-	glm::vec2 MousePos();
-	glm::vec2 MouseGLPos();
-	glm::vec2 MouseDelta();
+	static glm::vec2 MousePos();
+	static glm::vec2 MouseGLPos();
+	static glm::vec2 MouseDelta();
 
 	bool MouseButton(int);
 	bool MouseButtonDown(int);
@@ -32,7 +32,7 @@ public:
 
 	void BindCursor();
 	void UnbindCursor();
-	bool IsCursorBound();
+	static bool IsCursorBound();
 
 	// keys
 	bool GetKey(int);
@@ -53,8 +53,8 @@ private:
 	double lastTime;
 	double thisTime;
 
-	glm::vec2 lastMousePos;
-	glm::vec2 thisMousePos;
+	static glm::vec2 lastMousePos;
+	static glm::vec2 thisMousePos;
 
 	bool lastMouseButtons[3];
 	bool theseMouseButtons[3];

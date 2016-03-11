@@ -4,7 +4,7 @@
 
 #include "Planet.h"
 #include "Hex.h"
-#include "Generic.h"
+#include "HexSelector.h"
 
 class PlanetTest : public Scene {
 public:
@@ -22,4 +22,7 @@ private:
 	float camRotY;
 
 	float camZoom;
+
+	// selector
+	HexSelector selector;
 };

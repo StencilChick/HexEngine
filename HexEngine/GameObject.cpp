@@ -93,6 +93,12 @@ vec3 GameObject::GetScale() {
 }
 
 
+void GameObject::LookAt(vec3 target, vec3 up) {
+	rotation = quat_cast(lookAt(position, target, up));
+}
+void GameObject::LookAt(GameObject const& obj, vec3 up) { LookAt(obj.position, up); }
+
+
 // colour
 vec4 GameObject::GetColour() {
 	return colour;

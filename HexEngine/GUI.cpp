@@ -51,15 +51,26 @@ void GUI::ResetDepth() {
 vec2 GUI::ScreenPosToGL(int x, int y) {
 	return vec2(
 		-1 + (x * 1.0f / World::SCREEN_WIDTH * 2),
-		1 - (y * 1.0f / World::SCREEN_HEIGHT * 2));
+		1 - (y * 1.0f / World::SCREEN_HEIGHT * 2)
+		);
 }
 vec2 GUI::ScreenPosToGL(vec2 pos) { return ScreenPosToGL((int)pos.x, (int)pos.y); }
 
 vec2 GUI::ScreenSizeToGL(int w, int h) {
 	return vec2(
 		w * 1.0f / World::SCREEN_WIDTH, 
-		h * 1.0f / World::SCREEN_HEIGHT ) * 2.0f;
+		h * 1.0f / World::SCREEN_HEIGHT
+		) * 2.0f;
 }
+vec2 GUI::ScreenSizeToGL(vec2 pos) { return ScreenSizeToGL((int)pos.x, (int)pos.y); }
+
+vec2 GUI::GLToScreenPos(float x, float y) {
+	return vec2(
+		(x + 1) * World::SCREEN_WIDTH / 2,
+		(y - 1) * World::SCREEN_HEIGHT / 2
+		);
+}
+vec2 GUI::GLToScreenPos(glm::vec2 pos) { return GLToScreenPos(pos.x, pos.y); }
 
 
 // images

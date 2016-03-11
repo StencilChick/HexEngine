@@ -10,6 +10,7 @@
 #include <iostream>
 
 #include "World.h"
+#include "Planet.h"
 
 // planet triangle
 PlanetTri::PlanetTri() { }
@@ -63,12 +64,14 @@ void PlanetTri::AddTriToMesh(std::vector<GLfloat> &verts, std::vector<GLushort> 
 
 
 // planet hex
-PlanetHex::PlanetHex(glm::vec3 pos, int height, int temp) {
+PlanetHex::PlanetHex(Planet *planet, glm::vec3 pos, int height, int temp) {
+	this->planet = planet;
 	this->pos = pos;
 	this->height = height;
 	this->temp = temp;
 
 	if (temp == 0) this->height = std::max(height, 1);
+	offset = this->height * 0.05f;
 
 	tris.resize(0);
 	adjacentHexes.resize(0);
@@ -88,14 +91,13 @@ void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushor
 	// vertices
 	float uvX, uvY;
 	CalcUV(height, temp, uvX, uvY);
-	float offset = height * 0.05f;
 
-	glm::vec3 realCentre = glm::normalize(centre) * (0.935617f + offset);
+	/*glm::vec3 realCentre = glm::normalize(centre) * (0.935617f + offset);
 	vertices.push_back(realCentre.x);
 	vertices.push_back(realCentre.y);
 	vertices.push_back(realCentre.z);
 	vertices.push_back(uvX);
-	vertices.push_back(uvY);
+	vertices.push_back(uvY);*/
 
 	glm::vec3 len = points[1] - centre;
 	float angleDelta = M_PI / points.size();
@@ -128,16 +130,48 @@ void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushor
 	}
 
 	// elements
-	int index = vertices.size()/5 - (1+points.size()*2);
-	for (int i = 0; i < points.size(); i++) {
-		int point = 1 + i*2 + index;
-		int back = 2 + i*2 + index;
-		int nextPoint = 3 + i*2 + index; if (nextPoint > index-1+points.size()*2) nextPoint = index + 1;
-		int nextBack = 4 + i*2 + index; if (nextBack > index+points.size()*2) nextBack = index + 2;
+	int index = vertices.size()/5 - (points.size()*2);
 
+	if (points.size() == 6) {
 		elements.push_back(index);
-		elements.push_back(nextPoint);
-		elements.push_back(point);
+		elements.push_back(index+10);
+		elements.push_back(index+2);
+
+		elements.push_back(index+2);
+		elements.push_back(index+10);
+		elements.push_back(index+4);
+		
+		elements.push_back(index+4);
+		elements.push_back(index+10);
+		elements.push_back(index+8);
+		
+		elements.push_back(index+4);
+		elements.push_back(index+8);
+		elements.push_back(index+6);
+	} else {
+		elements.push_back(index);
+		elements.push_back(index+8);
+		elements.push_back(index+2);
+
+		elements.push_back(index+2);
+		elements.push_back(index+8);
+		elements.push_back(index+6);
+
+		elements.push_back(index+2);
+		elements.push_back(index+6);
+		elements.push_back(index+4);
+	}
+
+	int point;
+	int back;
+	int nextPoint;
+	int nextBack;
+
+	for (int i = 0; i < points.size(); i++) {
+		point = 0 + i*2 + index;
+		back = 1 + i*2 + index;
+		nextPoint = 2 + i*2 + index; if (nextPoint > index-2+points.size()*2) nextPoint = index + 0;
+		nextBack = 3 + i*2 + index; if (nextBack > index-1+points.size()*2) nextBack = index + 1;
 
 		elements.push_back(point);
 		elements.push_back(nextPoint);
@@ -149,6 +183,89 @@ void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushor
 	}
 }
 
+void PlanetHex::AddHexSurfaceToMesh(std::vector<GLfloat> &vertices, std::vector<GLushort> &elements) {
+	std::vector<glm::vec3> points;
+	glm::vec3 centre = glm::vec3(0, 0, 0);
+
+	for (std::vector<std::vector<PlanetTri>::iterator>::iterator it = tris.begin(); it != tris.end(); it++) {
+		points.push_back((*it)->centre);
+
+		centre += (*it)->centre;
+	}
+	centre /= points.size();
+
+	// vertices
+	float uvX, uvY;
+	CalcUV(height, temp, uvX, uvY);
+
+	/*glm::vec3 realCentre = glm::normalize(centre) * (0.935617f + offset);
+	vertices.push_back(realCentre.x);
+	vertices.push_back(realCentre.y);
+	vertices.push_back(realCentre.z);
+	vertices.push_back(uvX);
+	vertices.push_back(uvY);*/
+
+	glm::vec3 len = points[1] - centre;
+	float angleDelta = M_PI / points.size();
+	glm::vec3 axis = glm::normalize(centre);
+
+	for (int i = 0; i < points.size(); i++) {
+		float angle = angleDelta * i;
+
+		glm::vec3 newPoint = centre + len * glm::quat(cos(angle), axis.x * sin(angle), axis.y * sin(angle), axis.z * sin(angle));
+		for (std::vector<glm::vec3>::iterator it = points.begin(); it != points.end(); it++) {
+			if (abs(glm::length(*it - newPoint)) < 0.1f) {
+				newPoint = glm::normalize(*it) * (1.0f + offset);
+				break;
+			}
+		}
+
+		vertices.push_back(newPoint.x);
+		vertices.push_back(newPoint.y);
+		vertices.push_back(newPoint.z);
+		vertices.push_back(uvX);
+		vertices.push_back(uvY);
+	}
+
+	// elements
+	int index = vertices.size()/5 - (points.size());
+
+	if (points.size() == 6) {
+		elements.push_back(index);
+		elements.push_back(index+5);
+		elements.push_back(index+1);
+
+		elements.push_back(index+1);
+		elements.push_back(index+5);
+		elements.push_back(index+2);
+		
+		elements.push_back(index+2);
+		elements.push_back(index+5);
+		elements.push_back(index+4);
+		
+		elements.push_back(index+2);
+		elements.push_back(index+4);
+		elements.push_back(index+3);
+	} else {
+		elements.push_back(index);
+		elements.push_back(index+4);
+		elements.push_back(index+1);
+
+		elements.push_back(index+1);
+		elements.push_back(index+4);
+		elements.push_back(index+3);
+
+		elements.push_back(index+1);
+		elements.push_back(index+3);
+		elements.push_back(index+2);
+	}
+}
+
+
+// calculates a vector from the centre to the first point in the hex
+glm::vec3 PlanetHex::GetVecToPoint() {
+	return (glm::normalize(tris[0]->centre) * (1.0f + offset)) - (glm::normalize(pos) * (0.935617f + offset));
+}
 
 // stuff
 void PlanetHex::CalcUV(int height, int temp, float &uvX, float &uvY) {

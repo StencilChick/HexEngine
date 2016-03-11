@@ -15,9 +15,6 @@ out vec2 vertUV;
 out vec4 inColour;
 flat out int imgID;
 
-flat out int imgWidth;
-flat out int imgHeight;
-
 void main() {
 	vertUV = vec2(uv.x, 1 - uv.y);
 	gl_Position = modelMatrix[gl_InstanceID] * vec4(position, 1);
@@ -25,6 +22,4 @@ void main() {
 	inColour = colour[gl_InstanceID];
 	
 	imgID = textureID[gl_InstanceID];
-	imgWidth = w[gl_InstanceID];
-	imgHeight = h[gl_InstanceID];
 }

@@ -11,8 +11,10 @@ public:
 	void Update();
 
 	static mat4 GetViewMatrix();
+	static mat4 GetInverseViewMatrix();
 
 	static mat4 GetProjectionMatrix();
+	static mat4 GetInverseProjectionMatrix();
 	static void SetProjectionMatrix(float fov, float aspect, float near, float far);
 
 private:
@@ -27,4 +29,7 @@ private:
 	// the view matrix
 	static mat4 viewMatrix;
 	static mat4 projectionMatrix;
+
+	static mat4 inverseViewMatrix;
+	static mat4 inverseProjectionMatrix;
 };
