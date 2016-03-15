@@ -71,7 +71,7 @@ PlanetHex::PlanetHex(Planet *planet, glm::vec3 pos, int height, int temp) {
 	this->temp = temp;
 
 	if (temp == 0) this->height = std::max(height, 1);
-	offset = this->height * 0.05f;
+	offset = this->height * 0.05f / sqrt(planet->GetRadius()) * 2;
 
 	tris.resize(0);
 	adjacentHexes.resize(0);
@@ -108,7 +108,7 @@ void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushor
 
 		glm::vec3 newPoint = centre + len * glm::quat(cos(angle), axis.x * sin(angle), axis.y * sin(angle), axis.z * sin(angle));
 		for (std::vector<glm::vec3>::iterator it = points.begin(); it != points.end(); it++) {
-			if (abs(glm::length(*it - newPoint)) < 0.1f) {
+			if (abs(glm::length(*it - newPoint)) < 0.025f) {
 				newPoint = glm::normalize(*it) * (1.0f + offset);
 				break;
 			}
@@ -198,13 +198,6 @@ void PlanetHex::AddHexSurfaceToMesh(std::vector<GLfloat> &vertices, std::vector<
 	float uvX, uvY;
 	CalcUV(height, temp, uvX, uvY);
 
-	/*glm::vec3 realCentre = glm::normalize(centre) * (0.935617f + offset);
-	vertices.push_back(realCentre.x);
-	vertices.push_back(realCentre.y);
-	vertices.push_back(realCentre.z);
-	vertices.push_back(uvX);
-	vertices.push_back(uvY);*/
-
 	glm::vec3 len = points[1] - centre;
 	float angleDelta = M_PI / points.size();
 	glm::vec3 axis = glm::normalize(centre);
@@ -214,7 +207,7 @@ void PlanetHex::AddHexSurfaceToMesh(std::vector<GLfloat> &vertices, std::vector<
 
 		glm::vec3 newPoint = centre + len * glm::quat(cos(angle), axis.x * sin(angle), axis.y * sin(angle), axis.z * sin(angle));
 		for (std::vector<glm::vec3>::iterator it = points.begin(); it != points.end(); it++) {
-			if (abs(glm::length(*it - newPoint)) < 0.1f) {
+			if (abs(glm::length(*it - newPoint)) < 0.025f) {
 				newPoint = glm::normalize(*it) * (1.0f + offset);
 				break;
 			}

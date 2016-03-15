@@ -32,7 +32,7 @@ private:
 	std::vector<PlanetTri> tris;
 	std::vector<PlanetHex> hexes;
 
-	Mesh *mesh;
+	std::vector<Mesh*> meshes;
 
 	glm::vec3 pos;
 	int radius;

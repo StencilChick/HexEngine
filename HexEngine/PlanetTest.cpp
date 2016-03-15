@@ -14,7 +14,7 @@
 
 PlanetTest::PlanetTest() {
 	planet = Planet();
-	planet.SetUp(2);
+	planet.SetUp(3);
 
 	Camera *cam = Camera::GetInstance();
 	cam->SetPosition(0, 0, 10);
@@ -36,7 +36,7 @@ void PlanetTest::Update() {
 
 	// controls
 	Input *input = Input::GetInstance();
-	float dragSpeed = 5 * camZoom/8 * input->DeltaTime();
+	float dragSpeed = 5 * camZoom/8 * input->DeltaTime() / planet.GetRadius() * 4;
 
 	if (input->MouseButton(2)) {
 		if (input->MouseButtonDown(2)) {
@@ -57,8 +57,8 @@ void PlanetTest::Update() {
 	}
 
 	camZoom -= 20 * input->MouseScroll() * input->DeltaTime();
-	if (camZoom < 8) camZoom = 8;
-	else if (camZoom > 20) camZoom = 20;
+	if (camZoom < planet.GetRadius() * 2) camZoom = planet.GetRadius() * 2;
+	else if (camZoom > planet.GetRadius() * 4) camZoom = planet.GetRadius() * 4;
 
 	// control results
 	quat camRot = quat(vec3(camRotY, camRotX, 0));

@@ -3,21 +3,22 @@
 #include <glm/gtx/transform.hpp>
 #include <iostream>
 
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include <algorithm>
 
 #include "World.h"
 #include "simplex/simplexnoise.h"
 
 Planet::Planet() {
-	mesh = nullptr;
+	meshes.resize(10);
 
 	pos = glm::vec3(0, 0, 0);
 }
 
 Planet::~Planet() {
-	if (mesh != nullptr) {
-		delete mesh;
-		mesh = nullptr;
+	for (int i = 0; i < meshes.size(); i++) {
+		delete meshes[i];
 	}
 }
 
@@ -105,8 +106,18 @@ void Planet::SetUp(int subs) {
 			if (std::find(addedVerts.begin(), addedVerts.end(), it->points[i]) == addedVerts.end()) {
 				// not already a hex
 				glm::vec3 pos = it->points[i];
-				int height = std::max(round((octave_noise_4d(4, 0.15f, 1.0f, pos.x, pos.y, pos.z, seed)  - seaLevel) * imgWid), 0.0f);
-				int temp = std::max(round((1 - abs(pos.y)) * imgHei + octave_noise_4d(4, 0.15f, 1.0f, pos.x, pos.y, pos.z, seed+1)/2), 0.0f);
+
+				float scale = 1 + 0.1 * size;
+				int height = std::max(round((
+					octave_noise_4d(
+						4, 0.15f, 1.0f, 
+						pos.x * scale, pos.y * scale, pos.z * scale, seed)
+					- seaLevel) * imgWid), 0.0f);
+				int temp = std::max(round((1 - abs(pos.y)) * imgHei + 
+					octave_noise_4d(
+						4, 0.15f, 1.0f, 
+						pos.x * scale, pos.y * scale, pos.z * scale, seed+1)/2),
+					0.0f);
 
 				PlanetHex hex = PlanetHex(this, pos, height, temp);
 				hex.tris.push_back(it);
@@ -127,20 +138,21 @@ void Planet::SetUp(int subs) {
 	}
 
 	// mesh
-	std::vector<GLfloat> vertices;
-	std::vector<GLushort> elements;
+	std::vector<GLfloat> vertices[10];
+	std::vector<GLushort> elements[10];
 
 	for (std::vector<PlanetHex>::iterator it = hexes.begin(); it != hexes.end(); it++) {
-		it->AddHexToMesh(vertices, elements);
+		int listInd = (atan2(it->pos.z, it->pos.x) / M_PI + 1) / 2 * 5;
+		if (listInd == 5) listInd = 0;
+		if (it->pos.y < 0) listInd += 5;
 
-		/*if (it == hexes.begin()) {
-			std::cout << vertices.size() / 5 << ", " << elements.size() / 3 << std::endl;
-		}*/
+		it->AddHexToMesh(vertices[listInd], elements[listInd]);
+		//it->AddHexSurfaceToMesh(vertices[listInd], elements[listInd]);
 	}
 
-	if (mesh == nullptr) {
-		mesh = new Mesh(&vertices[0], vertices.size()/5, &elements[0], elements.size());
-		mesh->AddShader(World::GetShaderManager()->GetShader("default"));
+	for (int i = 0; i < 10; i++) {
+		meshes[i] = new Mesh(&vertices[i][0], vertices[i].size()/5, &elements[i][0], elements[i].size());
+		meshes[i]->AddShader(World::GetShaderManager()->GetShader("default"));
 	}
 }
 
@@ -150,14 +162,15 @@ void Planet::Update() {
 }
 
 void Planet::Draw() {
-	mesh->Draw(
-		World::GetShaderManager()->GetShader("default"), 
-		glm::translate(pos) * glm::scale(glm::vec3(radius, radius, radius)), 
-		glm::vec4(1, 1, 1, 1), 
-		World::GetImageManager()->GetImage("planetColours.png")
-		);
-
-	mesh->BindBuffersAndDraw();
+	for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++) {
+		(*it)->Draw(
+			World::GetShaderManager()->GetShader("default"), 
+			glm::translate(pos) * glm::scale(glm::vec3(radius, radius, radius)), 
+			glm::vec4(1, 1, 1, 1), 
+			World::GetImageManager()->GetImage("planetColours.png")
+			);
+		(*it)->BindBuffersAndDraw();
+	}
 }
 
 

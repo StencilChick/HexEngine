@@ -33,8 +33,8 @@ public:
 	static ImageManager* GetImageManager();
 	static FontManager* GetFontManager();
 
-	static const int SCREEN_WIDTH = 900;
-	static const int SCREEN_HEIGHT = 540;
+	static const int SCREEN_WIDTH = 1024;
+	static const int SCREEN_HEIGHT = 768;
 
 private:
 	// singleton stuff
