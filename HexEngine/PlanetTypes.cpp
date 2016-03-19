@@ -58,6 +58,8 @@ void PlanetType::ParseLine(const char *line) {
 	} else if (parameters[0] == string("sea")) {
 		minSeaLevel = stof(parameters[1]);
 		maxSeaLevel = stof(parameters[2]);
+	} else if (parameters[0] == string("temp")) {
+		tempMod = stof(parameters[1]);
 	}
 }
 

@@ -26,7 +26,7 @@ Planet::~Planet() {
 
 void Planet::SetUp(int subs) {
 	int seed = rand() % 10000; //23764; //2154;
-	type = Game::GetPlanetTypeManager()->GetType(std::string("default"));
+	type = Game::GetPlanetTypeManager()->GetType(std::string("desert"));
 
 	size = subs;
 	radius = 2 * pow(2, subs-1);
@@ -118,8 +118,8 @@ void Planet::SetUp(int subs) {
 				int temp = std::max(round((1 - abs(pos.y)) * imgHei + 
 					octave_noise_4d(
 						4, 0.15f, 1.0f, 
-						pos.x * scale, pos.y * scale, pos.z * scale, seed+1)/2),
-					0.0f);
+						pos.x * scale, pos.y * scale, pos.z * scale, seed+1)
+					/2) + type->tempMod, 0.0f);
 
 				temp = std::min(2, temp);
 				height = std::min(5, height);

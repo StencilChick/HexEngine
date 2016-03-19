@@ -13,6 +13,8 @@ struct PlanetType {
 	float minSeaLevel;
 	float maxSeaLevel;
 
+	float tempMod;
+
 	PlanetType();
 	PlanetType(const char*);
 
