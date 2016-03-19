@@ -100,8 +100,7 @@ void Planet::SetUp(int subs) {
 	int imgWid = 6;
 	int imgHei = 3;
 
-	float seaLevel = octave_noise_4d(4, 0.15f, 1.0f, 0, 0, 0, seed) / 2.5f;
-	std::cout << seaLevel << std::endl;
+	float seaLevel = type->minSeaLevel + (type->maxSeaLevel - type->minSeaLevel) * (octave_noise_4d(4, 0.15f, 1.0f, 0, 0, 0, seed)+1)/2;
 
 	for (std::vector<PlanetTri>::iterator it = tris.begin(); it != tris.end(); it++) {
 		// assign tris to hexes
