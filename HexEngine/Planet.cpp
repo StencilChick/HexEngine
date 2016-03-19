@@ -8,6 +8,7 @@
 #include <algorithm>
 
 #include "World.h"
+#include "Game.h"
 #include "simplex/simplexnoise.h"
 
 Planet::Planet() {
@@ -24,6 +25,9 @@ Planet::~Planet() {
 
 
 void Planet::SetUp(int subs) {
+	int seed = rand() % 10000; //23764; //2154;
+	type = Game::GetPlanetTypeManager()->GetType(std::string("default"));
+
 	size = subs;
 	radius = 2 * pow(2, subs-1);
 
@@ -93,10 +97,9 @@ void Planet::SetUp(int subs) {
 	// make hexes from the triangles
 	std::vector<glm::vec3> addedVerts;
 
-	int imgWid = World::GetImageManager()->GetImage("planetColours.png")->GetWidth();
-	int imgHei = World::GetImageManager()->GetImage("planetColours.png")->GetHeight();
+	int imgWid = 6;
+	int imgHei = 3;
 
-	int seed = rand() % 10000; //23764; //2154;
 	float seaLevel = octave_noise_4d(4, 0.15f, 1.0f, 0, 0, 0, seed) / 2.5f;
 	std::cout << seaLevel << std::endl;
 
@@ -118,6 +121,9 @@ void Planet::SetUp(int subs) {
 						4, 0.15f, 1.0f, 
 						pos.x * scale, pos.y * scale, pos.z * scale, seed+1)/2),
 					0.0f);
+
+				temp = std::min(2, temp);
+				height = std::min(5, height);
 
 				PlanetHex hex = PlanetHex(this, pos, height, temp);
 				hex.tris.push_back(it);
@@ -167,7 +173,7 @@ void Planet::Draw() {
 			World::GetShaderManager()->GetShader("default"), 
 			glm::translate(pos) * glm::scale(glm::vec3(radius, radius, radius)), 
 			glm::vec4(1, 1, 1, 1), 
-			World::GetImageManager()->GetImage("planetColours.png")
+			World::GetImageManager()->GetImage(type->image)
 			);
 		(*it)->BindBuffersAndDraw();
 	}
@@ -184,6 +190,10 @@ glm::vec3 Planet::GetPos() {
 
 float Planet::GetRadius() {
 	return radius;
+}
+
+PlanetType* Planet::GetType() {
+	return type;
 }
 
 

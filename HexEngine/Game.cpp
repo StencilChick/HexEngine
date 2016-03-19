@@ -5,8 +5,10 @@
 
 #include <iostream>
 
+PlanetTypeManager Game::planetTypeManager;
+
 Game::Game() {
-	scenes.push(new PlanetTest());
+	
 }
 
 Game::~Game() {
@@ -34,10 +36,23 @@ void Game::Destroy() {
 
 
 // draw and update
+void Game::SetUp() {
+	planetTypeManager = PlanetTypeManager();
+	planetTypeManager.Load();
+	
+	scenes.push(new PlanetTest());
+}
+
 void Game::Update() {
 	scenes.back()->Update();
 }
 
 void Game::Draw() {
 	scenes.back()->Draw();
+}
+
+
+// manager
+PlanetTypeManager* Game::GetPlanetTypeManager() {
+	return &planetTypeManager;
 }

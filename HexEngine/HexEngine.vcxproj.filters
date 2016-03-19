@@ -55,6 +55,12 @@
     <Filter Include="Header Files\Game\Objects">
       <UniqueIdentifier>{f48919e1-8359-420f-868e-edde969ad85c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Game\Objects\Planets">
+      <UniqueIdentifier>{f7ab74ec-85b3-4c7d-bd2f-0ad1b2681f44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game\Objects\Planets">
+      <UniqueIdentifier>{5f3fcccf-1902-4cc6-9f51-05add0e91360}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -123,9 +129,6 @@
     <ClCompile Include="PlanetTest.cpp">
       <Filter>Source Files\Game\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Planet.cpp">
-      <Filter>Source Files\Game\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="PlanetHelpers.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
@@ -140,6 +143,12 @@
     </ClCompile>
     <ClCompile Include="HexSelector.cpp">
       <Filter>Source Files\Game\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Planet.cpp">
+      <Filter>Source Files\Game\Objects\Planets</Filter>
+    </ClCompile>
+    <ClCompile Include="PlanetTypes.cpp">
+      <Filter>Source Files\Game\Objects\Planets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,9 +221,6 @@
     <ClInclude Include="PlanetTest.h">
       <Filter>Header Files\Game\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Planet.h">
-      <Filter>Header Files\Game\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="PlanetHelpers.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
@@ -229,6 +235,12 @@
     </ClInclude>
     <ClInclude Include="HexSelector.h">
       <Filter>Header Files\Game\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Planet.h">
+      <Filter>Header Files\Game\Objects\Planets</Filter>
+    </ClInclude>
+    <ClInclude Include="PlanetTypes.h">
+      <Filter>Header Files\Game\Objects\Planets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,6 +4,8 @@
 #include <queue>
 #include "Scene.h"
 
+#include "PlanetTypes.h"
+
 class Game {
 public:
 	// singleton stuff
@@ -11,8 +13,13 @@ public:
 	static void Destroy();
 
 	// stuff that makes the game run
+	void SetUp();
+
 	void Update();
 	void Draw();
+
+	// manager
+	static PlanetTypeManager* GetPlanetTypeManager();
 
 private:
 	// singleton stuff
@@ -25,4 +32,7 @@ private:
 
 	// scenes
 	std::queue<Scene*> scenes;
+
+	// managers
+	static PlanetTypeManager planetTypeManager;
 };

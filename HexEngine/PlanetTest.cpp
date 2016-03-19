@@ -5,6 +5,7 @@
 #include <string>
 
 #include <glm/gtx/transform.hpp>
+#include <iostream>
 
 #include "Camera.h"
 #include "Input.h"
@@ -14,7 +15,7 @@
 
 PlanetTest::PlanetTest() {
 	planet = Planet();
-	planet.SetUp(3);
+	planet.SetUp(4);
 
 	Camera *cam = Camera::GetInstance();
 	cam->SetPosition(0, 0, 10);
@@ -90,7 +91,7 @@ void PlanetTest::Draw() {
 		if (selector.GetTarget() != nullptr) {
 			fontMgr->WriteLine(
 				fontMgr->GetAtlas("times.ttf"), 
-				"Hit", 
+				planet.GetType()->hexes[selector.GetTarget()->temp][selector.GetTarget()->height].c_str(), 
 				5, 5
 				);
 		} else {

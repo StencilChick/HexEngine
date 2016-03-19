@@ -90,6 +90,7 @@ void World::SetUp() {
 	cursor = Cursor::GetInstance();
 
 	game = Game::GetInstance();
+	game->SetUp();
 }
 
 // running all the junk and stuff
