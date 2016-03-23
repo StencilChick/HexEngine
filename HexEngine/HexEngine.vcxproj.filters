@@ -55,11 +55,11 @@
     <Filter Include="Header Files\Game\Objects">
       <UniqueIdentifier>{f48919e1-8359-420f-868e-edde969ad85c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Game\Objects\Planets">
-      <UniqueIdentifier>{f7ab74ec-85b3-4c7d-bd2f-0ad1b2681f44}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Game\Objects\Planets">
+    <Filter Include="Header Files\Game\Objects\Galaxy">
       <UniqueIdentifier>{5f3fcccf-1902-4cc6-9f51-05add0e91360}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game\Objects\Galaxy">
+      <UniqueIdentifier>{f7ab74ec-85b3-4c7d-bd2f-0ad1b2681f44}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -123,9 +123,6 @@
     <ClCompile Include="MapGenHelpers.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="GridTest.cpp">
-      <Filter>Source Files\Game\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="PlanetTest.cpp">
       <Filter>Source Files\Game\Scenes</Filter>
     </ClCompile>
@@ -145,10 +142,22 @@
       <Filter>Source Files\Game\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="Planet.cpp">
-      <Filter>Source Files\Game\Objects\Planets</Filter>
+      <Filter>Source Files\Game\Objects\Galaxy</Filter>
     </ClCompile>
     <ClCompile Include="PlanetTypes.cpp">
-      <Filter>Source Files\Game\Objects\Planets</Filter>
+      <Filter>Source Files\Game\Objects\Galaxy</Filter>
+    </ClCompile>
+    <ClCompile Include="Galaxy.cpp">
+      <Filter>Source Files\Game\Objects\Galaxy</Filter>
+    </ClCompile>
+    <ClCompile Include="Star.cpp">
+      <Filter>Source Files\Game\Objects\Galaxy</Filter>
+    </ClCompile>
+    <ClCompile Include="SolarSystem.cpp">
+      <Filter>Source Files\Game\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GalaxyView.cpp">
+      <Filter>Source Files\Game\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -215,9 +224,6 @@
     <ClInclude Include="MapGenHelpers.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="GridTest.h">
-      <Filter>Header Files\Game\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="PlanetTest.h">
       <Filter>Header Files\Game\Scenes</Filter>
     </ClInclude>
@@ -237,10 +243,22 @@
       <Filter>Header Files\Game\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Planet.h">
-      <Filter>Header Files\Game\Objects\Planets</Filter>
+      <Filter>Header Files\Game\Objects\Galaxy</Filter>
     </ClInclude>
     <ClInclude Include="PlanetTypes.h">
-      <Filter>Header Files\Game\Objects\Planets</Filter>
+      <Filter>Header Files\Game\Objects\Galaxy</Filter>
+    </ClInclude>
+    <ClInclude Include="Galaxy.h">
+      <Filter>Header Files\Game\Objects\Galaxy</Filter>
+    </ClInclude>
+    <ClInclude Include="Star.h">
+      <Filter>Header Files\Game\Objects\Galaxy</Filter>
+    </ClInclude>
+    <ClInclude Include="SolarSystem.h">
+      <Filter>Header Files\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GalaxyView.h">
+      <Filter>Header Files\Game\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

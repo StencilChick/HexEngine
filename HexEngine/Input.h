@@ -17,7 +17,7 @@ public:
 	void Update();
 
 	// time
-	double DeltaTime();
+	static double DeltaTime();
 
 	// mouse
 	static glm::vec2 MousePos();
@@ -35,9 +35,9 @@ public:
 	static bool IsCursorBound();
 
 	// keys
-	bool GetKey(int);
-	bool GetKeyDown(int);
-	bool GetKeyUp(int);
+	static bool GetKey(int);
+	static bool GetKeyDown(int);
+	static bool GetKeyUp(int);
 
 private:
 	// singleton stuff
@@ -50,8 +50,8 @@ private:
 
 
 	// value stuff
-	double lastTime;
-	double thisTime;
+	static double lastTime;
+	static double thisTime;
 
 	static glm::vec2 lastMousePos;
 	static glm::vec2 thisMousePos;

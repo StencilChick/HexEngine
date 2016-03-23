@@ -93,6 +93,8 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="FileLoaders.cpp" />
     <ClCompile Include="FontManager.cpp" />
+    <ClCompile Include="Galaxy.cpp" />
+    <ClCompile Include="GalaxyView.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Generic.cpp" />
@@ -116,7 +118,8 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClCompile Include="ShaderHelpers.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="simplex\simplexnoise.cpp" />
-    <ClCompile Include="GridTest.cpp" />
+    <ClCompile Include="SolarSystem.cpp" />
+    <ClCompile Include="Star.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +128,8 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClInclude Include="FileLoaders.h" />
     <ClInclude Include="FontHelpers.h" />
     <ClInclude Include="FontManager.h" />
+    <ClInclude Include="Galaxy.h" />
+    <ClInclude Include="GalaxyView.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Generic.h" />
@@ -148,7 +153,8 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClInclude Include="ShaderHelpers.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="simplex\simplexnoise.h" />
-    <ClInclude Include="GridTest.h" />
+    <ClInclude Include="SolarSystem.h" />
+    <ClInclude Include="Star.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -3,6 +3,8 @@
 #include "Scene.h"
 
 #include "Planet.h"
+#include "Galaxy.h"
+
 #include "Hex.h"
 #include "HexSelector.h"
 
@@ -15,6 +17,7 @@ public:
 	void Draw();
 
 private:
+	Galaxy galaxy;
 	Planet planet;
 
 	// camera controls

@@ -1,10 +1,12 @@
 #include "Game.h"
 
-#include "GridTest.h"
 #include "PlanetTest.h"
+#include "SolarSystem.h"
+#include "GalaxyView.h"
 
 #include <iostream>
 
+Galaxy Game::galaxy;
 PlanetTypeManager Game::planetTypeManager;
 
 Game::Game() {
@@ -39,8 +41,12 @@ void Game::Destroy() {
 void Game::SetUp() {
 	planetTypeManager = PlanetTypeManager();
 	planetTypeManager.Load();
+
+	galaxy = Galaxy();
+	galaxy.PopulateNew(); // for testing
 	
-	scenes.push(new PlanetTest());
+	//scenes.push(new PlanetTest());
+	scenes.push(new GalaxyView());
 }
 
 void Game::Update() {
@@ -53,6 +59,10 @@ void Game::Draw() {
 
 
 // manager
+Galaxy* Game::GetGalaxy() {
+	return &galaxy;
+}
+
 PlanetTypeManager* Game::GetPlanetTypeManager() {
 	return &planetTypeManager;
 }

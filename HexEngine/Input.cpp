@@ -6,6 +6,9 @@
 using namespace glm;
 
 // values
+double Input::thisTime = 0;
+double Input::lastTime = 0;
+
 glm::vec2 Input::lastMousePos;
 glm::vec2 Input::thisMousePos;
 
@@ -20,9 +23,6 @@ bool Input::keyPressedThisFrame = false;
 
 // constructor
 Input::Input() {
-	thisTime = 0;
-	lastTime = 0;
-
 	theseMouseButtons[0] = false;
 	theseMouseButtons[1] = false;
 	theseMouseButtons[2] = false;

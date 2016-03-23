@@ -52,7 +52,6 @@ void PlanetType::ParseLine(const char *line) {
 		description = parameters[1];
 	} else if (parameters[0] == string("image")) {
 		image = "Planets\\" + parameters[1];
-		//image = "testGradient.png";
 	} else if (parameters[0] == string("hex")) {
 		hexes[stoi(parameters[1])][stoi(parameters[2])] = parameters[3];
 	} else if (parameters[0] == string("sea")) {

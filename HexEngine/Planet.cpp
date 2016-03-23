@@ -25,8 +25,8 @@ Planet::~Planet() {
 
 
 void Planet::SetUp(int subs) {
-	int seed = rand() % 10000; //23764; //2154;
-	type = Game::GetPlanetTypeManager()->GetType(std::string("desert"));
+	int seed = Game::GetGalaxy()->GetSeed();
+	type = Game::GetPlanetTypeManager()->GetType(std::string("continental"));
 
 	size = subs;
 	radius = 2 * pow(2, subs-1);

@@ -4,6 +4,7 @@
 #include <queue>
 #include "Scene.h"
 
+#include "Galaxy.h"
 #include "PlanetTypes.h"
 
 class Game {
@@ -19,6 +20,8 @@ public:
 	void Draw();
 
 	// manager
+	static Galaxy* GetGalaxy();
+
 	static PlanetTypeManager* GetPlanetTypeManager();
 
 private:
@@ -34,5 +37,7 @@ private:
 	std::queue<Scene*> scenes;
 
 	// managers
+	static Galaxy galaxy;
+
 	static PlanetTypeManager planetTypeManager;
 };

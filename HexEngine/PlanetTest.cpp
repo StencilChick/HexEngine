@@ -14,6 +14,8 @@
 #include "GUI.h"
 
 PlanetTest::PlanetTest() {
+	galaxy = Galaxy();
+
 	planet = Planet();
 	planet.SetUp(4);
 

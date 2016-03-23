@@ -97,7 +97,8 @@ void World::SetUp() {
 void World::Run() {
 	while (!glfwWindowShouldClose(window)) {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-		glClearColor(0.392f, 0.584f, 0.929f, 1);
+		//glClearColor(0.392f, 0.584f, 0.929f, 1);
+		glClearColor(0, 0, 0.125f, 0);
 
 		gui->ResetDepth();
 		input->Update();
