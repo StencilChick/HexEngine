@@ -1,6 +1,7 @@
-name:Mercurial
+name:Barren
 desc:[insert desc here]
-image:mercury.png
+weight:5
+image:barren.png
 hex:0:0:Barren
 hex:0:1:Barren
 hex:0:2:Barren

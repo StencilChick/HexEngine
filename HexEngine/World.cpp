@@ -84,7 +84,7 @@ void World::SetUp() {
 	fontManager.Load();
 
 	camera = Camera::GetInstance();
-	Camera::SetProjectionMatrix(45, SCREEN_WIDTH*1.0f/SCREEN_HEIGHT, 0.1f, 100);
+	Camera::SetProjectionMatrix(45, SCREEN_WIDTH*1.0f/SCREEN_HEIGHT, 0.1f, 1000);
 	input = Input::GetInstance();
 	gui = GUI::GetInstance();
 	cursor = Cursor::GetInstance();

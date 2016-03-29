@@ -59,6 +59,8 @@ void PlanetType::ParseLine(const char *line) {
 		maxSeaLevel = stof(parameters[2]);
 	} else if (parameters[0] == string("temp")) {
 		tempMod = stof(parameters[1]);
+	} else if (parameters[0] == string("weight")) {
+		weight = stoi(parameters[1]);
 	}
 }
 
@@ -69,6 +71,7 @@ PlanetTypeManager::PlanetTypeManager() {
 
 void PlanetTypeManager::Load() {
 	types.clear();
+	weightVal = 0;
 
 	vector<string> files = ListFilesAtDirectory(".\\Data\\Common\\Planets\\*.txt");
 	
@@ -78,11 +81,27 @@ void PlanetTypeManager::Load() {
 		string name = files[i].substr(subPos);
 		name = name.substr(0, name.size()-5);
 
-		types[name] = PlanetType(("./Data/Common/Planets/" + name + ".txt").c_str());
+		PlanetType type = PlanetType(("./Data/Common/Planets/" + name + ".txt").c_str());
+		weightVal += type.weight;
+
+		types[name] = type;
 	}
 }
 
 
 PlanetType* PlanetTypeManager::GetType(std::string name) {
 	return &types[name];
+}
+
+std::vector<std::string> PlanetTypeManager::GetTypeNames() {
+	std::vector<std::string> names;
+	for (std::map<std::string, PlanetType>::iterator it = types.begin(); it != types.end(); it++) {
+		names.push_back(it->first);
+	}
+
+	return names;
+}
+
+int PlanetTypeManager::GetWeightVal() {
+	return weightVal;
 }

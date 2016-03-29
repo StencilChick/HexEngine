@@ -93,6 +93,19 @@ vec3 GameObject::GetScale() {
 }
 
 
+vec3 GameObject::GetForward() {
+	return rotation * vec3(0, 0, 1);
+}
+
+vec3 GameObject::GetRight() {
+	return rotation * vec3(1, 0, 0);
+}
+
+vec3 GameObject::GetUp() {
+	return rotation * vec3(0, 1, 0);
+}
+
+
 void GameObject::LookAt(vec3 target, vec3 up) {
 	rotation = quat_cast(lookAt(position, target, up));
 }

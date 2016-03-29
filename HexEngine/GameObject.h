@@ -47,6 +47,10 @@ public:
 	void LookAt(vec3, vec3);
 	void LookAt(GameObject const&, vec3);
 
+	vec3 GetForward();
+	vec3 GetRight();
+	vec3 GetUp();
+
 	// colour
 	vec4 GetColour();
 	void SetColour(const vec4&);

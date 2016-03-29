@@ -7,14 +7,18 @@
 #include <math.h>
 #include <algorithm>
 
+#include "Star.h"
+
 #include "World.h"
 #include "Game.h"
 #include "simplex/simplexnoise.h"
 
 Planet::Planet() {
 	meshes.resize(10);
-
-	pos = glm::vec3(0, 0, 0);
+	meshCreated = false;
+}
+Planet::Planet(Star *star) : Planet() {
+	this->star = star;
 }
 
 Planet::~Planet() {
@@ -24,12 +28,13 @@ Planet::~Planet() {
 }
 
 
-void Planet::SetUp(int subs) {
+void Planet::SetUp(int subs, int distance) {
+	this->distance = distance;
 	int seed = Game::GetGalaxy()->GetSeed();
-	type = Game::GetPlanetTypeManager()->GetType(std::string("continental"));
+	//type = Game::GetPlanetTypeManager()->GetType(std::string("continental"));
 
 	size = subs;
-	radius = 2 * pow(2, subs-1);
+	radius = pow(2, subs-1);
 
 	// vertices
 	float t = (1.0f + sqrt(5.0f)) / 2.0f;
@@ -100,7 +105,27 @@ void Planet::SetUp(int subs) {
 	int imgWid = 6;
 	int imgHei = 3;
 
-	float seaLevel = type->minSeaLevel + (type->maxSeaLevel - type->minSeaLevel) * (octave_noise_4d(4, 0.15f, 1.0f, 0, 0, 0, seed)+1)/2;
+	glm::vec3 noiseCentre = (star->GetPosition() + glm::vec3(distance, 0, 0)) * 100.0f;
+
+	// assign type pseudorandomly
+	float typeWeight = Game::GetPlanetTypeManager()->GetWeightVal() * (octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed)+1)/2;
+	if (typeWeight >= Game::GetPlanetTypeManager()->GetWeightVal()) typeWeight -= 0.1f;
+
+	std::vector<std::string> typeNames = Game::GetPlanetTypeManager()->GetTypeNames();
+	for (std::vector<std::string>::iterator it = typeNames.begin(); it != typeNames.end(); it++) {
+		PlanetType *t = Game::GetPlanetTypeManager()->GetType(*it);
+
+		if (t->weight > typeWeight) {
+			type = t;
+			break;
+		} else {
+			typeWeight -= t->weight;
+		}
+	}
+
+	// assign other vals pseudorandomly
+	startAngle = 2*M_PI * (octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+1)+1)/2;
+	float seaLevel = type->minSeaLevel + (type->maxSeaLevel - type->minSeaLevel) * (octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+2)+1)/2;
 
 	for (std::vector<PlanetTri>::iterator it = tris.begin(); it != tris.end(); it++) {
 		// assign tris to hexes
@@ -113,12 +138,12 @@ void Planet::SetUp(int subs) {
 				int height = std::max(round((
 					octave_noise_4d(
 						4, 0.15f, 1.0f, 
-						pos.x * scale, pos.y * scale, pos.z * scale, seed)
+						pos.x * scale + noiseCentre.x, pos.y * scale + noiseCentre.y, pos.z * scale + noiseCentre.z, seed)
 					- seaLevel) * imgWid), 0.0f);
 				int temp = std::max(round((1 - abs(pos.y)) * imgHei + 
 					octave_noise_4d(
 						4, 0.15f, 1.0f, 
-						pos.x * scale, pos.y * scale, pos.z * scale, seed+1)
+						pos.x * scale + noiseCentre.x, pos.y * scale + noiseCentre.y, pos.z * scale + noiseCentre.z, seed+1)
 					/2) + type->tempMod, 0.0f);
 
 				temp = std::min(2, temp);
@@ -141,23 +166,38 @@ void Planet::SetUp(int subs) {
 			}
 		}
 	}
+}
 
-	// mesh
-	std::vector<GLfloat> vertices[10];
-	std::vector<GLushort> elements[10];
+void Planet::SetUpMesh() {
+	if (!meshCreated) {
+		std::vector<GLfloat> vertices[10];
+		std::vector<GLushort> elements[10];
 
-	for (std::vector<PlanetHex>::iterator it = hexes.begin(); it != hexes.end(); it++) {
-		int listInd = (atan2(it->pos.z, it->pos.x) / M_PI + 1) / 2 * 5;
-		if (listInd == 5) listInd = 0;
-		if (it->pos.y < 0) listInd += 5;
+		for (std::vector<PlanetHex>::iterator it = hexes.begin(); it != hexes.end(); it++) {
+			int listInd = (atan2(it->pos.z, it->pos.x) / M_PI + 1) / 2 * 5;
+			if (listInd == 5) listInd = 0;
+			if (it->pos.y < 0) listInd += 5;
 
-		it->AddHexToMesh(vertices[listInd], elements[listInd]);
-		//it->AddHexSurfaceToMesh(vertices[listInd], elements[listInd]);
+			it->AddHexToMesh(vertices[listInd], elements[listInd]);
+		}
+
+		for (int i = 0; i < 10; i++) {
+			meshes[i] = new Mesh(&vertices[i][0], vertices[i].size()/5, &elements[i][0], elements[i].size());
+			meshes[i]->AddShader(World::GetShaderManager()->GetShader("default"));
+		}
+
+		meshCreated = true;
 	}
+}
 
-	for (int i = 0; i < 10; i++) {
-		meshes[i] = new Mesh(&vertices[i][0], vertices[i].size()/5, &elements[i][0], elements[i].size());
-		meshes[i]->AddShader(World::GetShaderManager()->GetShader("default"));
+void Planet::DeleteMesh() {
+	if (meshCreated) {
+		for (int i = 0; i < 10; i++) {
+			delete meshes[i];
+			meshes[i] = nullptr;
+		}
+
+		meshCreated = false;
 	}
 }
 
@@ -167,10 +207,18 @@ void Planet::Update() {
 }
 
 void Planet::Draw() {
+	float angle = startAngle;
+	float dist = 50 + 75 * distance;
+	glm::vec3 position = glm::vec3(
+		cos(angle) * dist, 
+		0, 
+		sin(angle) * dist
+		);
+
 	for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++) {
 		(*it)->Draw(
 			World::GetShaderManager()->GetShader("default"), 
-			glm::translate(pos) * glm::scale(glm::vec3(radius, radius, radius)), 
+			glm::translate(position) * glm::scale(glm::vec3(radius, radius, radius)), 
 			glm::vec4(1, 1, 1, 1), 
 			World::GetImageManager()->GetImage(type->image)
 			);
@@ -179,16 +227,12 @@ void Planet::Draw() {
 }
 
 
-void Planet::SetPos(glm::vec3 pos) {
-	this->pos = pos;
-}
-
-glm::vec3 Planet::GetPos() {
-	return pos;
-}
-
 float Planet::GetRadius() {
 	return radius;
+}
+
+int Planet::GetDistance() {
+	return distance;
 }
 
 PlanetType* Planet::GetType() {

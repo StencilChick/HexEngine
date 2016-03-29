@@ -10,19 +10,23 @@
 #include "Mesh.h"
 #include "PlanetTypes.h"
 
+class Star;
+
 class Planet {
 public:
 	Planet();
+	Planet(Star*);
 	~Planet();
 
-	void SetUp(int);
+	void SetUp(int, int);
+	void SetUpMesh();
+	void DeleteMesh();
 
 	void Update();
 	void Draw();
 
-	void SetPos(glm::vec3);
-	glm::vec3 GetPos();
 	float GetRadius();
+	int GetDistance();
 
 	PlanetType* GetType();
 
@@ -32,13 +36,17 @@ public:
 	PlanetHex* GetClosestHexToPos(glm::vec3);
 
 private:
+	Star *star;
+
 	std::vector<PlanetTri> tris;
 	std::vector<PlanetHex> hexes;
 
 	std::vector<Mesh*> meshes;
+	bool meshCreated;
 
-	glm::vec3 pos;
 	int radius;
+	int distance;
+	float startAngle;
 
 	int size;
 	PlanetType *type;

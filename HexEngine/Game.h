@@ -19,6 +19,10 @@ public:
 	void Update();
 	void Draw();
 
+	// scenes
+	void PushScene(Scene*);
+	void PopScene();
+
 	// manager
 	static Galaxy* GetGalaxy();
 
@@ -35,6 +39,9 @@ private:
 
 	// scenes
 	std::queue<Scene*> scenes;
+
+	int popScene;
+	Scene *pushScene;
 
 	// managers
 	static Galaxy galaxy;

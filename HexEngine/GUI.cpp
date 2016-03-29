@@ -78,7 +78,7 @@ void GUI::DrawImage(Image *image, int x, int y, int width, int height, bool usin
 	float depth;
 	usingDepth ? depth = GetDepth() : 0.1f;
 
-	Mesh *m = World::GetMeshManager()->GetMesh("plane.obj");
+	Mesh *m = World::GetMeshManager()->GetMesh("z_plane.obj");
 	m->Draw(
 		World::GetShaderManager()->GetShader("hud"),
 		translate(vec3(ScreenPosToGL(x+width/2, y+height/2), depth)) * scale(vec3(ScreenSizeToGL(width, height)/2.0f, 1)),

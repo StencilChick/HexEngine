@@ -17,7 +17,7 @@ PlanetTest::PlanetTest() {
 	galaxy = Galaxy();
 
 	planet = Planet();
-	planet.SetUp(4);
+	planet.SetUp(4, 1);
 
 	Camera *cam = Camera::GetInstance();
 	cam->SetPosition(0, 0, 10);

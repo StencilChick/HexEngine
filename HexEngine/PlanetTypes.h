@@ -1,11 +1,13 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <map>
 
 struct PlanetType {
 	std::string name;
 	std::string description;
+	int weight;
 
 	std::string image;
 	std::string hexes[3][6];
@@ -29,7 +31,11 @@ public:
 	void Load();
 
 	PlanetType* GetType(std::string name);
+	std::vector<std::string> GetTypeNames();
+	int GetWeightVal();
 
 private:
 	std::map<std::string, PlanetType> types;
+
+	int weightVal;
 };

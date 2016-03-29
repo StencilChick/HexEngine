@@ -6,7 +6,9 @@
 class Galaxy;
 
 enum StarType {
-	yellow
+	yellow,
+	red,
+	blue
 };
 
 class Star {
@@ -17,12 +19,17 @@ public:
 
 	glm::vec3 GetPosition();
 	StarType GetType();
+	glm::vec4 GetColour();
+
+	int GetPlanetCount();
+	Planet* GetPlanet(int);
 
 private:
 	glm::vec3 position;
-	std::vector<Planet> planets;
+	std::vector<Planet*> planets;
 
 	StarType type;
+	glm::vec4 colour;
 
 	Galaxy *galaxy;
 };
