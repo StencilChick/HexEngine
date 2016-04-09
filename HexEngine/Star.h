@@ -14,8 +14,10 @@ enum StarType {
 class Star {
 public:
 	Star(Galaxy*, glm::vec3);
+	~Star();
 
-	void SetUp();
+	void Init();
+	void Unload();
 
 	glm::vec3 GetPosition();
 	StarType GetType();

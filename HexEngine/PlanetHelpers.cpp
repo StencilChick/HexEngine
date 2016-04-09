@@ -64,40 +64,41 @@ void PlanetTri::AddTriToMesh(std::vector<GLfloat> &verts, std::vector<GLushort> 
 
 
 // planet hex
-PlanetHex::PlanetHex(Planet *planet, glm::vec3 pos, int height, int temp) {
-	this->planet = planet;
+PlanetHex::PlanetHex(glm::vec3 pos) {
 	this->pos = pos;
+
+	planet = nullptr;
+	height = 0;
+	temp = 0;
+
+	triPos.resize(0);
+}
+
+
+void PlanetHex::Assign(Planet *planet, int height, int temp) {
+	this->planet = planet;
 	this->height = height;
 	this->temp = temp;
 
 	if (temp == 0) this->height = std::max(height, 1);
-	offset = this->height * 0.05f / sqrt(planet->GetRadius()) * 2;
-
-	tris.resize(0);
-	adjacentHexes.resize(0);
+	offset = this->height * 0.025f / sqrt(planet->GetRadius()) * 2;
 }
+
 
 void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushort> &elements) {
 	std::vector<glm::vec3> points;
 	glm::vec3 centre = glm::vec3(0, 0, 0);
 
-	for (std::vector<std::vector<PlanetTri>::iterator>::iterator it = tris.begin(); it != tris.end(); it++) {
-		points.push_back((*it)->centre);
+	for (std::vector<glm::vec3>::iterator it = triPos.begin(); it != triPos.end(); it++) {
+		points.push_back(*it);
 
-		centre += (*it)->centre;
+		centre += *it;
 	}
 	centre /= points.size();
 
 	// vertices
 	float uvX, uvY;
 	CalcUV(height, temp, uvX, uvY);
-
-	/*glm::vec3 realCentre = glm::normalize(centre) * (0.935617f + offset);
-	vertices.push_back(realCentre.x);
-	vertices.push_back(realCentre.y);
-	vertices.push_back(realCentre.z);
-	vertices.push_back(uvX);
-	vertices.push_back(uvY);*/
 
 	glm::vec3 len = points[1] - centre;
 	float angleDelta = M_PI / points.size();
@@ -187,10 +188,10 @@ void PlanetHex::AddHexSurfaceToMesh(std::vector<GLfloat> &vertices, std::vector<
 	std::vector<glm::vec3> points;
 	glm::vec3 centre = glm::vec3(0, 0, 0);
 
-	for (std::vector<std::vector<PlanetTri>::iterator>::iterator it = tris.begin(); it != tris.end(); it++) {
-		points.push_back((*it)->centre);
+	for (std::vector<glm::vec3>::iterator it = triPos.begin(); it != triPos.end(); it++) {
+		points.push_back(*it);
 
-		centre += (*it)->centre;
+		centre += *it;
 	}
 	centre /= points.size();
 
@@ -252,12 +253,6 @@ void PlanetHex::AddHexSurfaceToMesh(std::vector<GLfloat> &vertices, std::vector<
 		elements.push_back(index+3);
 		elements.push_back(index+2);
 	}
-}
-
-
-// calculates a vector from the centre to the first point in the hex
-glm::vec3 PlanetHex::GetVecToPoint() {
-	return (glm::normalize(tris[0]->centre) * (1.0f + offset)) - (glm::normalize(pos) * (0.935617f + offset));
 }
 
 // stuff

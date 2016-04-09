@@ -18,28 +18,36 @@ public:
 	Planet(Star*);
 	~Planet();
 
-	void SetUp(int, int);
+	void Init(Planet*, int);
 	void SetUpMesh();
 	void DeleteMesh();
 
 	void Update();
 	void Draw();
 
+	int GetMoonCount();
+	Planet* GetMoon(int);
+
 	float GetRadius();
 	int GetDistance();
+
+	glm::vec3 GetPosition();
+	float GetRotation();
 
 	PlanetType* GetType();
 
 	bool GetRayHit(glm::vec3, glm::vec3, glm::vec3&);
 	bool GetRayHit(Ray, glm::vec3&);
+	bool GetRayHit(glm::vec3, glm::vec3);
+	bool GetRayHit(Ray);
 
 	PlanetHex* GetClosestHexToPos(glm::vec3);
 
 private:
 	Star *star;
+	Planet *parent; // if this planet is a moon
 
-	std::vector<PlanetTri> tris;
-	std::vector<PlanetHex> hexes;
+	std::vector<Planet*> moons;
 
 	std::vector<Mesh*> meshes;
 	bool meshCreated;
@@ -47,7 +55,13 @@ private:
 	int radius;
 	int distance;
 	float startAngle;
+	float revolveTime;
 
 	int size;
 	PlanetType *type;
+
+	float seaLevel;
+
+	float GetHexHeight(glm::vec3);
+	float GetHexTemp(glm::vec3);
 };

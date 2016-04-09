@@ -14,7 +14,17 @@ public:
 private:
 	Galaxy *galaxy;
 
+	Star* GetRayhitStar(Ray);
+
+	void GoToSystemView();
+
+	// camera
+	Star *targetStar;
+
 	float camDist;
 	float camRotX;
 	float camRotY;
+	glm::vec3 camFocus;
+
+	void UpdateCamera();
 };

@@ -6,8 +6,13 @@
 
 #include <iostream>
 
+std::stack<Scene*> Game::scenes;
+int Game::popScene;
+Scene* Game::pushScene;
+
 Galaxy Game::galaxy;
 PlanetTypeManager Game::planetTypeManager;
+SphereManager Game::sphereManager;
 
 Game::Game() {
 	
@@ -15,9 +20,13 @@ Game::Game() {
 
 Game::~Game() {
 	while (scenes.size() > 0) {
-		delete scenes.back();
+		std::cout << scenes.top() << std::endl;
+
+		delete scenes.top();
 		scenes.pop();
 	}
+
+	galaxy.Unload();
 }
 
 // singleton stuff
@@ -38,9 +47,12 @@ void Game::Destroy() {
 
 
 // draw and update
-void Game::SetUp() {
+void Game::Init() {
 	planetTypeManager = PlanetTypeManager();
 	planetTypeManager.Load();
+
+	sphereManager = SphereManager();
+	sphereManager.Init();
 
 	popScene = 0;
 	pushScene = nullptr;
@@ -49,14 +61,14 @@ void Game::SetUp() {
 	galaxy.PopulateNew(); // for testing
 	
 	//scenes.push(new PlanetTest());
-	//scenes.push(new GalaxyView());
+	scenes.push(new GalaxyView());
 	scenes.push(new SolarSystem(galaxy.GetStar(0)));
 }
 
 void Game::Update() {
 	// push/pop scenes
 	while (popScene > 0) {
-		delete scenes.back();
+		delete scenes.top();
 		scenes.pop();
 
 		popScene--;
@@ -68,11 +80,11 @@ void Game::Update() {
 	}
 
 	// update top scene
-	scenes.back()->Update();
+	scenes.top()->Update();
 }
 
 void Game::Draw() {
-	scenes.back()->Draw();
+	scenes.top()->Draw();
 }
 
 
@@ -93,4 +105,8 @@ Galaxy* Game::GetGalaxy() {
 
 PlanetTypeManager* Game::GetPlanetTypeManager() {
 	return &planetTypeManager;
+}
+
+SphereManager* Game::GetSphereManager() {
+	return &sphereManager;
 }

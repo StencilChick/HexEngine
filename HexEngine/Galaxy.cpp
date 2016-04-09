@@ -12,8 +12,30 @@
 
 #include "World.h"
 
-Galaxy::Galaxy() {
-	
+Galaxy::Galaxy() : starSize(0.05f) {
+	timer = Timer();
+}
+
+Galaxy& Galaxy::operator=(Galaxy &other) {
+	if (&other == this) {
+		return *this;
+	}
+
+	this->seed = other.GetSeed();
+	this->timer = *other.GetTimer();
+
+	stars.clear();
+	for (int i = 0; i < other.GetStarCount(); i++) {
+		stars.push_back(*other.GetStar(i));
+	}
+
+	return *this;
+}
+
+void Galaxy::Unload() {
+	for (std::vector<Star>::iterator it = stars.begin(); it != stars.end(); it++) {
+		it->Unload();
+	}
 }
 
 
@@ -21,15 +43,19 @@ void Galaxy::PopulateNew() {
 	srand(time(NULL));
 	seed = rand() % 10000;
 
-	std::cout << seed << std::endl;
+	timer.SetTime(0);
 
 	Populate();
 }
 
 void Galaxy::Load(const char *file) {
-
+	timer.SetTime(0);
 }
 
+
+void Galaxy::Update() {
+	timer.Update();
+}
 
 void Galaxy::Draw() {
 	Mesh *mesh = World::GetMeshManager()->GetMesh("sphere.obj");
@@ -37,7 +63,7 @@ void Galaxy::Draw() {
 	for (std::vector<Star>::iterator it = stars.begin(); it != stars.end(); it++) {
 		mesh->Draw(
 			World::GetShaderManager()->GetShader("default"),
-			glm::translate(it->GetPosition()) * glm::scale(glm::vec3(0.05f, 0.05f, 0.05f)),
+			glm::translate(it->GetPosition()) * glm::scale(glm::vec3(starSize, starSize, starSize)),
 			it->GetColour(),
 			World::GetImageManager()->GetImage("white.png")
 			);
@@ -59,7 +85,7 @@ Star* Galaxy::GetStar(int index) {
 
 
 void Galaxy::Populate() {
-	int starNum = 5; //1000;
+	int starNum = 1000; //1000;
 
 	float maxDist = 7.5f;
 	float minDist = 0.25f;
@@ -103,8 +129,12 @@ void Galaxy::Populate() {
 		if (!good) continue;
 
 		// star
-		Star star = Star(this, position);
-		star.SetUp();
-		stars.push_back(star);
+		stars.push_back(Star(this, position));
+		stars.back().Init();
 	}
+}
+
+
+Timer* Galaxy::GetTimer() {
+	return &timer;
 }

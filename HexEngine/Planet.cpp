@@ -22,93 +22,35 @@ Planet::Planet(Star *star) : Planet() {
 }
 
 Planet::~Planet() {
-	for (int i = 0; i < meshes.size(); i++) {
-		delete meshes[i];
+	for (std::vector<Planet*>::iterator it = moons.begin(); it != moons.end(); it++) {
+		delete *it;
 	}
+	moons.clear();
 }
 
 
-void Planet::SetUp(int subs, int distance) {
+void Planet::Init(Planet *parent, int distance) {
+	this->parent = parent;
 	this->distance = distance;
 	int seed = Game::GetGalaxy()->GetSeed();
-	//type = Game::GetPlanetTypeManager()->GetType(std::string("continental"));
-
-	size = subs;
-	radius = pow(2, subs-1);
-
-	// vertices
-	float t = (1.0f + sqrt(5.0f)) / 2.0f;
-
-	glm::vec3 verts[] = {
-		glm::vec3(0, -1, 0),
-		glm::vec3(0.723600f, -0.447215f, 0.525720f),
-		glm::vec3(-0.276385f, -0.447215f, 0.850640f),
-		glm::vec3(-0.894425f, -0.447215f, 0),
-		glm::vec3(-0.276385f, -0.447215f, -0.850640f),
-		glm::vec3(0.723600f, -0.447215f, -0.525720f),
-		glm::vec3(0.276385f, 0.447215f, 0.850640f),
-		glm::vec3(-0.723600f, 0.447215f, 0.525720f),
-		glm::vec3(-0.723600f, 0.447215f, -0.525720f),
-		glm::vec3(0.276385f, 0.447215f, -0.850640f),
-		glm::vec3(0.894425f, 0.447215f, 0),
-		glm::vec3(0, 1, 0)
-	};
-
-	// faces
-	tris.resize(20);
-	tris[0] = PlanetTri(verts[0], verts[1], verts[2]);
-	tris[1] = PlanetTri(verts[1], verts[0], verts[5]);
-	tris[2] = PlanetTri(verts[0], verts[2], verts[3]);
-	tris[3] = PlanetTri(verts[0], verts[3], verts[4]);
-	tris[4] = PlanetTri(verts[0], verts[4], verts[5]);
-
-	tris[5] = PlanetTri(verts[1], verts[5], verts[10]);
-	tris[6] = PlanetTri(verts[2], verts[1], verts[6]);
-	tris[7] = PlanetTri(verts[3], verts[2], verts[7]);
-	tris[8] = PlanetTri(verts[4], verts[3], verts[8]);
-	tris[9] = PlanetTri(verts[5], verts[4], verts[9]);
-
-	tris[10] = PlanetTri(verts[1], verts[10], verts[6]);
-	tris[11] = PlanetTri(verts[2], verts[6], verts[7]);
-	tris[12] = PlanetTri(verts[3], verts[7], verts[8]);
-	tris[13] = PlanetTri(verts[4], verts[8], verts[9]);
-	tris[14] = PlanetTri(verts[5], verts[9], verts[10]);
-
-	tris[15] = PlanetTri(verts[6], verts[10], verts[11]);
-	tris[16] = PlanetTri(verts[7], verts[6], verts[11]);
-	tris[17] = PlanetTri(verts[8], verts[7], verts[11]);
-	tris[18] = PlanetTri(verts[9], verts[8], verts[11]);
-	tris[19] = PlanetTri(verts[10], verts[9], verts[11]);
-
-	// subdivisons
-	for (int s = 0; s < subs; s++) {
-		std::vector<PlanetTri> newTris;
-		newTris.resize(tris.size() * 4);
-
-		for (int i = 0; i < tris.size(); i++) {
-			PlanetTri subTris[4] = { };
-			tris[i].Subdivide(subTris);
-
-			newTris[i*4] = subTris[0];
-			newTris[i*4+1] = subTris[1];
-			newTris[i*4+2] = subTris[2];
-			newTris[i*4+3] = subTris[3];
-		}
-
-		tris = newTris;
-	}
-
-
-	// make hexes from the triangles
-	std::vector<glm::vec3> addedVerts;
-
-	int imgWid = 6;
-	int imgHei = 3;
-
-	glm::vec3 noiseCentre = (star->GetPosition() + glm::vec3(distance, 0, 0)) * 100.0f;
 
 	// assign type pseudorandomly
-	float typeWeight = Game::GetPlanetTypeManager()->GetWeightVal() * (octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed)+1)/2;
+	glm::vec3 noiseCentre;
+	if (parent == nullptr) {
+		noiseCentre = (star->GetPosition() + glm::vec3(distance, 0, 0)) * 100.0f;
+	} else {
+		noiseCentre = (star->GetPosition() + glm::vec3(parent->GetDistance(), distance*1.0f/4, 0))*100.0f;
+	}
+	
+	if (raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed) >= 0) {
+		size = 4;
+	} else {
+		size = 3;
+	}
+	if (parent != nullptr) size--;
+	radius = pow(2, size-1);
+
+	float typeWeight = Game::GetPlanetTypeManager()->GetWeightVal() * (octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+1)+1)/2;
 	if (typeWeight >= Game::GetPlanetTypeManager()->GetWeightVal()) typeWeight -= 0.1f;
 
 	std::vector<std::string> typeNames = Game::GetPlanetTypeManager()->GetTypeNames();
@@ -124,56 +66,36 @@ void Planet::SetUp(int subs, int distance) {
 	}
 
 	// assign other vals pseudorandomly
-	startAngle = 2*M_PI * (octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+1)+1)/2;
-	float seaLevel = type->minSeaLevel + (type->maxSeaLevel - type->minSeaLevel) * (octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+2)+1)/2;
+	startAngle = 2*M_PI * (octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+2)+1)/2;
+	seaLevel = type->minSeaLevel + (type->maxSeaLevel - type->minSeaLevel) * (octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+2)+3)/2;
 
-	for (std::vector<PlanetTri>::iterator it = tris.begin(); it != tris.end(); it++) {
-		// assign tris to hexes
-		for (int i = 0; i < 3; i++) {
-			if (std::find(addedVerts.begin(), addedVerts.end(), it->points[i]) == addedVerts.end()) {
-				// not already a hex
-				glm::vec3 pos = it->points[i];
+	if (parent == nullptr) {
+		revolveTime = 100*distance + 100*distance/2 * raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+4);
+	} else {
+		revolveTime = 30*distance + 30*distance/2 * raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+4);
+	}
 
-				float scale = 1 + 0.1 * size;
-				int height = std::max(round((
-					octave_noise_4d(
-						4, 0.15f, 1.0f, 
-						pos.x * scale + noiseCentre.x, pos.y * scale + noiseCentre.y, pos.z * scale + noiseCentre.z, seed)
-					- seaLevel) * imgWid), 0.0f);
-				int temp = std::max(round((1 - abs(pos.y)) * imgHei + 
-					octave_noise_4d(
-						4, 0.15f, 1.0f, 
-						pos.x * scale + noiseCentre.x, pos.y * scale + noiseCentre.y, pos.z * scale + noiseCentre.z, seed+1)
-					/2) + type->tempMod, 0.0f);
+	// add a moon, maybe
+	if (parent == nullptr && size == 4) {
+		//if (raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+5) > 0.5f) {
+			Planet *moon = new Planet(star);
+			moon->Init(this, 1);
 
-				temp = std::min(2, temp);
-				height = std::min(5, height);
-
-				PlanetHex hex = PlanetHex(this, pos, height, temp);
-				hex.tris.push_back(it);
-
-				hexes.push_back(hex);
-
-				addedVerts.push_back(it->points[i]);
-			} else {
-				// already a hex
-				for (std::vector<PlanetHex>::iterator hexIt = hexes.begin(); hexIt != hexes.end(); hexIt++) {
-					if (hexIt->pos == it->points[i]) {
-						hexIt->tris.push_back(it);
-						break;
-					}
-				}
-			}
-		}
+			moons.push_back(moon);
+		//}
 	}
 }
 
 void Planet::SetUpMesh() {
 	if (!meshCreated) {
+		std::vector<PlanetHex> hexes = Game::GetSphereManager()->GetHexSphere(size);
+
 		std::vector<GLfloat> vertices[10];
 		std::vector<GLushort> elements[10];
 
 		for (std::vector<PlanetHex>::iterator it = hexes.begin(); it != hexes.end(); it++) {
+			it->Assign(this, GetHexHeight(it->pos), GetHexTemp(it->pos));
+
 			int listInd = (atan2(it->pos.z, it->pos.x) / M_PI + 1) / 2 * 5;
 			if (listInd == 5) listInd = 0;
 			if (it->pos.y < 0) listInd += 5;
@@ -186,6 +108,12 @@ void Planet::SetUpMesh() {
 			meshes[i]->AddShader(World::GetShaderManager()->GetShader("default"));
 		}
 
+
+		for (std::vector<Planet*>::iterator it = moons.begin(); it != moons.end(); it++) {
+			(*it)->SetUpMesh();
+		}
+
+
 		meshCreated = true;
 	}
 }
@@ -197,6 +125,12 @@ void Planet::DeleteMesh() {
 			meshes[i] = nullptr;
 		}
 
+
+		for (std::vector<Planet*>::iterator it = moons.begin(); it != moons.end(); it++) {
+			(*it)->DeleteMesh();
+		}
+
+
 		meshCreated = false;
 	}
 }
@@ -207,23 +141,30 @@ void Planet::Update() {
 }
 
 void Planet::Draw() {
-	float angle = startAngle;
-	float dist = 50 + 75 * distance;
-	glm::vec3 position = glm::vec3(
-		cos(angle) * dist, 
-		0, 
-		sin(angle) * dist
-		);
+	glm::vec3 position = GetPosition();
 
 	for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++) {
 		(*it)->Draw(
 			World::GetShaderManager()->GetShader("default"), 
-			glm::translate(position) * glm::scale(glm::vec3(radius, radius, radius)), 
+			glm::translate(position) * glm::scale(glm::vec3(radius, radius, radius)) * glm::rotate(GetRotation(), glm::vec3(0, 1, 0)), 
 			glm::vec4(1, 1, 1, 1), 
 			World::GetImageManager()->GetImage(type->image)
 			);
 		(*it)->BindBuffersAndDraw();
 	}
+
+	for (std::vector<Planet*>::iterator it = moons.begin(); it != moons.end(); it++) {
+		(*it)->Draw();
+	}
+}
+
+
+int Planet::GetMoonCount() {
+	return moons.size();
+}
+
+Planet* Planet::GetMoon(int i) {
+	return moons[i];
 }
 
 
@@ -235,16 +176,72 @@ int Planet::GetDistance() {
 	return distance;
 }
 
+glm::vec3 Planet::GetPosition() {
+	float angle = startAngle + Game::GetGalaxy()->GetTimer()->GetTime() * -2*M_PI/revolveTime;
+
+	float dist;
+	if (parent == nullptr) {
+		dist = 115 * distance;
+	} else {
+		dist = 25 * distance;
+	}
+
+	glm::vec3 pos = glm::vec3(
+		cos(angle) * dist, 
+		0, 
+		sin(angle) * dist
+		);
+	if (parent != nullptr) pos += parent->GetPosition();
+
+	return pos;
+}
+
+float Planet::GetRotation() {
+	return 2*M_PI / 28 * Game::GetGalaxy()->GetTimer()->GetTime();
+}
+
 PlanetType* Planet::GetType() {
 	return type;
 }
 
 
 // stuff
+float Planet::GetHexHeight(glm::vec3 pos) {
+	float seed = Game::GetGalaxy()->GetSeed();
+	float scale = 1 + 0.1 * size;
+	glm::vec3 noiseCentre = (star->GetPosition() + glm::vec3(distance, 0, 0)) * 100.0f;
+
+	int height = std::max(round((
+		octave_noise_4d(
+			4, 0.15f, 1.0f, 
+			pos.x * scale + noiseCentre.x, pos.y * scale + noiseCentre.y, pos.z * scale + noiseCentre.z, seed)
+		- seaLevel) * 6), 0.0f);
+	height = std::min(6, height);
+
+	return height;
+}
+
+float Planet::GetHexTemp(glm::vec3 pos) {
+	float seed = Game::GetGalaxy()->GetSeed();
+	float scale = 1 + 0.1 * size;
+	glm::vec3 noiseCentre = (star->GetPosition() + glm::vec3(distance, 0, 0)) * 100.0f;
+
+	int temp = std::max(round((1 - abs(pos.y)) * 3 + 
+		octave_noise_4d(
+			4, 0.15f, 1.0f, 
+			pos.x * scale + noiseCentre.x, pos.y * scale + noiseCentre.y, pos.z * scale + noiseCentre.z, seed+1)
+		/2) + type->tempMod, 0.0f);
+	temp = std::min(3, temp);
+
+	return temp;
+}
+
 bool Planet::GetRayHit(glm::vec3 point, glm::vec3 dir, glm::vec3 &result) {
+	glm::vec3 pos = GetPosition();
+
 	float a = glm::dot(dir, dir);
-	float b = glm::dot(2.0f*dir, point);
-	float c = glm::dot(point, point) - radius*radius;
+	float b = glm::dot(dir, 2.0f*(point-pos));
+	float c = glm::dot(pos, pos) + glm::dot(point, point) - 2*glm::dot(pos, point) - radius*radius;
 
 	float d = b*b - 4*a*c;
 	if (d < 0) return false;
@@ -254,9 +251,26 @@ bool Planet::GetRayHit(glm::vec3 point, glm::vec3 dir, glm::vec3 &result) {
 }
 bool Planet::GetRayHit(Ray ray, glm::vec3 &result) { return GetRayHit(ray.point, ray.direction, result); }
 
+bool Planet::GetRayHit(glm::vec3 point, glm::vec3 dir) {
+	glm::vec3 pos = GetPosition();
 
+	float a = glm::dot(dir, dir);
+	float b = glm::dot(dir, 2.0f*(point-pos));
+	float c = glm::dot(pos, pos) + glm::dot(point, point) - 2*glm::dot(pos, point) - radius*radius;
+
+	float d = b*b - 4*a*c;
+	if (d < 0) return false;
+
+	return true;
+}
+bool Planet::GetRayHit(Ray ray) { return GetRayHit(ray.point, ray.direction); }
+
+
+// remember to assign after this
 PlanetHex* Planet::GetClosestHexToPos(glm::vec3 pos) {
 	PlanetHex *hex = nullptr;
+
+	std::vector<PlanetHex> hexes = Game::GetSphereManager()->GetHexSphere(size);
 
 	float maxDist = 10000;
 	for (std::vector<PlanetHex>::iterator it = hexes.begin(); it != hexes.end(); it++) {

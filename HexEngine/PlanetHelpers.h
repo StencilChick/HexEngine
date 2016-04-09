@@ -30,18 +30,18 @@ struct PlanetHex {
 
 	float offset;
 
-	std::vector<std::vector<PlanetTri>::iterator> tris;
-	std::vector<std::vector<PlanetHex>::iterator> adjacentHexes;
+	std::vector<glm::vec3> triPos; // centres of all the triangles making this hex
 
 	Planet *planet;
 
 	// constructor
-	PlanetHex(Planet*, glm::vec3, int, int);
+	PlanetHex(glm::vec3);
+
+	void Assign(Planet*, int, int);
 
 	// functions
 	void AddHexToMesh(std::vector<GLfloat>&, std::vector<GLushort>&);
 	void AddHexSurfaceToMesh(std::vector<GLfloat>&, std::vector<GLushort>&);
 
-	glm::vec3 GetVecToPoint();
 	static void CalcUV(int height, int temp, float &uvX, float &uvY);
 };

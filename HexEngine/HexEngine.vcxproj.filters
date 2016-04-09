@@ -159,6 +159,12 @@
     <ClCompile Include="GalaxyView.cpp">
       <Filter>Source Files\Game\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Source Files\Game\Objects\Galaxy</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereManager.cpp">
+      <Filter>Source Files\Game\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="World.h">
@@ -259,6 +265,12 @@
     </ClInclude>
     <ClInclude Include="GalaxyView.h">
       <Filter>Header Files\Game\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Header Files\Game\Objects\Galaxy</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereManager.h">
+      <Filter>Header Files\Game\Objects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

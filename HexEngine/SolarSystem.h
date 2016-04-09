@@ -7,6 +7,7 @@
 class SolarSystem : public Scene {
 public:
 	SolarSystem(Star*);
+	~SolarSystem();
 
 	void Update();
 	void Draw();
@@ -14,9 +15,29 @@ public:
 private:
 	Star *star;
 
+	// modes
+	enum Mode {
+		solar,
+		planet
+	};
+	Mode mode;
+
+	void SwitchToPlanetMode();
+	void SwitchToSolarMode();
+
 	// camera
 	float camDist;
 	float camRotX;
 	float camRotY;
 	glm::vec3 camFocus;
+
+	Planet *targetPlanet;
+
+	void TargetLoop();
+
+	void UpdateCamSolar();
+	void UpdateCamPlanet();
+
+	void UpdateControlsSolar();
+	void UpdateControlsPlanet();
 };

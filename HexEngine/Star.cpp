@@ -11,8 +11,18 @@ Star::Star(Galaxy *galaxy, glm::vec3 position) {
 
 	this->position = position;
 }
+Star::~Star() {
+	
+}
 
-void Star::SetUp() {
+void Star::Unload() {
+	for (std::vector<Planet*>::iterator it = planets.begin(); it != planets.end(); it++) {
+		delete *it;
+	}
+	planets.clear();
+}
+
+void Star::Init() {
 	// star
 	float scale = 2;
 	int val = floor((raw_noise_4d(position.x * scale, position.y * scale, position.z * scale, galaxy->GetSeed()) + 1)/2 * 3);
@@ -45,7 +55,7 @@ void Star::SetUp() {
 
 	for (int i = 1; i <= numPlanets; i++) {
 		Planet *p = new Planet(this);
-		p->SetUp(4, i);
+		p->Init(nullptr, i);
 
 		planets.push_back(p);
 	}

@@ -10,7 +10,7 @@ class Input {
 public:
 	// singleton stuff
 	static Input* GetInstance();
-	static void Destory();
+	static void Destroy();
 
 
 	// other stuff
@@ -24,14 +24,14 @@ public:
 	static glm::vec2 MouseGLPos();
 	static glm::vec2 MouseDelta();
 
-	bool MouseButton(int);
-	bool MouseButtonDown(int);
-	bool MouseButtonUp(int);
+	static bool MouseButton(int);
+	static bool MouseButtonDown(int);
+	static bool MouseButtonUp(int);
 
-	float MouseScroll();
+	static float MouseScroll();
 
-	void BindCursor();
-	void UnbindCursor();
+	static void BindCursor();
+	static void UnbindCursor();
 	static bool IsCursorBound();
 
 	// keys
@@ -56,8 +56,8 @@ private:
 	static glm::vec2 lastMousePos;
 	static glm::vec2 thisMousePos;
 
-	bool lastMouseButtons[3];
-	bool theseMouseButtons[3];
+	static bool lastMouseButtons[3];
+	static bool theseMouseButtons[3];
 
 	static float mouseScrollDelta;
 

@@ -119,7 +119,9 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="simplex\simplexnoise.cpp" />
     <ClCompile Include="SolarSystem.cpp" />
+    <ClCompile Include="SphereManager.cpp" />
     <ClCompile Include="Star.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -154,7 +156,9 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="simplex\simplexnoise.h" />
     <ClInclude Include="SolarSystem.h" />
+    <ClInclude Include="SphereManager.h" />
     <ClInclude Include="Star.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

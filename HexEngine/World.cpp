@@ -18,7 +18,7 @@ World::World() {
 World::~World() {
 	Game::Destroy();
 
-	Input::Destory();
+	Input::Destroy();
 	Camera::Destroy();
 	GUI::Destroy();
 	Cursor::Destroy();
@@ -84,13 +84,13 @@ void World::SetUp() {
 	fontManager.Load();
 
 	camera = Camera::GetInstance();
-	Camera::SetProjectionMatrix(45, SCREEN_WIDTH*1.0f/SCREEN_HEIGHT, 0.1f, 1000);
+	Camera::SetProjectionMatrix(45, SCREEN_WIDTH*1.0f/SCREEN_HEIGHT, 0.1f, 5000);
 	input = Input::GetInstance();
 	gui = GUI::GetInstance();
 	cursor = Cursor::GetInstance();
 
 	game = Game::GetInstance();
-	game->SetUp();
+	game->Init();
 }
 
 // running all the junk and stuff
@@ -102,12 +102,13 @@ void World::Run() {
 
 		gui->ResetDepth();
 		input->Update();
-		camera->Update();
 
 		game->Update();
-		game->Draw();
+		camera->Update();
 
+		game->Draw();
 		cursor->Draw();
+
 		meshManager.DrawMeshes();
 
 		glfwSwapBuffers(window);

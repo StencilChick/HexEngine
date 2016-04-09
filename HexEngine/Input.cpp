@@ -12,6 +12,9 @@ double Input::lastTime = 0;
 glm::vec2 Input::lastMousePos;
 glm::vec2 Input::thisMousePos;
 
+bool Input::theseMouseButtons[3];
+bool Input::lastMouseButtons[3];
+
 float Input::mouseScrollDelta = 0;
 
 bool Input::mouseScrollThisFrame = false;
@@ -49,7 +52,7 @@ Input* Input::GetInstance() {
 	return instance;
 }
 
-void Input::Destory() {
+void Input::Destroy() {
 	if (instance != nullptr) {
 		delete instance;
 		instance = nullptr;
