@@ -8,6 +8,8 @@
 #include "PlanetTypes.h"
 #include "SphereManager.h"
 
+#include "GameHUD.h"
+
 class Game {
 public:
 	// singleton stuff
@@ -26,6 +28,8 @@ public:
 
 	// manager
 	static Galaxy* GetGalaxy();
+
+	static GameHUD* GetGameHUD();
 
 	static PlanetTypeManager* GetPlanetTypeManager();
 	static SphereManager* GetSphereManager();
@@ -47,6 +51,8 @@ private:
 
 	// managers
 	static Galaxy galaxy;
+
+	static GameHUD gamehud;
 
 	static PlanetTypeManager planetTypeManager;
 	static SphereManager sphereManager;

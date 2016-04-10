@@ -11,6 +11,7 @@ int Game::popScene;
 Scene* Game::pushScene;
 
 Galaxy Game::galaxy;
+GameHUD Game::gamehud;
 PlanetTypeManager Game::planetTypeManager;
 SphereManager Game::sphereManager;
 
@@ -59,6 +60,8 @@ void Game::Init() {
 
 	galaxy = Galaxy();
 	galaxy.PopulateNew(); // for testing
+
+	gamehud = GameHUD();
 	
 	//scenes.push(new PlanetTest());
 	scenes.push(new GalaxyView());
@@ -101,6 +104,10 @@ void Game::PopScene() {
 // manager
 Galaxy* Game::GetGalaxy() {
 	return &galaxy;
+}
+
+GameHUD* Game::GetGameHUD() {
+	return &gamehud;
 }
 
 PlanetTypeManager* Game::GetPlanetTypeManager() {

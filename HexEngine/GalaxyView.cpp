@@ -49,10 +49,15 @@ void GalaxyView::Update() {
 
 	// camera controls
 	UpdateCamera();
+
+	// hud
+	Game::GetGameHUD()->Update();
 }
 
 void GalaxyView::Draw() {
 	galaxy->Draw();
+
+	Game::GetGameHUD()->Draw();
 }
 
 

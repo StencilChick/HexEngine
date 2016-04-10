@@ -25,9 +25,6 @@ SolarSystem::SolarSystem(Star *star) : Scene() {
 	camRotX = 0;
 	camRotY = -M_PI / 4;
 	camFocus = glm::vec3(0, 0, 0);
-
-	// for testing
-	Game::GetGalaxy()->GetTimer()->SetSpeed(0);
 }
 
 SolarSystem::~SolarSystem() {
@@ -39,17 +36,6 @@ SolarSystem::~SolarSystem() {
 
 void SolarSystem::Update() {
 	Game::GetGalaxy()->Update();
-
-	// timer controls
-	if (Input::GetKeyDown(GLFW_KEY_SPACE)) {
-		Timer *timer = Game::GetGalaxy()->GetTimer();
-
-		if (timer->GetSpeed() == 0) {
-			timer->SetSpeed(1);
-		} else {
-			timer->SetSpeed(0);
-		}
-	}
 
 	// modes
 	if (mode == Mode::solar) {
@@ -63,6 +49,9 @@ void SolarSystem::Update() {
 	} else {
 		UpdateCamPlanet();
 	}
+
+	// hud
+	Game::GetGameHUD()->Update();
 }
 
 void SolarSystem::Draw() {
@@ -77,12 +66,7 @@ void SolarSystem::Draw() {
 		star->GetPlanet(i)->Draw();
 	}
 
-	Timer *timer = Game::GetGalaxy()->GetTimer();
-	World::GetFontManager()->WriteLine(
-		World::GetFontManager()->GetAtlas("times.ttf"),
-		(std::to_string(timer->GetDay()) + "/" + std::to_string(timer->GetMonth()) + "/" + std::to_string(timer->GetYear())).c_str(),
-		5, 5
-		);
+	Game::GetGameHUD()->Draw();
 }
 
 

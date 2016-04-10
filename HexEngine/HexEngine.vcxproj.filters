@@ -108,9 +108,6 @@
     <ClCompile Include="GUI.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Grid.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Generic.cpp">
       <Filter>Source Files\Game\GameObjects</Filter>
     </ClCompile>
@@ -118,9 +115,6 @@
       <Filter>Source Files\Game\GameObjects</Filter>
     </ClCompile>
     <ClCompile Include="simplex\simplexnoise.cpp">
-      <Filter>Source Files\Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="MapGenHelpers.cpp">
       <Filter>Source Files\Utility</Filter>
     </ClCompile>
     <ClCompile Include="PlanetTest.cpp">
@@ -164,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="SphereManager.cpp">
       <Filter>Source Files\Game\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="GameHUD.cpp">
+      <Filter>Source Files\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -212,9 +209,6 @@
     <ClInclude Include="GUI.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Grid.h">
-      <Filter>Header Files\Game</Filter>
-    </ClInclude>
     <ClInclude Include="Generic.h">
       <Filter>Header Files\Game\GameObjects</Filter>
     </ClInclude>
@@ -225,9 +219,6 @@
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
     <ClInclude Include="simplex\simplexnoise.h">
-      <Filter>Header Files\Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="MapGenHelpers.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
     <ClInclude Include="PlanetTest.h">
@@ -271,6 +262,9 @@
     </ClInclude>
     <ClInclude Include="SphereManager.h">
       <Filter>Header Files\Game\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="GameHUD.h">
+      <Filter>Header Files\Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
