@@ -64,4 +64,8 @@ private:
 
 	float GetHexHeight(glm::vec3);
 	float GetHexTemp(glm::vec3);
+
+	float GetDistanceToOrbitCentre();
+
+	void DrawOrbit();
 };

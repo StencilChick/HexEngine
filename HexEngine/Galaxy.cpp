@@ -112,7 +112,7 @@ void Galaxy::Populate() {
 
 		glm::vec3 position = glm::vec3(
 			cos(angle) * dist, 
-			raw_noise_2d(i, seed+2) * 0.15f * (1 - distValSqr),
+			raw_noise_2d(i, seed+2) * 0.075f * (1 - distValSqr),
 			sin(angle) * dist
 			);
 

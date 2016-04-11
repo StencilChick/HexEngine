@@ -11,7 +11,10 @@
 
 #include "World.h"
 #include "Game.h"
+#include "Camera.h"
+
 #include "simplex/simplexnoise.h"
+#include "ShaderHelpers.h"
 
 Planet::Planet() {
 	meshes.resize(10);
@@ -77,12 +80,12 @@ void Planet::Init(Planet *parent, int distance) {
 
 	// add a moon, maybe
 	if (parent == nullptr && size == 4) {
-		//if (raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+5) > 0.5f) {
+		if (raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+5) > 0.5f) {
 			Planet *moon = new Planet(star);
 			moon->Init(this, 1);
 
 			moons.push_back(moon);
-		//}
+		}
 	}
 }
 
@@ -141,6 +144,8 @@ void Planet::Update() {
 }
 
 void Planet::Draw() {
+	DrawOrbit();
+
 	glm::vec3 position = GetPosition();
 
 	for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++) {
@@ -178,13 +183,7 @@ int Planet::GetDistance() {
 
 glm::vec3 Planet::GetPosition() {
 	float angle = startAngle + Game::GetGalaxy()->GetTimer()->GetTime() * -2*M_PI/revolveTime;
-
-	float dist;
-	if (parent == nullptr) {
-		dist = 115 * distance;
-	} else {
-		dist = 25 * distance;
-	}
+	float dist  = GetDistanceToOrbitCentre();
 
 	glm::vec3 pos = glm::vec3(
 		cos(angle) * dist, 
@@ -266,7 +265,6 @@ bool Planet::GetRayHit(glm::vec3 point, glm::vec3 dir) {
 bool Planet::GetRayHit(Ray ray) { return GetRayHit(ray.point, ray.direction); }
 
 
-// remember to assign after this
 PlanetHex* Planet::GetClosestHexToPos(glm::vec3 pos) {
 	PlanetHex *hex = nullptr;
 
@@ -281,5 +279,37 @@ PlanetHex* Planet::GetClosestHexToPos(glm::vec3 pos) {
 		}
 	}
 
+	if (hex != nullptr) hex->Assign(this, GetHexHeight(hex->pos), GetHexTemp(hex->pos));
 	return hex;
+}
+
+
+float Planet::GetDistanceToOrbitCentre() {
+	if (parent == nullptr) {
+		return 64 + 128 * distance;
+	} else {
+		return 32 * distance;
+	}
+}
+
+void Planet::DrawOrbit() {
+	ShaderManager *sm = World::GetShaderManager();
+
+	float rad = GetDistanceToOrbitCentre();
+
+	glm::vec3 centre = glm::vec3(0, 0, 0);
+	if (parent != nullptr) centre = parent->GetPosition();
+
+	SetShaderM4(sm->GetShader("orbit"), "modelMatrix", mat4());
+	SetShaderV4(sm->GetShader("orbit"), "colour", vec4(0.75f, 0.75f, 0.75f, 1));
+
+	glLineWidth(1);
+
+	glBegin(GL_LINE_LOOP);
+	for (float k = 0; k < M_PI*2; k += M_PI/180) {
+		glm::vec3 p = glm::vec3(centre.x + cos(k) * rad, 0, centre.z + sin(k) * rad);
+
+		glVertex3f(p.x, 0, p.z);
+	}
+	glEnd();
 }

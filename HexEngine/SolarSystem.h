@@ -31,8 +31,14 @@ private:
 	float camRotY;
 	glm::vec3 camFocus;
 
+	float maxDistPlanet;
+	float minDistSolar;
+	float maxDistSolar;
+
 	Planet *targetPlanet;
 
+
+	// functions
 	void TargetLoop();
 
 	void UpdateCamSolar();

@@ -2,6 +2,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <algorithm>
 
 #include <iostream>
 
@@ -21,7 +22,11 @@ SolarSystem::SolarSystem(Star *star) : Scene() {
 
 	mode = Mode::solar;
 
-	camDist = 700;
+	maxDistPlanet = 28;
+	maxDistSolar = 2048;
+	minDistSolar = 512;
+
+	camDist = maxDistSolar - 100;
 	camRotX = 0;
 	camRotY = -M_PI / 4;
 	camFocus = glm::vec3(0, 0, 0);
@@ -57,7 +62,7 @@ void SolarSystem::Update() {
 void SolarSystem::Draw() {
 	World::GetMeshManager()->GetMesh("sphere.obj")->Draw(
 		World::GetShaderManager()->GetShader("default"),
-		glm::scale(glm::vec3(32, 32, 32)),
+		glm::scale(glm::vec3(64, 64, 64)),
 		star->GetColour(),
 		World::GetImageManager()->GetImage("white.png")
 		);
@@ -75,7 +80,7 @@ void SolarSystem::SwitchToPlanetMode() {
 		mode = Mode::planet;
 
 		camRotX -= targetPlanet->GetRotation();
-		camDist = 50;
+		camDist = maxDistPlanet-3;
 	}
 }
 
@@ -83,7 +88,7 @@ void SolarSystem::SwitchToSolarMode() {
 	mode = Mode::solar;
 
 	camRotX += targetPlanet->GetRotation();
-	camDist = 200;
+	camDist = (minDistSolar-maxDistPlanet)/2;
 }
 
 
@@ -148,30 +153,25 @@ void SolarSystem::UpdateControlsPlanet() {
 
 }
 
+
 void SolarSystem::UpdateCamSolar() {
 	Camera *cam = Camera::GetInstance();
 
 	Input *input = Input::GetInstance();
-	float dragSpeed = 5 * Input::DeltaTime();
-
-	const int maxDist = 750;
-	const int minDist = 100;
+	float dragSpeed = 1 * Input::DeltaTime();
 
 	// rotation
+	camRotY = -(M_PI/2 - M_PI*3/8 + M_PI*3/8 * (camDist - minDistSolar)/(maxDistSolar-minDistSolar));
 	if (input->MouseButton(2)) {
 		if (input->MouseButtonDown(2)) {
 			input->BindCursor();
 		}
 
-		vec2 drag = input->MouseDelta() * dragSpeed;
+		float drag = input->MouseDelta().x * dragSpeed;
 
-		camRotX -= drag.x * dragSpeed;
+		camRotX -= drag;
 		if (camRotX > 2*M_PI) camRotX -= 2*M_PI;
 		if (camRotX < 0) camRotX += 2*M_PI;
-
-		camRotY -= drag.y * dragSpeed;
-		if (camRotY > -M_PI/12) camRotY = -M_PI/12;
-		if (camRotY < -M_PI/2 * 0.85f) camRotY = -M_PI/2 * 0.85f;
 	} else if (input->MouseButtonUp(2)) {
 		input->UnbindCursor();
 	}
@@ -181,7 +181,7 @@ void SolarSystem::UpdateCamSolar() {
 		camFocus = targetPlanet->GetPosition();
 	}
 
-	float moveSpeed = (200 + 300 * (camDist - minDist) / (maxDist - minDist)) * Input::DeltaTime();
+	float moveSpeed = (200 + 300 * (camDist - minDistSolar) / (maxDistSolar - minDistSolar)) * Input::DeltaTime();
 	if (Input::GetKey(GLFW_KEY_W) || Input::GetKey(GLFW_KEY_UP)) {
 		vec3 v = cam->GetForward();
 		v.y = 0;
@@ -220,16 +220,18 @@ void SolarSystem::UpdateCamSolar() {
 	}
 
 	// distance
-	camDist -= 500 * input->MouseScroll() * input->DeltaTime();
-	if (camDist < minDist) {
+	camDist -= std::max(camDist-minDistSolar, 500.0f) * input->MouseScroll() * input->DeltaTime();
+	if (camDist < minDistSolar) {
 		if (targetPlanet != nullptr) {
-			SwitchToPlanetMode();
-			return;
+			if (camDist < (minDistSolar-maxDistPlanet)/2) {
+				SwitchToPlanetMode();
+				return;
+			}
 		} else {
-			camDist = minDist;
+			camDist = minDistSolar;
 		}
 	}
-	else if (camDist > maxDist) {
+	else if (camDist > maxDistSolar) {
 		Game::PopScene();
 	}
 
@@ -266,11 +268,10 @@ void SolarSystem::UpdateCamPlanet() {
 	}
 
 	// distance
-	const int maxDist = 75;
-	const int minDist = targetPlanet->GetRadius()*3;
-	camDist -= 500 * Input::MouseScroll() * Input::DeltaTime();
+	const int minDist = targetPlanet->GetRadius()*2.5f;
+	camDist -= 30 * Input::MouseScroll() * Input::DeltaTime();
 	if (camDist < minDist) camDist = minDist;
-	else if (camDist > maxDist) {
+	else if (camDist > maxDistPlanet) {
 		SwitchToSolarMode();
 		return;
 	}
