@@ -25,6 +25,9 @@ public:
 	void Update();
 	void Draw();
 
+	void DrawOrbit(float);
+
+
 	int GetMoonCount();
 	Planet* GetMoon(int);
 
@@ -42,6 +45,8 @@ public:
 	bool GetRayHit(Ray);
 
 	PlanetHex* GetClosestHexToPos(glm::vec3);
+
+	float GetDistanceToOrbitCentre();
 
 private:
 	Star *star;
@@ -64,8 +69,4 @@ private:
 
 	float GetHexHeight(glm::vec3);
 	float GetHexTemp(glm::vec3);
-
-	float GetDistanceToOrbitCentre();
-
-	void DrawOrbit();
 };

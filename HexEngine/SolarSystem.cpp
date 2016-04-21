@@ -68,7 +68,17 @@ void SolarSystem::Draw() {
 		);
 
 	for (int i = 0; i < star->GetPlanetCount(); i++) {
-		star->GetPlanet(i)->Draw();
+		Planet *p = star->GetPlanet(i);
+
+		p->Draw();
+		p->DrawOrbit((450+camDist-minDistSolar)/(maxDistSolar-minDistSolar));
+
+		for (int i = 0; i < p->GetMoonCount(); i++) {
+			Planet *m = p->GetMoon(i);
+
+			m->Draw();
+			m->DrawOrbit((450+camDist-minDistSolar)/(maxDistSolar-minDistSolar));
+		}
 	}
 
 	Game::GetGameHUD()->Draw();
@@ -218,9 +228,12 @@ void SolarSystem::UpdateCamSolar() {
 
 		targetPlanet = nullptr;
 	}
+	if (glm::length(camFocus) > star->GetPlanet(star->GetPlanetCount()-1)->GetDistanceToOrbitCentre()) {
+		camFocus = normalize(camFocus) * star->GetPlanet(star->GetPlanetCount()-1)->GetDistanceToOrbitCentre();
+	}
 
 	// distance
-	camDist -= std::max(camDist-minDistSolar, 500.0f) * input->MouseScroll() * input->DeltaTime();
+	camDist -= (500 + std::max(camDist-minDistSolar, 0.0f)) * input->MouseScroll() * input->DeltaTime();
 	if (camDist < minDistSolar) {
 		if (targetPlanet != nullptr) {
 			if (camDist < (minDistSolar-maxDistPlanet)/2) {

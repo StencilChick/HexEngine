@@ -1,7 +1,7 @@
 name:Barren
 desc:[insert desc here]
 weight:5
-image:barren.png
+image:barren_brown.png
 hex:0:0:Barren
 hex:0:1:Barren
 hex:0:2:Barren

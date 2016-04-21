@@ -16,9 +16,9 @@ hex:1:4:Mountain
 hex:1:5:Mountain
 hex:2:0:Ocean
 hex:2:1:Desert
-hex:2:2:Jungle
+hex:2:2:Desert
 hex:2:3:Desert
 hex:2:4:Mountain
 hex:2:5:Mountain
-sea:-0.25:-0.15
+sea:-0.5:-0.5
 temp:0.25

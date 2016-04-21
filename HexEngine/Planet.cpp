@@ -80,7 +80,7 @@ void Planet::Init(Planet *parent, int distance) {
 
 	// add a moon, maybe
 	if (parent == nullptr && size == 4) {
-		if (raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+5) > 0.5f) {
+		if (raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+5) >= 0.5f) {
 			Planet *moon = new Planet(star);
 			moon->Init(this, 1);
 
@@ -144,8 +144,6 @@ void Planet::Update() {
 }
 
 void Planet::Draw() {
-	DrawOrbit();
-
 	glm::vec3 position = GetPosition();
 
 	for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++) {
@@ -156,10 +154,6 @@ void Planet::Draw() {
 			World::GetImageManager()->GetImage(type->image)
 			);
 		(*it)->BindBuffersAndDraw();
-	}
-
-	for (std::vector<Planet*>::iterator it = moons.begin(); it != moons.end(); it++) {
-		(*it)->Draw();
 	}
 }
 
@@ -292,24 +286,27 @@ float Planet::GetDistanceToOrbitCentre() {
 	}
 }
 
-void Planet::DrawOrbit() {
-	ShaderManager *sm = World::GetShaderManager();
+void Planet::DrawOrbit(float a) {
+	a = std::max(std::min(1.0f, a), 0.0f);
+	if (a > 0) {
+		ShaderManager *sm = World::GetShaderManager();
 
-	float rad = GetDistanceToOrbitCentre();
+		float rad = GetDistanceToOrbitCentre();
 
-	glm::vec3 centre = glm::vec3(0, 0, 0);
-	if (parent != nullptr) centre = parent->GetPosition();
+		glm::vec3 centre = glm::vec3(0, 0, 0);
+		if (parent != nullptr) centre = parent->GetPosition();
 
-	SetShaderM4(sm->GetShader("orbit"), "modelMatrix", mat4());
-	SetShaderV4(sm->GetShader("orbit"), "colour", vec4(0.75f, 0.75f, 0.75f, 1));
+		SetShaderM4(sm->GetShader("orbit"), "modelMatrix", mat4());
+		SetShaderV4(sm->GetShader("orbit"), "colour", vec4(0.75f, 0.75f, 0.75f, a));
 
-	glLineWidth(1);
+		glLineWidth(1);
 
-	glBegin(GL_LINE_LOOP);
-	for (float k = 0; k < M_PI*2; k += M_PI/180) {
-		glm::vec3 p = glm::vec3(centre.x + cos(k) * rad, 0, centre.z + sin(k) * rad);
+		glBegin(GL_LINE_LOOP);
+		for (float k = 0; k < M_PI*2; k += M_PI/180) {
+			glm::vec3 p = glm::vec3(centre.x + cos(k) * rad, 0, centre.z + sin(k) * rad);
 
-		glVertex3f(p.x, 0, p.z);
+			glVertex3f(p.x, 0, p.z);
+		}
+		glEnd();
 	}
-	glEnd();
 }

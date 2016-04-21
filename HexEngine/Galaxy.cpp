@@ -12,7 +12,7 @@
 
 #include "World.h"
 
-Galaxy::Galaxy() : starSize(0.05f) {
+Galaxy::Galaxy() : starSize(0.025f) {
 	timer = Timer();
 }
 
@@ -112,7 +112,7 @@ void Galaxy::Populate() {
 
 		glm::vec3 position = glm::vec3(
 			cos(angle) * dist, 
-			raw_noise_2d(i, seed+2) * 0.075f * (1 - distValSqr),
+			raw_noise_2d(i, seed+2) * 0.025f * (1 - distValSqr),
 			sin(angle) * dist
 			);
 
@@ -130,7 +130,7 @@ void Galaxy::Populate() {
 
 		// star
 		stars.push_back(Star(this, position));
-		stars.back().Init();
+		stars.back().Init(i % 5);
 	}
 }
 

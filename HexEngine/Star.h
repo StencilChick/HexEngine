@@ -6,9 +6,11 @@
 class Galaxy;
 
 enum StarType {
+	blue,
+	white,
 	yellow,
-	red,
-	blue
+	orange,
+	red
 };
 
 class Star {
@@ -16,7 +18,7 @@ public:
 	Star(Galaxy*, glm::vec3);
 	~Star();
 
-	void Init();
+	void Init(int);
 	void Unload();
 
 	glm::vec3 GetPosition();

@@ -22,25 +22,29 @@ void Star::Unload() {
 	planets.clear();
 }
 
-void Star::Init() {
+void Star::Init(int starType) {
 	// star
-	float scale = 2;
-	int val = floor((raw_noise_4d(position.x * scale, position.y * scale, position.z * scale, galaxy->GetSeed()) + 1)/2 * 3);
-	if (val == 3) val = 2;
-
-	type = static_cast<StarType>(val);
+	type = static_cast<StarType>(starType);
 
 	switch (type) {
+	case StarType::blue:
+		colour = glm::vec4(0.75f, 0.75f, 1, 1);
+		break;
+
+	case StarType::white:
+		colour = glm::vec4(0.97f, 0.97f, 1, 1);
+		break;
+
 	case StarType::yellow:
-		colour = glm::vec4(1, 1, 0.59f, 1);
+		colour = glm::vec4(1, 1, 0.5f, 1);
+		break;
+
+	case StarType::orange:
+		colour = glm::vec4(1, 0.5f, 0.15f, 1);
 		break;
 
 	case StarType::red:
-		colour = glm::vec4(1, 0.31f, 0.02f, 1);
-		break;
-
-	case StarType::blue:
-		colour = glm::vec4(0.6f, 0.8f, 0.95f, 1);
+		colour = glm::vec4(1, 0.15f, 0.15f, 1);
 		break;
 
 	default:
@@ -48,10 +52,9 @@ void Star::Init() {
 		break;
 	}
 
+
 	// planets
 	int numPlanets = 1 + std::pow((raw_noise_4d(position.x, position.y, position.z, galaxy->GetSeed() + 2) + 1)/2, 2) * 6;
-
-	//std::cout << numPlanets << std::endl;
 
 	for (int i = 1; i <= numPlanets; i++) {
 		Planet *p = new Planet(this);

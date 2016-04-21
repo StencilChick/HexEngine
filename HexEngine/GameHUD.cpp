@@ -23,6 +23,13 @@ void GameHUD::Update() {
 
 void GameHUD::Draw() {
 	DrawTimer();
+
+	// seed
+	World::GetFontManager()->WriteLine(
+		World::GetFontManager()->GetAtlas("times.ttf"),
+		("Seed #" + std::to_string(Game::GetGalaxy()->GetSeed())).c_str(),
+		World::SCREEN_WIDTH-105, World::SCREEN_HEIGHT-25
+		);
 }
 
 
