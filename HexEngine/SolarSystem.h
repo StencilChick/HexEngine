@@ -3,6 +3,7 @@
 #include "Scene.h"
 
 #include "Star.h"
+#include "HexSelector.h"
 
 class SolarSystem : public Scene {
 public:
@@ -36,6 +37,10 @@ private:
 	float maxDistSolar;
 
 	Planet *targetPlanet;
+
+
+	// planet stuff
+	HexSelector hexSelector;
 
 
 	// functions

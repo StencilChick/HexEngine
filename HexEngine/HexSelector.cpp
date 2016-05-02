@@ -10,11 +10,9 @@
 #include "Planet.h"
 #include "World.h"
 
-HexSelector::HexSelector() /*: GameObject("hexSelector.obj", "white.png")*/ {
+HexSelector::HexSelector() {
 	target = nullptr;
 	mesh = nullptr;
-
-	//SetScale(1.5f, 1.5f, 1.5f);
 }
 
 HexSelector::~HexSelector() {
@@ -33,7 +31,7 @@ void HexSelector::Draw() {
 
 		mesh->Draw(
 			World::GetShaderManager()->GetShader("default"),
-			scale(vec3(size, size, size)),
+			glm::translate(target->planet->GetPosition()) * scale(vec3(size, size, size)) * glm::rotate(target->planet->GetRotation(), glm::vec3(0, 1, 0)),
 			vec4(1, 1, 1, 1),
 			World::GetImageManager()->GetImage("white.png")
 			);

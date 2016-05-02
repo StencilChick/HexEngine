@@ -1,6 +1,5 @@
 #include "Game.h"
 
-#include "PlanetTest.h"
 #include "SolarSystem.h"
 #include "GalaxyView.h"
 

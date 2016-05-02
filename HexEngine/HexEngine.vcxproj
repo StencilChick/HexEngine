@@ -110,7 +110,6 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClCompile Include="MeshManager.cpp" />
     <ClCompile Include="Planet.cpp" />
     <ClCompile Include="PlanetHelpers.cpp" />
-    <ClCompile Include="PlanetTest.cpp" />
     <ClCompile Include="PlanetTypes.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -146,7 +145,6 @@ copy “$(OutDir)$(TargetName)$(TargetExt)” “$(SolutionDir)_Binary”</Comma
     <ClInclude Include="MeshManager.h" />
     <ClInclude Include="Planet.h" />
     <ClInclude Include="PlanetHelpers.h" />
-    <ClInclude Include="PlanetTest.h" />
     <ClInclude Include="PlanetTypes.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Scene.h" />

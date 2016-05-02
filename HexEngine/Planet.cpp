@@ -37,7 +37,7 @@ void Planet::Init(Planet *parent, int distance) {
 	this->distance = distance;
 	int seed = Game::GetGalaxy()->GetSeed();
 
-	// assign type pseudorandomly
+	// pseudorandom stuff
 	glm::vec3 noiseCentre;
 	if (parent == nullptr) {
 		noiseCentre = (star->GetPosition() + glm::vec3(distance, 0, 0)) * 100.0f;
@@ -45,6 +45,7 @@ void Planet::Init(Planet *parent, int distance) {
 		noiseCentre = (star->GetPosition() + glm::vec3(parent->GetDistance(), distance*1.0f/4, 0))*100.0f;
 	}
 	
+	// size
 	if (raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed) >= 0) {
 		size = 4;
 	} else {
@@ -53,12 +54,16 @@ void Planet::Init(Planet *parent, int distance) {
 	if (parent != nullptr) size--;
 	radius = pow(2, size-1);
 
-	float typeWeight = Game::GetPlanetTypeManager()->GetWeightVal() * (octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+1)+1)/2;
-	if (typeWeight >= Game::GetPlanetTypeManager()->GetWeightVal()) typeWeight -= 0.1f;
+	// assign type
+	srand((int)(noiseCentre.x + noiseCentre.y + noiseCentre.z + seed));
+	float typeWeight = rand() % Game::GetPlanetTypeManager()->GetWeightVal();
+	//float typeWeight = Game::GetPlanetTypeManager()->GetWeightVal() * (octave_noise_4d(1, 0, 10.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+1)+1)/2;
 
 	std::vector<std::string> typeNames = Game::GetPlanetTypeManager()->GetTypeNames();
-	for (std::vector<std::string>::iterator it = typeNames.begin(); it != typeNames.end(); it++) {
-		PlanetType *t = Game::GetPlanetTypeManager()->GetType(*it);
+
+	int id = 0;
+	while (true) {
+		PlanetType *t = Game::GetPlanetTypeManager()->GetType(typeNames[id]);
 
 		if (t->weight > typeWeight) {
 			type = t;
@@ -66,6 +71,9 @@ void Planet::Init(Planet *parent, int distance) {
 		} else {
 			typeWeight -= t->weight;
 		}
+
+		id++;
+		if (id >= typeNames.size()) { id = 0; }
 	}
 
 	// assign other vals pseudorandomly
@@ -104,6 +112,7 @@ void Planet::SetUpMesh() {
 			if (it->pos.y < 0) listInd += 5;
 
 			it->AddHexToMesh(vertices[listInd], elements[listInd]);
+			//it->AddHexSurfaceToMesh(vertices[listInd], elements[listInd]);
 		}
 
 		for (int i = 0; i < 10; i++) {
@@ -265,15 +274,15 @@ PlanetHex* Planet::GetClosestHexToPos(glm::vec3 pos) {
 	std::vector<PlanetHex> hexes = Game::GetSphereManager()->GetHexSphere(size);
 
 	float maxDist = 10000;
-	for (std::vector<PlanetHex>::iterator it = hexes.begin(); it != hexes.end(); it++) {
-		float delta = glm::length(it->pos - pos);
+	for (int i = 0; i < hexes.size(); i++) {
+		float delta = glm::length(hexes[i].pos - pos);
 		if (delta < maxDist) {
 			maxDist = delta;
-			hex = &*it;
+			hex = (PlanetHex*)&Game::GetSphereManager()->GetHexSphere(size)[i];
 		}
 	}
 
-	if (hex != nullptr) hex->Assign(this, GetHexHeight(hex->pos), GetHexTemp(hex->pos));
+	hex->Assign(this, GetHexHeight(hex->pos), GetHexTemp(hex->pos));
 	return hex;
 }
 

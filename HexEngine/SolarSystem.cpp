@@ -22,6 +22,10 @@ SolarSystem::SolarSystem(Star *star) : Scene() {
 
 	mode = Mode::solar;
 
+	// planet stuff
+	hexSelector = HexSelector();
+
+	// canera vakyes
 	maxDistPlanet = 28;
 	maxDistSolar = 2048;
 	minDistSolar = 512;
@@ -79,6 +83,10 @@ void SolarSystem::Draw() {
 			m->Draw();
 			m->DrawOrbit((450+camDist-minDistSolar)/(maxDistSolar-minDistSolar));
 		}
+	}
+
+	if (mode == Mode::planet && !Input::IsCursorBound()) {
+		hexSelector.Draw();
 	}
 
 	Game::GetGameHUD()->Draw();
@@ -160,7 +168,16 @@ void SolarSystem::TargetLoop() {
 }
 
 void SolarSystem::UpdateControlsPlanet() {
+	if (!Input::IsCursorBound()) {
+		glm::vec3 hitPos;
 
+		if (targetPlanet->GetRayHit(Cursor::GetRay(), hitPos)) {
+			PlanetHex *hex = targetPlanet->GetClosestHexToPos(hitPos);
+			hexSelector.SetTarget(hex);
+		} else {
+			hexSelector.ReleaseTarget();
+		}
+	}
 }
 
 

@@ -3,7 +3,7 @@
 
 #include "PlanetHelpers.h"
 
-class HexSelector /*: public GameObject*/ {
+class HexSelector {
 public:
 	HexSelector();
 	~HexSelector();

@@ -79,6 +79,7 @@ void PlanetHex::Assign(Planet *planet, int height, int temp) {
 	this->planet = planet;
 	this->height = height;
 	this->temp = temp;
+	if (this->temp > 2) this->temp = 2;
 
 	if (temp == 0) this->height = std::max(height, 1);
 	offset = this->height * 0.025f / sqrt(planet->GetRadius()) * 2;
@@ -115,52 +116,61 @@ void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushor
 			}
 		}
 
+		// face
 		vertices.push_back(newPoint.x);
 		vertices.push_back(newPoint.y);
 		vertices.push_back(newPoint.z);
 		vertices.push_back(uvX);
 		vertices.push_back(uvY);
 
+		// side front
+		vertices.push_back(newPoint.x);
+		vertices.push_back(newPoint.y);
+		vertices.push_back(newPoint.z);
+		vertices.push_back(uvX);
+		vertices.push_back(uvY+0.5f);
+
+		// side back
 		newPoint = glm::normalize(newPoint) * 0.5f;
 
 		vertices.push_back(newPoint.x);
 		vertices.push_back(newPoint.y);
 		vertices.push_back(newPoint.z);
 		vertices.push_back(uvX);
-		vertices.push_back(uvY);
+		vertices.push_back(uvY+0.5f);
 	}
 
 	// elements
-	int index = vertices.size()/5 - (points.size()*2);
+	int index = vertices.size()/5 - (points.size()*3);
 
 	if (points.size() == 6) {
 		elements.push_back(index);
-		elements.push_back(index+10);
-		elements.push_back(index+2);
+		elements.push_back(index+15);
+		elements.push_back(index+3);
 
-		elements.push_back(index+2);
-		elements.push_back(index+10);
-		elements.push_back(index+4);
-		
-		elements.push_back(index+4);
-		elements.push_back(index+10);
-		elements.push_back(index+8);
-		
-		elements.push_back(index+4);
-		elements.push_back(index+8);
+		elements.push_back(index+3);
+		elements.push_back(index+15);
 		elements.push_back(index+6);
+		
+		elements.push_back(index+6);
+		elements.push_back(index+15);
+		elements.push_back(index+12);
+		
+		elements.push_back(index+6);
+		elements.push_back(index+12);
+		elements.push_back(index+9);
 	} else {
 		elements.push_back(index);
-		elements.push_back(index+8);
-		elements.push_back(index+2);
+		elements.push_back(index+12);
+		elements.push_back(index+3);
 
-		elements.push_back(index+2);
-		elements.push_back(index+8);
-		elements.push_back(index+6);
+		elements.push_back(index+3);
+		elements.push_back(index+12);
+		elements.push_back(index+9);
 
-		elements.push_back(index+2);
+		elements.push_back(index+3);
+		elements.push_back(index+9);
 		elements.push_back(index+6);
-		elements.push_back(index+4);
 	}
 
 	int point;
@@ -169,11 +179,12 @@ void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushor
 	int nextBack;
 
 	for (int i = 0; i < points.size(); i++) {
-		point = 0 + i*2 + index;
-		back = 1 + i*2 + index;
-		nextPoint = 2 + i*2 + index; if (nextPoint > index-2+points.size()*2) nextPoint = index + 0;
-		nextBack = 3 + i*2 + index; if (nextBack > index-1+points.size()*2) nextBack = index + 1;
+		point = 1 + i*3 + index;
+		back = 2 + i*3 + index;
+		nextPoint = 4 + i*3 + index; if (nextPoint > index-2+points.size()*3) nextPoint = index + 1;
+		nextBack = 5 + i*3 + index; if (nextBack > index-1+points.size()*3) nextBack = index + 2;
 
+		
 		elements.push_back(point);
 		elements.push_back(nextPoint);
 		elements.push_back(back);
@@ -257,8 +268,6 @@ void PlanetHex::AddHexSurfaceToMesh(std::vector<GLfloat> &vertices, std::vector<
 
 // stuff
 void PlanetHex::CalcUV(int height, int temp, float &uvX, float &uvY) {
-	Image *img = World::GetImageManager()->GetImage("planetColours.png");
-
-	uvX = (0.5f + height) / img->GetWidth();
-	uvY = (0.5f + temp) / img->GetHeight();
+	uvX = (0.5f + height) / 6;
+	uvY = (0.5f + temp) / 6;
 }
