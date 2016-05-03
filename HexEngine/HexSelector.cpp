@@ -21,18 +21,15 @@ HexSelector::~HexSelector() {
 	}
 }
 
-void HexSelector::Update() {
-
-}
 
 void HexSelector::Draw() {
 	if (mesh != nullptr) {
-		float size = target->planet->GetRadius() + 0.001f;
+		float size = target->planet->GetRadius() + 0.0025f;
 
 		mesh->Draw(
 			World::GetShaderManager()->GetShader("default"),
 			glm::translate(target->planet->GetPosition()) * scale(vec3(size, size, size)) * glm::rotate(target->planet->GetRotation(), glm::vec3(0, 1, 0)),
-			vec4(1, 1, 1, 1),
+			vec4(0, 1, 1, 1),
 			World::GetImageManager()->GetImage("white.png")
 			);
 		mesh->BindBuffersAndDraw();

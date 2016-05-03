@@ -61,6 +61,12 @@
     <Filter Include="Source Files\Game\Objects\Galaxy">
       <UniqueIdentifier>{f7ab74ec-85b3-4c7d-bd2f-0ad1b2681f44}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Game\HUD">
+      <UniqueIdentifier>{83562fd9-d732-4873-b94c-2a5751188206}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game\HUD">
+      <UniqueIdentifier>{496aba00-a0f0-4069-9587-c7a1d11f6942}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -157,7 +163,7 @@
       <Filter>Source Files\Game\Objects</Filter>
     </ClCompile>
     <ClCompile Include="GameHUD.cpp">
-      <Filter>Source Files\Game</Filter>
+      <Filter>Source Files\Game\HUD</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -258,7 +264,7 @@
       <Filter>Header Files\Game\Objects</Filter>
     </ClInclude>
     <ClInclude Include="GameHUD.h">
-      <Filter>Header Files\Game</Filter>
+      <Filter>Header Files\Game\HUD</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

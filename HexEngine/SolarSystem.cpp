@@ -48,15 +48,16 @@ void SolarSystem::Update() {
 
 	// modes
 	if (mode == Mode::solar) {
-		UpdateControlsSolar();
-	} else {
-		UpdateControlsPlanet();
-	}
-
-	if (mode == Mode::solar) {
 		UpdateCamSolar();
 	} else {
 		UpdateCamPlanet();
+	}
+	Camera::GetInstance()->Update();
+
+	if (mode == Mode::solar) {
+		UpdateControlsSolar();
+	} else {
+		UpdateControlsPlanet();
 	}
 
 	// hud
@@ -172,6 +173,15 @@ void SolarSystem::UpdateControlsPlanet() {
 		glm::vec3 hitPos;
 
 		if (targetPlanet->GetRayHit(Cursor::GetRay(), hitPos)) {
+			// transform hit position to planet's local space
+			hitPos -= targetPlanet->GetPosition();
+
+			float rot = targetPlanet->GetRotation();
+			hitPos = glm::inverse(glm::quat(cos(rot/2), 0, sin(rot/2), 0)) * hitPos;
+
+			hitPos = glm::vec3(round(hitPos.x*100), round(hitPos.y*100), round(hitPos.z*100)) / 100.0f;
+
+
 			PlanetHex *hex = targetPlanet->GetClosestHexToPos(hitPos);
 			hexSelector.SetTarget(hex);
 		} else {

@@ -112,7 +112,6 @@ void Planet::SetUpMesh() {
 			if (it->pos.y < 0) listInd += 5;
 
 			it->AddHexToMesh(vertices[listInd], elements[listInd]);
-			//it->AddHexSurfaceToMesh(vertices[listInd], elements[listInd]);
 		}
 
 		for (int i = 0; i < 10; i++) {
@@ -240,10 +239,11 @@ float Planet::GetHexTemp(glm::vec3 pos) {
 
 bool Planet::GetRayHit(glm::vec3 point, glm::vec3 dir, glm::vec3 &result) {
 	glm::vec3 pos = GetPosition();
+	float rad = radius + 0.075f / sqrt(radius) * 2;
 
 	float a = glm::dot(dir, dir);
 	float b = glm::dot(dir, 2.0f*(point-pos));
-	float c = glm::dot(pos, pos) + glm::dot(point, point) - 2*glm::dot(pos, point) - radius*radius;
+	float c = glm::dot(pos, pos) + glm::dot(point, point) - 2*glm::dot(pos, point) - rad*rad;
 
 	float d = b*b - 4*a*c;
 	if (d < 0) return false;
@@ -254,16 +254,8 @@ bool Planet::GetRayHit(glm::vec3 point, glm::vec3 dir, glm::vec3 &result) {
 bool Planet::GetRayHit(Ray ray, glm::vec3 &result) { return GetRayHit(ray.point, ray.direction, result); }
 
 bool Planet::GetRayHit(glm::vec3 point, glm::vec3 dir) {
-	glm::vec3 pos = GetPosition();
-
-	float a = glm::dot(dir, dir);
-	float b = glm::dot(dir, 2.0f*(point-pos));
-	float c = glm::dot(pos, pos) + glm::dot(point, point) - 2*glm::dot(pos, point) - radius*radius;
-
-	float d = b*b - 4*a*c;
-	if (d < 0) return false;
-
-	return true;
+	glm::vec3 result;
+	return GetRayHit(point, dir, result);
 }
 bool Planet::GetRayHit(Ray ray) { return GetRayHit(ray.point, ray.direction); }
 

@@ -8,7 +8,6 @@ public:
 	HexSelector();
 	~HexSelector();
 
-	void Update();
 	void Draw();
 
 	void SetTarget(PlanetHex*);
