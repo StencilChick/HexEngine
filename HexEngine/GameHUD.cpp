@@ -1,10 +1,14 @@
 #include "GameHUD.h"
 
+#include <iostream>
+
 #include "World.h"
 #include "Game.h"
 
 GameHUD::GameHUD() {
-	
+	targetHex = nullptr;
+	targetPlanet = nullptr;
+	targetStar = nullptr;
 }
 
 
@@ -24,12 +28,40 @@ void GameHUD::Update() {
 void GameHUD::Draw() {
 	DrawTimer();
 
+	DrawTargetInfo();
+
 	// seed
 	World::GetFontManager()->WriteLine(
 		World::GetFontManager()->GetAtlas("times.ttf"),
 		("Seed #" + std::to_string(Game::GetGalaxy()->GetSeed())).c_str(),
 		World::SCREEN_WIDTH-105, World::SCREEN_HEIGHT-25
 		);
+}
+
+
+// functions for setting things
+void GameHUD::SetTargetHex(PlanetHex *target) {
+	targetHex = target;
+	targetPlanet = nullptr;
+	targetStar = nullptr;
+}
+
+void GameHUD::SetTargetPlanet(Planet *target) {
+	targetHex = nullptr;
+	targetPlanet = target;
+	targetStar = nullptr;
+}
+
+void GameHUD::SetTargetStar(Star *target) {
+	targetHex = nullptr;
+	targetPlanet = nullptr;
+	targetStar = target;
+}
+
+void GameHUD::ReleaseTarget() {
+	targetHex = nullptr;
+	targetPlanet = nullptr;
+	targetStar = nullptr;
 }
 
 
@@ -41,4 +73,11 @@ void GameHUD::DrawTimer() {
 		(std::to_string(timer->GetDay()) + "/" + std::to_string(timer->GetMonth()) + "/" + std::to_string(timer->GetYear())).c_str(),
 		5, 5
 		);
+}
+
+void GameHUD::DrawTargetInfo() {
+	if (targetHex != nullptr) {
+		FontManager *fontMgr = World::GetFontManager();
+		fontMgr->WriteLine(fontMgr->GetAtlas("times.ttf"), targetHex->GetBiome().c_str(), 5, World::SCREEN_HEIGHT-23);
+	}
 }

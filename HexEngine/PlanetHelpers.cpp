@@ -271,3 +271,7 @@ void PlanetHex::CalcUV(int height, int temp, float &uvX, float &uvY) {
 	uvX = (0.5f + height) / 6;
 	uvY = (0.5f + temp) / 6;
 }
+
+std::string PlanetHex::GetBiome() {
+	return planet->GetType()->hexes[temp][height];
+}

@@ -224,9 +224,6 @@
     <ClInclude Include="simplex\simplexnoise.h">
       <Filter>Header Files\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="PlanetHelpers.h">
-      <Filter>Header Files\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="Cursor.h">
       <Filter>Header Files\Graphics</Filter>
     </ClInclude>
@@ -265,6 +262,9 @@
     </ClInclude>
     <ClInclude Include="GameHUD.h">
       <Filter>Header Files\Game\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="PlanetHelpers.h">
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

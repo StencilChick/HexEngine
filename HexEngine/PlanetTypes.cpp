@@ -4,12 +4,17 @@
 
 #include <iostream>
 
+#include "Planet.h"
+
 // type
 PlanetType::PlanetType() {
+	largeOnly = false;
+	smallOnly = false;
 
+	needsMoon = false;
 }
 
-PlanetType::PlanetType(const char *filename) {
+PlanetType::PlanetType(const char *filename) : PlanetType() {
 	char *content = ReadFile(filename);
 
 	char line[256];
@@ -50,7 +55,9 @@ void PlanetType::ParseLine(const char *line) {
 		name = parameters[1];
 	} else if (parameters[0] == string("desc")) {
 		description = parameters[1];
-	} else if (parameters[0] == string("image")) {
+	} 
+	
+	else if (parameters[0] == string("image")) {
 		image = "Planets\\" + parameters[1];
 	} else if (parameters[0] == string("hex")) {
 		hexes[stoi(parameters[1])][stoi(parameters[2])] = parameters[3];
@@ -62,6 +69,32 @@ void PlanetType::ParseLine(const char *line) {
 	} else if (parameters[0] == string("weight")) {
 		weight = stoi(parameters[1]);
 	}
+
+	else if (parameters[0] == string("largeOnly")) {
+		largeOnly = true;
+	} else if (parameters[0] == string("smallOnly")) {
+		smallOnly = true;
+	}
+
+	else if (parameters[0] == string("needsMoon")) {
+		needsMoon = true;
+	}
+}
+
+
+bool PlanetType::IsPlanetValid(Planet *planet) {
+	if (largeOnly) {
+		if (!(planet->GetSizeVal() == 4 || (planet->IsMoon() && planet->GetSizeVal() == 3))) {
+			return false;
+		}
+	}
+	if (smallOnly) {
+		if (!((!planet->IsMoon() && planet->GetSizeVal() == 3) || (planet->IsMoon() && planet->GetSizeVal() == 2))) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 // manager

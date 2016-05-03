@@ -29,7 +29,7 @@ void HexSelector::Draw() {
 		mesh->Draw(
 			World::GetShaderManager()->GetShader("default"),
 			glm::translate(target->planet->GetPosition()) * scale(vec3(size, size, size)) * glm::rotate(target->planet->GetRotation(), glm::vec3(0, 1, 0)),
-			vec4(0, 1, 1, 1),
+			vec4(0.5f, 1, 1, 1),
 			World::GetImageManager()->GetImage("white.png")
 			);
 		mesh->BindBuffersAndDraw();

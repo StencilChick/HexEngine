@@ -43,5 +43,7 @@ struct PlanetHex {
 	void AddHexToMesh(std::vector<GLfloat>&, std::vector<GLushort>&);
 	void AddHexSurfaceToMesh(std::vector<GLfloat>&, std::vector<GLushort>&);
 
+	std::string GetBiome();
+
 	static void CalcUV(int height, int temp, float &uvX, float &uvY);
 };

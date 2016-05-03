@@ -22,3 +22,4 @@ hex:2:4:Mountain
 hex:2:5:Mountain
 sea:-0.5:-0.5
 temp:0.25
+largeOnly:true

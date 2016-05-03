@@ -20,4 +20,6 @@ hex:2:2:Desert
 hex:2:3:Jungle
 hex:2:4:Mountain
 hex:2:5:Mountain
-sea:-0.1:0.1
+sea:-0.2:-0.05
+largeOnly
+needsMoon

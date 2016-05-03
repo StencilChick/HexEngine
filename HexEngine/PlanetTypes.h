@@ -4,6 +4,8 @@
 #include <vector>
 #include <map>
 
+class Planet;
+
 struct PlanetType {
 	std::string name;
 	std::string description;
@@ -17,8 +19,15 @@ struct PlanetType {
 
 	float tempMod;
 
+	bool largeOnly;
+	bool smallOnly;
+
+	bool needsMoon;
+
 	PlanetType();
 	PlanetType(const char*);
+
+	bool IsPlanetValid(Planet*);
 
 private:
 	void ParseLine(const char *line);

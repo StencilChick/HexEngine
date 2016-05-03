@@ -28,13 +28,18 @@ public:
 	void DrawOrbit(float);
 
 
+	int GetSizeVal();
+	bool IsMoon();
+
+
 	int GetMoonCount();
 	Planet* GetMoon(int);
 
-	float GetRadius();
+	
 	int GetDistance();
 
 	glm::vec3 GetPosition();
+	float GetRadius();
 	float GetRotation();
 
 	PlanetType* GetType();

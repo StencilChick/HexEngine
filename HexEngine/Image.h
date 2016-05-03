@@ -6,6 +6,7 @@ class Image {
 public:
 	Image();
 	Image(const char*);
+	Image(unsigned char*, int, int);
 	void Delete();
 
 	void BindGL();

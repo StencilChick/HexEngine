@@ -65,11 +65,13 @@ void Planet::Init(Planet *parent, int distance) {
 	while (true) {
 		PlanetType *t = Game::GetPlanetTypeManager()->GetType(typeNames[id]);
 
-		if (t->weight > typeWeight) {
-			type = t;
-			break;
-		} else {
-			typeWeight -= t->weight;
+		if (t->IsPlanetValid(this)) {
+			if (t->weight > typeWeight) {
+				type = t;
+				break;
+			} else {
+				typeWeight -= t->weight;
+			}
 		}
 
 		id++;
@@ -88,7 +90,7 @@ void Planet::Init(Planet *parent, int distance) {
 
 	// add a moon, maybe
 	if (parent == nullptr && size == 4) {
-		if (raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+5) >= 0.5f) {
+		if (raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+5) >= 0.5f || type->needsMoon) {
 			Planet *moon = new Planet(star);
 			moon->Init(this, 1);
 
@@ -163,6 +165,15 @@ void Planet::Draw() {
 			);
 		(*it)->BindBuffersAndDraw();
 	}
+}
+
+
+int Planet::GetSizeVal() {
+	return size;
+}
+
+bool Planet::IsMoon() {
+	return parent != nullptr;
 }
 
 

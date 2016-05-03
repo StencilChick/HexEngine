@@ -21,3 +21,4 @@ hex:2:3:Barren
 hex:2:4:Polar
 hex:2:5:Polar
 sea:-0.25:-0.15
+smallOnly:true

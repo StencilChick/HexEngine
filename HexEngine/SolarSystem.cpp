@@ -25,7 +25,7 @@ SolarSystem::SolarSystem(Star *star) : Scene() {
 	// planet stuff
 	hexSelector = HexSelector();
 
-	// canera vakyes
+	// camera values
 	maxDistPlanet = 28;
 	maxDistSolar = 2048;
 	minDistSolar = 512;
@@ -184,8 +184,10 @@ void SolarSystem::UpdateControlsPlanet() {
 
 			PlanetHex *hex = targetPlanet->GetClosestHexToPos(hitPos);
 			hexSelector.SetTarget(hex);
+			Game::GetGameHUD()->SetTargetHex(hex);
 		} else {
 			hexSelector.ReleaseTarget();
+			Game::GetGameHUD()->ReleaseTarget();
 		}
 	}
 }
