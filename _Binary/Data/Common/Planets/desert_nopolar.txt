@@ -1,13 +1,13 @@
 name:Desert
 desc:[insert desc here]
 weight:1
-image:desert.png
+image:desert_nopolar.png
 hex:0:0:no
-hex:0:1:Polar
-hex:0:2:Polar
-hex:0:3:Polar
-hex:0:4:Polar
-hex:0:5:Polar
+hex:0:1:Desert
+hex:0:2:Desert
+hex:0:3:Desert
+hex:0:4:Mountain
+hex:0:5:Mountain
 hex:1:0:no
 hex:1:1:Desert
 hex:1:2:Desert

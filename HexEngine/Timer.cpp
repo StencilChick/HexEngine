@@ -3,13 +3,20 @@
 #include <iostream>
 
 #include "Input.h"
+#include "World.h"
 
 Timer::Timer() {
 	time = 0;
 }
 
 void Timer::Update() {
+	float lastTime = time;
+
 	time += speed * Input::DeltaTime();
+
+	if (time != lastTime) {
+		//World::GetShaderManager()->UpdateTime(time);
+	}
 }
 
 

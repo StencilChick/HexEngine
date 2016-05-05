@@ -23,6 +23,7 @@ struct PlanetType {
 	bool smallOnly;
 
 	bool needsMoon;
+	bool tidalLock;
 
 	PlanetType();
 	PlanetType(const char*);

@@ -12,6 +12,7 @@ PlanetType::PlanetType() {
 	smallOnly = false;
 
 	needsMoon = false;
+	tidalLock = false;
 }
 
 PlanetType::PlanetType(const char *filename) : PlanetType() {
@@ -79,6 +80,9 @@ void PlanetType::ParseLine(const char *line) {
 	else if (parameters[0] == string("needsMoon")) {
 		needsMoon = true;
 	}
+	else if (parameters[0] == string("tidalLock")) {
+		tidalLock = true;
+	}
 }
 
 
@@ -89,7 +93,7 @@ bool PlanetType::IsPlanetValid(Planet *planet) {
 		}
 	}
 	if (smallOnly) {
-		if (!((!planet->IsMoon() && planet->GetSizeVal() == 3) || (planet->IsMoon() && planet->GetSizeVal() == 2))) {
+		if (!(planet->GetSizeVal() == 3 || planet->GetSizeVal() == 2)) {
 			return false;
 		}
 	}

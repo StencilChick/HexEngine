@@ -96,10 +96,12 @@ void SolarSystem::Draw() {
 
 void SolarSystem::SwitchToPlanetMode() {
 	if (targetPlanet != nullptr) {
-		mode = Mode::planet;
+		if (!targetPlanet->IsGasPlanet()) {
+			mode = Mode::planet;
 
-		camRotX -= targetPlanet->GetRotation();
-		camDist = maxDistPlanet-3;
+			camRotX -= targetPlanet->GetRotation();
+			camDist = maxDistPlanet-3;
+		}
 	}
 }
 
@@ -108,6 +110,8 @@ void SolarSystem::SwitchToSolarMode() {
 
 	camRotX += targetPlanet->GetRotation();
 	camDist = (minDistSolar-maxDistPlanet)/2;
+
+	Game::GetGameHUD()->ReleaseTarget();
 }
 
 

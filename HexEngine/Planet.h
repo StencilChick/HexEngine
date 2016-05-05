@@ -19,6 +19,7 @@ public:
 	~Planet();
 
 	void Init(Planet*, int);
+
 	void SetUpMesh();
 	void DeleteMesh();
 
@@ -30,6 +31,7 @@ public:
 
 	int GetSizeVal();
 	bool IsMoon();
+	bool IsGasPlanet();
 
 
 	int GetMoonCount();
@@ -57,6 +59,8 @@ private:
 	Star *star;
 	Planet *parent; // if this planet is a moon
 
+	bool isGasPlanet;
+
 	std::vector<Planet*> moons;
 
 	std::vector<Mesh*> meshes;
@@ -66,12 +70,17 @@ private:
 	int distance;
 	float startAngle;
 	float revolveTime;
+	float rotateTime;
 
 	int size;
 	PlanetType *type;
 
 	float seaLevel;
 
-	float GetHexHeight(glm::vec3);
-	float GetHexTemp(glm::vec3);
+
+	void BuildTerrestianPlanet(glm::vec3);
+	void BuildGasPlanet(glm::vec3);
+
+	int GetHexHeight(glm::vec3);
+	int GetHexTemp(glm::vec3);
 };

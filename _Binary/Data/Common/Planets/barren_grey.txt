@@ -21,3 +21,4 @@ hex:2:3:Barren
 hex:2:4:Barren
 hex:2:5:Barren
 sea:-0.25:-0.15
+tidalLock

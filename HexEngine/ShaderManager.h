@@ -25,6 +25,8 @@ public:
 	void UpdateViewMatrix(const glm::mat4&);
 	void UpdateProjectionMatrix(const glm::mat4&);
 
+	void UpdateTime(float time);
+
 private:
 	std::map<std::string, GLuint> shaders;
 

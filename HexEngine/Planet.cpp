@@ -45,6 +45,62 @@ void Planet::Init(Planet *parent, int distance) {
 		noiseCentre = (star->GetPosition() + glm::vec3(parent->GetDistance(), distance*1.0f/4, 0))*100.0f;
 	}
 	
+	// build a terrestial or gas planet
+	if (parent == nullptr) {
+		//BuildGasPlanet(noiseCentre);
+	} else {
+		//BuildTerrestianPlanet(noiseCentre);
+	}
+	BuildTerrestianPlanet(noiseCentre);
+
+	radius = pow(2, size-1);
+
+
+	// revolution
+	startAngle = 2*M_PI * (octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+3)+1)/2;
+
+	if (parent == nullptr) {
+		revolveTime = 100*distance + 100*distance/2 * raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+4);
+	} else {
+		revolveTime = 30*distance + 30*distance/2 * raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+4);
+	}
+
+	// moons
+	int numMoons = 0;
+	if (parent == nullptr) {
+		if (isGasPlanet) {
+			numMoons = 1 + 3 * octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+5)/2;
+		}
+		else if (size == 4 && (raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+5) >= 0.5f || type->needsMoon)) {
+			numMoons = 1;
+		}
+	}
+
+	for (int i = 1; i <= numMoons; i++) {
+		Planet *moon = new Planet(star);
+		moon->Init(this, i);
+
+		moons.push_back(moon);
+	}
+
+
+	// rotation time
+	if (isGasPlanet) {
+		rotateTime = 60;
+	} else {
+		if (type->tidalLock && distance == 1 && moons.size() == 0) {
+			rotateTime = revolveTime;
+		} else {
+			rotateTime = 10 * (1.0f + octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+6)/2);
+		}
+	}
+}
+
+void Planet::BuildTerrestianPlanet(glm::vec3 noiseCentre) {
+	isGasPlanet = false;
+
+	float seed = Game::GetGalaxy()->GetSeed();
+
 	// size
 	if (raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed) >= 0) {
 		size = 4;
@@ -52,7 +108,7 @@ void Planet::Init(Planet *parent, int distance) {
 		size = 3;
 	}
 	if (parent != nullptr) size--;
-	radius = pow(2, size-1);
+	
 
 	// assign type
 	srand((int)(noiseCentre.x + noiseCentre.y + noiseCentre.z + seed));
@@ -78,29 +134,19 @@ void Planet::Init(Planet *parent, int distance) {
 		if (id >= typeNames.size()) { id = 0; }
 	}
 
-	// assign other vals pseudorandomly
-	startAngle = 2*M_PI * (octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+2)+1)/2;
+	// other values
 	seaLevel = type->minSeaLevel + (type->maxSeaLevel - type->minSeaLevel) * (octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+2)+3)/2;
-
-	if (parent == nullptr) {
-		revolveTime = 100*distance + 100*distance/2 * raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+4);
-	} else {
-		revolveTime = 30*distance + 30*distance/2 * raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+4);
-	}
-
-	// add a moon, maybe
-	if (parent == nullptr && size == 4) {
-		if (raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+5) >= 0.5f || type->needsMoon) {
-			Planet *moon = new Planet(star);
-			moon->Init(this, 1);
-
-			moons.push_back(moon);
-		}
-	}
 }
 
+void Planet::BuildGasPlanet(glm::vec3 noiseCentre) {
+	isGasPlanet = true;
+
+	size = 6;
+}
+
+
 void Planet::SetUpMesh() {
-	if (!meshCreated) {
+	if (!meshCreated && !isGasPlanet) {
 		std::vector<PlanetHex> hexes = Game::GetSphereManager()->GetHexSphere(size);
 
 		std::vector<GLfloat> vertices[10];
@@ -156,14 +202,23 @@ void Planet::Update() {
 void Planet::Draw() {
 	glm::vec3 position = GetPosition();
 
-	for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++) {
-		(*it)->Draw(
-			World::GetShaderManager()->GetShader("default"), 
-			glm::translate(position) * glm::scale(glm::vec3(radius, radius, radius)) * glm::rotate(GetRotation(), glm::vec3(0, 1, 0)), 
-			glm::vec4(1, 1, 1, 1), 
-			World::GetImageManager()->GetImage(type->image)
+	if (!isGasPlanet) {
+		for (std::vector<Mesh*>::iterator it = meshes.begin(); it != meshes.end(); it++) {
+			(*it)->Draw(
+				World::GetShaderManager()->GetShader("default"), 
+				glm::translate(position) * glm::scale(glm::vec3(radius, radius, radius)) * glm::rotate(GetRotation(), glm::vec3(0, 1, 0)), 
+				glm::vec4(1, 1, 1, 1), 
+				World::GetImageManager()->GetImage(type->image)
+				);
+			(*it)->BindBuffersAndDraw();
+		}
+	} else {
+		World::GetMeshManager()->GetMesh("sphere.obj")->Draw(
+			World::GetShaderManager()->GetShader("default"),
+			glm::translate(position) * glm::scale(glm::vec3(radius, radius, radius)) * glm::rotate(GetRotation(), glm::vec3(0, 1, 0)),
+			glm::vec4(1, 1, 1, 1),
+			World::GetImageManager()->GetImage("Planets\\gasTest.png")
 			);
-		(*it)->BindBuffersAndDraw();
 	}
 }
 
@@ -174,6 +229,10 @@ int Planet::GetSizeVal() {
 
 bool Planet::IsMoon() {
 	return parent != nullptr;
+}
+
+bool Planet::IsGasPlanet() {
+	return isGasPlanet;
 }
 
 
@@ -209,7 +268,7 @@ glm::vec3 Planet::GetPosition() {
 }
 
 float Planet::GetRotation() {
-	return 2*M_PI / 28 * Game::GetGalaxy()->GetTimer()->GetTime();
+	return 2*M_PI / rotateTime * Game::GetGalaxy()->GetTimer()->GetTime();
 }
 
 PlanetType* Planet::GetType() {
@@ -218,7 +277,7 @@ PlanetType* Planet::GetType() {
 
 
 // stuff
-float Planet::GetHexHeight(glm::vec3 pos) {
+int Planet::GetHexHeight(glm::vec3 pos) {
 	float seed = Game::GetGalaxy()->GetSeed();
 	float scale = 1 + 0.1 * size;
 	glm::vec3 noiseCentre = (star->GetPosition() + glm::vec3(distance, 0, 0)) * 100.0f;
@@ -228,12 +287,20 @@ float Planet::GetHexHeight(glm::vec3 pos) {
 			4, 0.15f, 1.0f, 
 			pos.x * scale + noiseCentre.x, pos.y * scale + noiseCentre.y, pos.z * scale + noiseCentre.z, seed)
 		- seaLevel) * 6), 0.0f);
-	height = std::min(6, height);
+		height = std::min(5, height);
+
+	int temp = GetHexTemp(pos);
+	
+	// verify valid height for hex
+	while (type->hexes[temp][height] == std::string("no")) {
+		height++;
+		if (height > 5) height = 0;
+	}
 
 	return height;
 }
 
-float Planet::GetHexTemp(glm::vec3 pos) {
+int Planet::GetHexTemp(glm::vec3 pos) {
 	float seed = Game::GetGalaxy()->GetSeed();
 	float scale = 1 + 0.1 * size;
 	glm::vec3 noiseCentre = (star->GetPosition() + glm::vec3(distance, 0, 0)) * 100.0f;
@@ -243,7 +310,7 @@ float Planet::GetHexTemp(glm::vec3 pos) {
 			4, 0.15f, 1.0f, 
 			pos.x * scale + noiseCentre.x, pos.y * scale + noiseCentre.y, pos.z * scale + noiseCentre.z, seed+1)
 		/2) + type->tempMod, 0.0f);
-	temp = std::min(3, temp);
+	temp = std::min(2, temp);
 
 	return temp;
 }

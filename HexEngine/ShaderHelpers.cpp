@@ -96,11 +96,24 @@ void SetShaderBool(GLuint programme, GLint loc, bool value) {
 	glUniform1i(loc, value);
 }
 void SetShaderBool(GLuint programme, const char *name, bool value) { SetShaderBool(programme, GetUniformLoc(programme, name), value); }
+
 void SetShaderInt(GLuint programme, GLint loc, int value) {
 	glUseProgram(programme);
 	glUniform1i(loc, value);
 }
 void SetShaderInt(GLuint programme, const char *name, int value) { SetShaderInt(programme, GetUniformLoc(programme, name), value); }
+
+void SetShaderFloat(GLuint programme, GLint loc, float value) {
+	glUseProgram(programme);
+	glUniform1f(loc, value);
+}
+void SetShaderFloat(GLuint programme, const char *name, float value) { SetShaderFloat(programme, GetUniformLoc(programme, name), value); }
+
+void SetShaderV2(GLuint programme, GLint loc, const vec2 &value) {
+	glUseProgram(programme);
+	glUniform2f(loc, value.x, value.y);
+}
+void SetShaderV2(GLuint programme, const char *name, const vec2 &value) { SetShaderV2(programme, GetUniformLoc(programme, name), value); }
 
 void SetShaderV3(GLuint programme, GLint loc, const vec3 &value) {
 	glUseProgram(programme);

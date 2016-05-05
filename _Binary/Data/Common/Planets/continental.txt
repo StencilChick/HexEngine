@@ -2,7 +2,7 @@ name:Continental
 desc:[insert desc here]
 weight:1
 image:continental.png
-hex:0:0:Polar
+hex:0:0:no
 hex:0:1:Polar
 hex:0:2:Polar
 hex:0:3:Polar

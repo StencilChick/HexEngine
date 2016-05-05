@@ -15,8 +15,12 @@ void SetShaderBool(GLuint, GLint, bool);
 void SetShaderBool(GLuint, const char*, bool);
 void SetShaderInt(GLuint, GLint, int);
 void SetShaderInt(GLuint, const char*, int);
+void SetShaderFloat(GLuint, GLint, float);
+void SetShaderFloat(GLuint, const char*, float);
 
 
+void SetShaderV2(GLuint, GLint, const vec2&);
+void SetShaderV2(GLuint, const char*, const vec2&);
 void SetShaderV3(GLuint, GLint, const vec3&);
 void SetShaderV3(GLuint, const char*, const vec3&);
 void SetShaderV4(GLuint, GLint, const vec4&);

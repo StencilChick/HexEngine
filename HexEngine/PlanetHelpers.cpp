@@ -79,9 +79,7 @@ void PlanetHex::Assign(Planet *planet, int height, int temp) {
 	this->planet = planet;
 	this->height = height;
 	this->temp = temp;
-	if (this->temp > 2) this->temp = 2;
 
-	if (temp == 0) this->height = std::max(height, 1);
 	offset = this->height * 0.025f / sqrt(planet->GetRadius()) * 2;
 }
 

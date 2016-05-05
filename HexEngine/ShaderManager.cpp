@@ -78,11 +78,18 @@ InstanceLoc ShaderManager::GetInstanceLoc(GLuint shader, int index) {
 void ShaderManager::UpdateProjectionMatrix(const mat4 &m) {
 	for (map<string, GLuint>::iterator it = shaders.begin(); it != shaders.end(); it++) {
 		SetShaderM4(it->second, "projectionMatrix", m);
+		SetShaderV2(it->second, "resolution", glm::vec2(World::SCREEN_WIDTH, World::SCREEN_HEIGHT));
 	}
 }
 
 void ShaderManager::UpdateViewMatrix(const mat4 &m) {
 	for (map<string, GLuint>::iterator it = shaders.begin(); it != shaders.end(); it++ ) {
 		SetShaderM4(it->second, "viewMatrix", m);
+	}
+}
+
+void ShaderManager::UpdateTime(float time) {
+	for (map<string, GLuint>::iterator it = shaders.begin(); it != shaders.end(); it++) {
+		SetShaderFloat(it->second, "time", time);
 	}
 }
