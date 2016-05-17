@@ -66,8 +66,9 @@ void LoadOBJ(const char *fileName, vector<GLfloat> &vertices, vector<GLushort> &
 
 	// holders for the data before making the finalised vertices
 	vector<vec3> positions;
+	vector<vec3> normals;
 	vector<vec2> uvs;
-	map<int, array<float, 5>> finalVerts;
+	map<int, array<float, 8>> finalVerts;
 	positions.reserve(1024); uvs.reserve(1024);
 
 	// go through the thing and do things based on the things
@@ -90,6 +91,12 @@ void LoadOBJ(const char *fileName, vector<GLfloat> &vertices, vector<GLushort> &
 					uvs.push_back(vec2(stof(params[1]), stof(params[2])));
 					break;
 
+				case 'n':
+					//normal
+					params = SplitString(line, ' ');
+					normals.push_back(vec3(stof(params[1]), stof(params[2]), stof(params[3])));
+					break;
+
 				default:
 					// position
 					params = SplitString(line, ' ');
@@ -102,19 +109,22 @@ void LoadOBJ(const char *fileName, vector<GLfloat> &vertices, vector<GLushort> &
 				// face
 				params = SplitString(line, ' ');
 				int posIndex[3];
+				int normIndex[3];
 				int uvIndex[3];
 				for (int i = 1; i <=3; i++) {
 					vector<string> t = SplitString(params[i], '/');
 
 					posIndex[i-1] = stoi(t[0])-1;
 					uvIndex[i-1] = stoi(t[1])-1;
+					normIndex[i-1] = stoi(t[2])-1;
 				}
 
 				for (int i = 0; i < 3; i++) {
 					vec3 pos = positions[posIndex[i]];
+					vec3 norm = normals[normIndex[i]];
 					vec2 uv = uvs[uvIndex[i]];
 
-					array<float, 5> point = { pos.x, pos.y, pos.z, uv.x, uv.y };
+					array<float, 8> point = { pos.x, pos.y, pos.z, uv.x, uv.y, norm.x, norm.y, norm.z };
 
 					if (finalVerts.size() < 3) {
 						// first face being defined here
@@ -126,7 +136,7 @@ void LoadOBJ(const char *fileName, vector<GLfloat> &vertices, vector<GLushort> &
 						//vector<array<float, 5>>::iterator it = find(finalVerts.begin(), finalVerts.end(), point);
 
 						int foundPoint = -1;
-						for (map<int, array<float, 5>>::iterator it = finalVerts.begin(); it != finalVerts.end(); it++) {
+						for (map<int, array<float, 8>>::iterator it = finalVerts.begin(); it != finalVerts.end(); it++) {
 							if (it->second == point) { foundPoint = it->first; break; }
 						}
 
@@ -160,8 +170,9 @@ void LoadOBJ(const char *fileName, vector<GLfloat> &vertices, vector<GLushort> &
 
 	// push the finalised vertices to vertices
 	cout << fileName << " - " << elements.size() << endl;
+
 	for (int i = 0; i < finalVerts.size(); i++) {
-		for (int ii = 0; ii < 5; ii++) {
+		for (int ii = 0; ii < 8; ii++) {
 			vertices.push_back(finalVerts[i][ii]);
 		}
 	}

@@ -23,7 +23,7 @@ Mesh::Mesh(const char *filename) {
 	std::vector<GLushort> elements;
 	LoadOBJ(filename, vertices, elements);
 
-	BindGL(&vertices[0], vertices.size()/5, &elements[0], elements.size());
+	BindGL(&vertices[0], vertices.size()/8, &elements[0], elements.size());
 }
 
 
@@ -44,17 +44,20 @@ void Mesh::BindGL(GLfloat* vertices, int vertexNum, GLushort* elems, int elemNum
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(
 		GL_ARRAY_BUFFER,
-		sizeof(float) * 5 * vertexNum,
+		sizeof(float) * 8 * vertexNum,
 		vertices,
 		GL_STATIC_DRAW
 		);
 
 	// position
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 5, 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 8, 0);
 	glEnableVertexAttribArray(0);
 	// uv
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 5, (void*)(sizeof(GL_FLOAT) * 3));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 8, (void*)(sizeof(GL_FLOAT) * 3));
 	glEnableVertexAttribArray(1);
+	// normal
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 8, (void*)(sizeof(GL_FLOAT) * 5));
+	glEnableVertexAttribArray(2);
 
 	glGenBuffers(1, &elements);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elements);

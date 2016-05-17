@@ -120,13 +120,21 @@ void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushor
 		vertices.push_back(newPoint.z);
 		vertices.push_back(uvX);
 		vertices.push_back(uvY);
+		vertices.push_back(axis.x);
+		vertices.push_back(axis.y);
+		vertices.push_back(axis.z);
 
 		// side front
+		glm::vec3 sideNormal = newPoint - centre;
+
 		vertices.push_back(newPoint.x);
 		vertices.push_back(newPoint.y);
 		vertices.push_back(newPoint.z);
 		vertices.push_back(uvX);
 		vertices.push_back(uvY+0.5f);
+		vertices.push_back(sideNormal.x);
+		vertices.push_back(sideNormal.y);
+		vertices.push_back(sideNormal.z);
 
 		// side back
 		newPoint = glm::normalize(newPoint) * 0.5f;
@@ -136,10 +144,13 @@ void PlanetHex::AddHexToMesh(std::vector<GLfloat> &vertices, std::vector<GLushor
 		vertices.push_back(newPoint.z);
 		vertices.push_back(uvX);
 		vertices.push_back(uvY+0.5f);
+		vertices.push_back(sideNormal.x);
+		vertices.push_back(sideNormal.y);
+		vertices.push_back(sideNormal.z);
 	}
 
 	// elements
-	int index = vertices.size()/5 - (points.size()*3);
+	int index = vertices.size()/8 - (points.size()*3);
 
 	if (points.size() == 6) {
 		elements.push_back(index);

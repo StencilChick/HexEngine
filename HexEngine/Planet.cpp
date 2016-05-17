@@ -163,7 +163,7 @@ void Planet::SetUpMesh() {
 			}
 
 			for (int i = 0; i < 10; i++) {
-				meshes[i] = new Mesh(&vertices[i][0], vertices[i].size()/5, &elements[i][0], elements[i].size());
+				meshes[i] = new Mesh(&vertices[i][0], vertices[i].size()/8, &elements[i][0], elements[i].size());
 				meshes[i]->AddShader(World::GetShaderManager()->GetShader("default"));
 			}
 		}
