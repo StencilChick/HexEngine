@@ -15,10 +15,10 @@ enum StarType {
 
 class Star {
 public:
-	Star(Galaxy*, glm::vec3);
+	Star(Galaxy*, glm::vec3, int);
 	~Star();
 
-	void Init(int);
+	void Init();
 	void Unload();
 
 	glm::vec3 GetPosition();
@@ -28,12 +28,16 @@ public:
 	int GetPlanetCount();
 	Planet* GetPlanet(int);
 
+	int GetFrostLine();
+
 private:
 	glm::vec3 position;
 	std::vector<Planet*> planets;
 
 	StarType type;
 	glm::vec4 colour;
+
+	int frostLine;
 
 	Galaxy *galaxy;
 };

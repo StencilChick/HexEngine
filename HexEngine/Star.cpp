@@ -2,14 +2,17 @@
 
 #include "simplex\simplexnoise.h"
 
+#include <algorithm>
 #include <iostream>
 
 #include "Galaxy.h"
 
-Star::Star(Galaxy *galaxy, glm::vec3 position) {
+Star::Star(Galaxy *galaxy, glm::vec3 position, int starType) {
 	this->galaxy = galaxy;
 
 	this->position = position;
+
+	type = static_cast<StarType>(starType);
 }
 Star::~Star() {
 	
@@ -22,10 +25,8 @@ void Star::Unload() {
 	planets.clear();
 }
 
-void Star::Init(int starType) {
+void Star::Init() {
 	// star
-	type = static_cast<StarType>(starType);
-
 	switch (type) {
 	case StarType::blue:
 		colour = glm::vec4(0.75f, 0.75f, 1, 1);
@@ -52,9 +53,12 @@ void Star::Init(int starType) {
 		break;
 	}
 
-
+	
 	// planets
-	int numPlanets = 1 + std::pow((raw_noise_4d(position.x, position.y, position.z, galaxy->GetSeed() + 2) + 1)/2, 2) * 6;
+	int numPlanets = 1 + (raw_noise_4d(position.x, position.y, position.z, galaxy->GetSeed() + 2) + 1)/2 * 8;
+
+	frostLine = numPlanets - (raw_noise_4d(position.x, position.y, position.z, galaxy->GetSeed() + 1) + 1)/2 * std::min(4, numPlanets/2+1);
+	if (frostLine < 1) frostLine = 1;
 
 	for (int i = 1; i <= numPlanets; i++) {
 		Planet *p = new Planet(this);
@@ -84,4 +88,8 @@ int Star::GetPlanetCount() {
 
 Planet* Star::GetPlanet(int i) {
 	return planets[i];
+}
+
+int Star::GetFrostLine() {
+	return frostLine;
 }

@@ -46,12 +46,11 @@ void Planet::Init(Planet *parent, int distance) {
 	}
 	
 	// build a terrestial or gas planet
-	if (parent == nullptr) {
-		//BuildGasPlanet(noiseCentre);
+	if (parent == nullptr && distance >= star->GetFrostLine()) {
+		BuildGasPlanet(noiseCentre);
 	} else {
-		//BuildTerrestianPlanet(noiseCentre);
+		BuildTerrestianPlanet(noiseCentre);
 	}
-	BuildTerrestianPlanet(noiseCentre);
 
 	radius = pow(2, size-1);
 
@@ -69,7 +68,7 @@ void Planet::Init(Planet *parent, int distance) {
 	int numMoons = 0;
 	if (parent == nullptr) {
 		if (isGasPlanet) {
-			numMoons = 1 + 3 * octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+5)/2;
+			numMoons = 1 + 3 * (octave_noise_4d(4, 0.15f, 1.0f, noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+5)+1)/2;
 		}
 		else if (size == 4 && (raw_noise_4d(noiseCentre.x, noiseCentre.y, noiseCentre.z, seed+5) >= 0.5f || type->needsMoon)) {
 			numMoons = 1;
@@ -146,25 +145,27 @@ void Planet::BuildGasPlanet(glm::vec3 noiseCentre) {
 
 
 void Planet::SetUpMesh() {
-	if (!meshCreated && !isGasPlanet) {
-		std::vector<PlanetHex> hexes = Game::GetSphereManager()->GetHexSphere(size);
+	if (!meshCreated) {
+		if (!isGasPlanet) {
+			std::vector<PlanetHex> hexes = Game::GetSphereManager()->GetHexSphere(size);
 
-		std::vector<GLfloat> vertices[10];
-		std::vector<GLushort> elements[10];
+			std::vector<GLfloat> vertices[10];
+			std::vector<GLushort> elements[10];
 
-		for (std::vector<PlanetHex>::iterator it = hexes.begin(); it != hexes.end(); it++) {
-			it->Assign(this, GetHexHeight(it->pos), GetHexTemp(it->pos));
+			for (std::vector<PlanetHex>::iterator it = hexes.begin(); it != hexes.end(); it++) {
+				it->Assign(this, GetHexHeight(it->pos), GetHexTemp(it->pos));
 
-			int listInd = (atan2(it->pos.z, it->pos.x) / M_PI + 1) / 2 * 5;
-			if (listInd == 5) listInd = 0;
-			if (it->pos.y < 0) listInd += 5;
+				int listInd = (atan2(it->pos.z, it->pos.x) / M_PI + 1) / 2 * 5;
+				if (listInd == 5) listInd = 0;
+				if (it->pos.y < 0) listInd += 5;
 
-			it->AddHexToMesh(vertices[listInd], elements[listInd]);
-		}
+				it->AddHexToMesh(vertices[listInd], elements[listInd]);
+			}
 
-		for (int i = 0; i < 10; i++) {
-			meshes[i] = new Mesh(&vertices[i][0], vertices[i].size()/5, &elements[i][0], elements[i].size());
-			meshes[i]->AddShader(World::GetShaderManager()->GetShader("default"));
+			for (int i = 0; i < 10; i++) {
+				meshes[i] = new Mesh(&vertices[i][0], vertices[i].size()/5, &elements[i][0], elements[i].size());
+				meshes[i]->AddShader(World::GetShaderManager()->GetShader("default"));
+			}
 		}
 
 
@@ -179,9 +180,11 @@ void Planet::SetUpMesh() {
 
 void Planet::DeleteMesh() {
 	if (meshCreated) {
-		for (int i = 0; i < 10; i++) {
-			delete meshes[i];
-			meshes[i] = nullptr;
+		if (!isGasPlanet) {
+			for (int i = 0; i < 10; i++) {
+				delete meshes[i];
+				meshes[i] = nullptr;
+			}
 		}
 
 
@@ -358,11 +361,36 @@ PlanetHex* Planet::GetClosestHexToPos(glm::vec3 pos) {
 
 
 float Planet::GetDistanceToOrbitCentre() {
-	if (parent == nullptr) {
-		return 64 + 128 * distance;
-	} else {
-		return 32 * distance;
+	float dist = 128 / 3 * size;
+	if (parent != nullptr) {
+		dist /= 3;
+		if (!parent->IsGasPlanet()) {
+			dist = 0;
+		}
 	}
+
+	if (distance == 1) {
+		int startVal;
+		if (parent != nullptr) {
+			if (parent->IsGasPlanet()) {
+				startVal = 32;
+			} else {
+				startVal = 32;
+			}
+		} else {
+			startVal = 32;
+		}
+
+		dist += startVal;
+	} else {
+		if (parent == nullptr) {
+			dist += star->GetPlanet(distance-2)->GetDistanceToOrbitCentre();
+		} else {
+			dist += parent->GetMoon(distance-2)->GetDistanceToOrbitCentre();
+		}
+	}
+	
+	return dist;
 }
 
 void Planet::DrawOrbit(float a) {

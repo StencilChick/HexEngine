@@ -15,7 +15,7 @@ public:
 	void Load();
 	void UnLoad();
 
-	int INSTANCE_LENGTH = 128;
+	int INSTANCE_LENGTH = 64;
 
 	GLuint GetShader(std::string);
 	GLuint GetShader(const char*);

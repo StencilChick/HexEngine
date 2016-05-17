@@ -26,7 +26,7 @@ void GameHUD::Update() {
 }
 
 void GameHUD::Draw() {
-	DrawTimer();
+	//DrawTimer();
 
 	DrawTargetInfo();
 

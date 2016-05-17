@@ -41,16 +41,16 @@ void Timer::SetSpeed(int s) {
 
 
 int Timer::GetYear() {
-	int val = time / 364;
+	int val = time / 360;
 	return val;
 }
 
 int Timer::GetMonth() {
-	int val = time - GetYear()*364;
-	return val / 28 + 1;
+	int val = time - GetYear()*360;
+	return val / 30 + 1;
 }
 
 int Timer::GetDay() {
-	int val = time - GetYear()*364 - (GetMonth()-1) * 28;
+	int val = time - GetYear()*360 - (GetMonth()-1) * 30;
 	return val + 1;
 }

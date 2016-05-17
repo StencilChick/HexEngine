@@ -27,7 +27,7 @@ SolarSystem::SolarSystem(Star *star) : Scene() {
 
 	// camera values
 	maxDistPlanet = 28;
-	maxDistSolar = 2048;
+	maxDistSolar = star->GetPlanet(star->GetPlanetCount()-1)->GetDistanceToOrbitCentre() * 3; //2048;
 	minDistSolar = 512;
 
 	camDist = maxDistSolar - 100;
@@ -69,7 +69,7 @@ void SolarSystem::Draw() {
 		World::GetShaderManager()->GetShader("default"),
 		glm::scale(glm::vec3(64, 64, 64)),
 		star->GetColour(),
-		World::GetImageManager()->GetImage("white.png")
+		World::GetImageManager()->GetImage("white.png")//"Planets\\gasTest.png")
 		);
 
 	for (int i = 0; i < star->GetPlanetCount(); i++) {
@@ -176,7 +176,7 @@ void SolarSystem::UpdateControlsPlanet() {
 	if (!Input::IsCursorBound()) {
 		glm::vec3 hitPos;
 
-		if (targetPlanet->GetRayHit(Cursor::GetRay(), hitPos)) {
+		/*if (targetPlanet->GetRayHit(Cursor::GetRay(), hitPos)) {
 			// transform hit position to planet's local space
 			hitPos -= targetPlanet->GetPosition();
 
@@ -192,7 +192,7 @@ void SolarSystem::UpdateControlsPlanet() {
 		} else {
 			hexSelector.ReleaseTarget();
 			Game::GetGameHUD()->ReleaseTarget();
-		}
+		}*/
 	}
 }
 

@@ -129,8 +129,11 @@ void Galaxy::Populate() {
 		if (!good) continue;
 
 		// star
-		stars.push_back(Star(this, position));
-		stars.back().Init(i % 5);
+		stars.push_back(Star(this, position, i % 5));
+	}
+
+	for (std::vector<Star>::iterator it = stars.begin(); it != stars.end(); it++) {
+		it->Init();
 	}
 }
 
